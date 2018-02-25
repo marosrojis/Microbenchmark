@@ -1,0 +1,32 @@
+package cz.rojik;
+
+[config.libraries]
+
+@State(Scope.Thread)
+@BenchmarkMode({Mode.AverageTime})
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@Warmup(iterations = [config.warmup])
+@Measurement(iterations = [config.measurement])
+public class [config.className] {
+
+	[microbenchmark.declare]
+
+	@Setup(Level.Trial)
+	public void init() {
+		[microbenchmark.init]
+	}
+
+[microbenchmark.testMethods]
+
+	public static void main(String[] args) throws RunnerException {
+
+		Options options = new OptionsBuilder()
+				.include(Microbenchmark.class.getSimpleName()).threads(1)
+				.forks(1).shouldFailOnError(true).shouldDoGC(true)
+				.result("[config.resultFile]")
+				.resultFormat(ResultFormatType.JSON)
+				.jvmArgs("-server").build();
+		new Runner(options).run();
+
+	}
+}
