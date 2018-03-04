@@ -6,9 +6,11 @@ import org.apache.maven.shared.invoker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,7 +26,7 @@ public class Runner {
         Set<String> output = new LinkedHashSet<>();
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(ProjectContants.PROJECT_POM));
-        request.setGoals( Arrays.asList("clean", "install -Dmaven.test.skip=true"));
+        request.setGoals( Arrays.asList("clean", "install", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setOutputHandler(text -> {
@@ -42,27 +44,33 @@ public class Runner {
     }
 
     public boolean runProject(String fileName) {
-        Process proc = null;
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = {"java","-jar", ProjectContants.PATH_GENERATE_JAR + fileName + ".jar"};
+
         try {
-            proc = Runtime.getRuntime().exec("java -jar " + ProjectContants.PATH_GENERATE_JAR + fileName + ".jar");
-            proc.waitFor();
+            Process proc = rt.exec(commands);
 
-            InputStream in = proc.getInputStream();
-            InputStream err = proc.getErrorStream();
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(proc.getInputStream()));
 
-            byte b[]=new byte[in.available()];
-            in.read(b,0,b.length);
-            System.out.println(new String(b));
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(proc.getErrorStream()));
 
-            byte c[]=new byte[err.available()];
-            err.read(c,0,c.length);
-            System.err.println(new String(c));
-        } catch (IOException | InterruptedException e) {
+            System.out.println("Here is the standard output of the command:\n");
+            String s = null;
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
 
-
         return true;
     }
+
 }

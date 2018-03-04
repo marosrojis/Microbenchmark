@@ -31,7 +31,6 @@ public class App {
         runner.runProject(className);
 
         Result result = parser.parseResult(ProjectContants.RESULT_JSON_FILE, now);
-
         generatorHTML.generateHTMLFile(result, input);
     }
 

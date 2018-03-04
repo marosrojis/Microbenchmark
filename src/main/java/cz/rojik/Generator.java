@@ -70,7 +70,7 @@ public class Generator {
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace(); // TODO
+            e.printStackTrace();
             throw new ReadFileException(ProjectContants.DEFAULT_JAVA_FILE);
         }
 
