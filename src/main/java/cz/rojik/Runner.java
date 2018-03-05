@@ -14,24 +14,30 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Runner {
 
     private static Logger logger = LoggerFactory.getLogger(Runner.class);
+    private static final String REGEX_ERROR = "\\[ERROR\\].*";
 
     public Runner() {
     }
 
     public Set<String> compileProject() {
         Set<String> output = new LinkedHashSet<>();
+        final Pattern p = Pattern.compile(REGEX_ERROR);
+
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(ProjectContants.PROJECT_POM));
         request.setGoals( Arrays.asList("clean", "install", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setOutputHandler(text -> {
+            if (p.matcher(text).matches()) {
+                output.add(text);
+            }
             logger.info(text);
-            output.add(text);
         });
         try {
             invoker.execute(request);

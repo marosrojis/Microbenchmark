@@ -1,0 +1,30 @@
+package cz.rojik.model;
+
+public class Error {
+
+    private String message;
+    private int row;
+
+    public Error(String message, int row) {
+        this.message = message;
+        this.row = row;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Error setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public Error setRow(int row) {
+        this.row = row;
+        return this;
+    }
+}
