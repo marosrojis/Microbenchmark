@@ -25,4 +25,10 @@ public class ProjectContants {
     public static final String RESULT_JSON_FILE         = PATH_RESULT + "results.json";
 
     public static final String RESULT_HTML_FILE         = PATH_RESULT + "results.html";
+
+    public static final String RESULT_ERROR_HTML_FILE   = PATH_RESULT + "results_error.html";
+
+    public static final String JAVA_FILE_FORMAT         = ".java";
+
+
 }

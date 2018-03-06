@@ -1,11 +1,14 @@
 package cz.rojik;
 
 import cz.rojik.constant.ProjectContants;
+import cz.rojik.model.ErrorInfo;
 import cz.rojik.model.Result;
+import cz.rojik.model.Error;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 public class App {
@@ -39,7 +42,12 @@ public class App {
             generatorHTML.generateHTMLFile(result, input);
         }
         else {
-            errorsParser.getSyntaxErrors(errors);
+            List<Error> errorList = errorsParser.getSyntaxErrors(errors);
+            List<ErrorInfo> errorInfoList = errorsParser.processErrorList(errorList, className);
+
+            Result result = new Result(now, false)
+                    .setErrors(errorInfoList);
+            generatorHTML.generateHTMLFile(result, input);
         }
 
     }

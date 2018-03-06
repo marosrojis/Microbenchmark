@@ -7,7 +7,13 @@ public class Result {
 
     private LocalDateTime time;
     private List<MicrobenchmarkResult> results;
+    private List<ErrorInfo> errors;
     private boolean success;
+
+    public Result(LocalDateTime time, boolean success) {
+        this.time = time;
+        this.success = success;
+    }
 
     public Result(LocalDateTime time, List<MicrobenchmarkResult> results, boolean success) {
         this.time = time;
@@ -39,6 +45,15 @@ public class Result {
 
     public Result setSuccess(boolean success) {
         this.success = success;
+        return this;
+    }
+
+    public List<ErrorInfo> getErrors() {
+        return errors;
+    }
+
+    public Result setErrors(List<ErrorInfo> errors) {
+        this.errors = errors;
         return this;
     }
 }

@@ -43,7 +43,8 @@ public class Parser {
         }
         mbResults.get(minIndex).setFastest(true);
 
-        Result result = new Result(time, mbResults, true);
+        Result result = new Result(time, true)
+                .setResults(mbResults);
         return result;
     }
 

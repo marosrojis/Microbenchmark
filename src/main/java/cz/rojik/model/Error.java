@@ -4,6 +4,7 @@ public class Error {
 
     private String message;
     private int row;
+    private String code;
 
     public Error(String message, int row) {
         this.message = message;
@@ -25,6 +26,15 @@ public class Error {
 
     public Error setRow(int row) {
         this.row = row;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Error setCode(String code) {
+        this.code = code;
         return this;
     }
 }

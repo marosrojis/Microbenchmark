@@ -1,9 +1,15 @@
 package cz.rojik;
 
+import cz.rojik.constant.ProjectContants;
+import cz.rojik.exception.ReadFileException;
 import cz.rojik.model.Error;
+import cz.rojik.model.ErrorInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,11 +29,35 @@ public class ErrorsParser {
     private static final String PARSE_ERROR_REGEX = "\\[(\\d+),\\d+\\] (.*)";
     private static final String PARSE_ERROR_WITHOUT_ABSOLUTE_PATH = "\\[ERROR\\] {3}([a-z]+:.*)"; //e.g. [ERROR]   symbol:   class List
 
-    public void getSyntaxErrors(Set<String> errors) {
+    public List<Error> getSyntaxErrors(Set<String> errors) {
         errors = removeCertainErrors(errors);
         errors = removeErrorsHelp(errors);
         errors = removeMavenErrors(errors);
         List<Error> errorList = getErrorsInfo(errors);
+
+        return errorList;
+    }
+
+    public List<ErrorInfo> processErrorList(List<Error> errors, String className) {
+        errors = insertCodeToError(className, errors);
+
+        List<ErrorInfo> errorInfoList = new ArrayList<>();
+
+        int i = 0;
+        while (i < errors.size()) {
+            Error error;
+
+            ErrorInfo errorInfo = new ErrorInfo();
+            do {
+                error = errors.get(i);
+                errorInfo.getErrors().add(error);
+                i++;
+            } while (i < errors.size() && (error.getRow() == errors.get(i).getRow() || errors.get(i).getRow() - error.getRow() == 1));
+
+            errorInfoList.add(errorInfo);
+        }
+
+        return errorInfoList;
     }
 
     private List<Error> getErrorsInfo(Set<String> errors) {
@@ -51,6 +81,23 @@ public class ErrorsParser {
         }
 
         return errorList;
+    }
+
+    private List<Error> insertCodeToError(String className, List<Error> errors) {
+        List<String> codes;
+        try {
+            codes = Files.readAllLines(Paths.get(ProjectContants.PATH_JAVA_PACKAGE + className + ProjectContants.JAVA_FILE_FORMAT));
+        } catch (IOException e) {
+            logger.error("Cannot open file {0}", className);
+            throw new ReadFileException(className);
+
+        }
+
+        for (Error error : errors) {
+            error.setCode(codes.get(error.getRow() - 1));
+        }
+
+        return errors;
     }
 
     private Set<String> removeErrorsHelp(Set<String> errors) {
