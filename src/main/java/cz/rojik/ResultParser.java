@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parser {
+public class ResultParser {
 
     private JsonParser jParser;
 
-    public Parser() {
+    public ResultParser() {
         jParser = new JsonParser();
     }
 

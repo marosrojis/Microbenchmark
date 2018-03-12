@@ -5,6 +5,7 @@ import cz.rojik.model.Error;
 import cz.rojik.model.ErrorInfo;
 import cz.rojik.model.MicrobenchmarkResult;
 import cz.rojik.model.Result;
+import cz.rojik.model.Template;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,6 +3,8 @@ package cz.rojik;
 import cz.rojik.constant.ProjectContants;
 import cz.rojik.constant.TemplateConstants;
 import cz.rojik.exception.ReadFileException;
+import cz.rojik.model.Template;
+import cz.rojik.utils.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

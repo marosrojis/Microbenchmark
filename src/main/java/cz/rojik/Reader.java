@@ -1,5 +1,7 @@
 package cz.rojik;
 
+import cz.rojik.model.Template;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class Reader {
         return "import java.util.ArrayList;\n" +
                 "import java.util.Arrays;\n" +
                 "import java.util.Collections;\n" +
-//                "import java.util.List;\n" +
+                "import java.util.List;\n" +
                 "import java.util.Random;\n" +
                 "import java.util.concurrent.TimeUnit;\n" +
                 "\n" +

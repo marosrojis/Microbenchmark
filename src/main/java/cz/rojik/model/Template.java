@@ -1,4 +1,4 @@
-package cz.rojik;
+package cz.rojik.model;
 
 import java.util.ArrayList;
 import java.util.List;

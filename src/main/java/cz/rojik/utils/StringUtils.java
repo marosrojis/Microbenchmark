@@ -1,4 +1,4 @@
-package cz.rojik;
+package cz.rojik.utils;
 
 public class StringUtils {
 
