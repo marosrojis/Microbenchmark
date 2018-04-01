@@ -1,22 +1,34 @@
 package cz.rojik;
 
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.LogStream;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.messages.ContainerConfig;
+import com.spotify.docker.client.messages.ContainerCreation;
+import com.spotify.docker.client.messages.ExecCreation;
+import com.spotify.docker.client.messages.HostConfig;
 import cz.rojik.constant.ProjectContants;
 import cz.rojik.enums.Operation;
 import cz.rojik.exception.MavenCompileException;
 import cz.rojik.model.ProcessInfo;
 import cz.rojik.model.Template;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.maven.shared.invoker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -25,10 +37,10 @@ public class Runner {
     private static Logger logger = LoggerFactory.getLogger(Runner.class);
     private static final String REGEX_ERROR = "\\[ERROR\\].*";
 
-    private ProcessParser processParser;
+    private MessageLogParser messageLogParser;
 
     public Runner() {
-        this.processParser = new ProcessParser();
+        this.messageLogParser = new MessageLogParser();
     }
 
     public Set<String> compileProject() {
@@ -58,27 +70,51 @@ public class Runner {
         return output;
     }
 
-    public boolean runProject(String fileName, Template template) {
-        Runtime rt = Runtime.getRuntime();
-        String[] commands = {"java","-jar", ProjectContants.PATH_GENERATE_JAR + fileName + ".jar"};
+    public boolean runProject(String fileName, Template template) throws DockerCertificateException, DockerException, InterruptedException {
         ProcessInfo processInfo;
+        final DockerClient client = DefaultDockerClient.fromEnv().build();
 
-        try {
-            Process proc = rt.exec(commands);
+        final HostConfig hostConfig = HostConfig.builder()
+                .binds(HostConfig.Bind.from(ProjectContants.PATH_GENERATE_JAR)
+                        .to(ProjectContants.DOCKER_SHARED_FOLDER)
+                        .readOnly(true)
+                        .build())
+                .build();
 
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(proc.getInputStream()));
+        final ContainerConfig containerConfig = ContainerConfig.builder()
+                .hostConfig(hostConfig)
+                .image("docker-microbenchmark")
+                .attachStdout(true)
+                .attachStdin(true)
+                .tty(true)
+                .build();
 
-            String s = null;
-            while ((s = stdInput.readLine()) != null) {
-                processInfo = processParser.parseMessage(s, template);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        final ContainerCreation creation = client.createContainer(containerConfig);
+        final String id = creation.id();
+
+        client.startContainer(id);
+
+        final String[] command = {"java", "-jar", ProjectContants.DOCKER_SHARED_FOLDER + fileName + ProjectContants.JAR_FILE_FORMAT};
+        final ExecCreation execCreation = client.execCreate(
+                id, command, DockerClient.ExecCreateParam.attachStdout(),
+                DockerClient.ExecCreateParam.attachStderr());
+        final LogStream output = client.execStart(execCreation.id());
+
+        while (output.hasNext()) {
+            final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
+            processInfo = messageLogParser.parseMessage(logMessage, template);
         }
 
-        processInfo = new ProcessInfo(Operation.FINISH_BENCHMARKS);
+        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(id, ProjectContants.DOCKER_RESULT_FILE))) {
+            File newFile = new File(ProjectContants.RESULT_JSON_FILE);
+            IOUtils.copy(tarStream, new FileOutputStream(newFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        client.killContainer(id);
+        client.removeContainer(id);
+
         return true;
     }
 

@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javac.target>1.8</javac.target>
         <slf4j.version>1.7.5</slf4j.version>
+        <docker-client.version>8.11.2</docker-client.version>
     </properties>
 
     <dependencies>
@@ -44,6 +45,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-client</artifactId>
+            <version>${docker-client.version}</version>
         </dependency>
     </dependencies>
 

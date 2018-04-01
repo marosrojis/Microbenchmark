@@ -1,5 +1,7 @@
 package cz.rojik;
 
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.constant.ProjectContants;
 import cz.rojik.enums.Operation;
 import cz.rojik.model.ErrorInfo;
@@ -40,7 +42,11 @@ public class App {
         Set<String> errors = runner.compileProject();
 
         if (errors.size() == 0) {
-            runner.runProject(className, input);
+            try {
+                runner.runProject(className, input);
+            } catch (DockerCertificateException | DockerException | InterruptedException e) {
+                e.printStackTrace();
+            }
             Result result = resultParser.parseResult(ProjectContants.RESULT_JSON_FILE, now);
             generatorHTML.generateHTMLFile(result, input);
         }
@@ -59,5 +65,6 @@ public class App {
 
     public static void main(String[] args) {
         new App();
+        logger.info("koneeeeeeeeeeeeec");
     }
 }

@@ -2,7 +2,7 @@ package cz.rojik.constant;
 
 public class ProjectContants {
 
-    public static final String PATH_PROJECT             = "project/";
+    public static final String PATH_PROJECT             = "c:/Temp/Dropbox/PRG/Java/DP/project/";
 
     public static final String PROJECT_POM              = PATH_PROJECT + "pom.xml";
 
@@ -29,6 +29,12 @@ public class ProjectContants {
     public static final String RESULT_ERROR_HTML_FILE   = PATH_RESULT + "results_error.html";
 
     public static final String JAVA_FILE_FORMAT         = ".java";
+
+    public static final String JAR_FILE_FORMAT          = ".jar";
+
+    public static final String DOCKER_SHARED_FOLDER     = "/app/";
+
+    public static final String DOCKER_RESULT_FILE       = "/benchmark/result/results.json";
 
 
 }

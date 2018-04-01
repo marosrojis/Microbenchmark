@@ -9,16 +9,16 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProcessParser {
+public class MessageLogParser {
 
-    private static Logger logger = LoggerFactory.getLogger(ProcessParser.class);
+    private static Logger logger = LoggerFactory.getLogger(MessageLogParser.class);
 
     private static final String MEASUREMENT_REGEX = "Iteration[ \\t]*(\\d+):.*";
     private static final String WARMUP_REGEX = "# Warmup Iteration[ \\t]*(\\d+):.*";
     private static final String RESULT_REGEX = "Result \"cz\\.rojik\\.Microbenchmark\\.benchmarkTest(\\d+)\":";
 
 
-    public ProcessParser() {}
+    public MessageLogParser() {}
 
     public ProcessInfo parseMessage(String message, Template template) {
         ProcessInfo info = null;

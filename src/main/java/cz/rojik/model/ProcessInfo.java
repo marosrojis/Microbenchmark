@@ -1,6 +1,5 @@
 package cz.rojik.model;
 
-import cz.rojik.Runner;
 import cz.rojik.enums.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
