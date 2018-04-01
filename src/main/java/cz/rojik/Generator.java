@@ -97,7 +97,8 @@ public class Generator {
         String generatedID = UUID.randomUUID().toString();
         logger.info("Generated unique project ID = {}", generatedID);
 
-        File srcDir = new File(ProjectContants.PATH_DEFAULT_PROJECT);
+        ClassLoader classLoader = getClass().getClassLoader();
+        File srcDir = new File(classLoader.getResource(ProjectContants.PATH_DEFAULT_PROJECT).getFile());
         File destDir = new File(ProjectContants.PATH_ALL_PROJECTS + generatedID);
 
         try {

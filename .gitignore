@@ -1,10 +1,8 @@
 target
 result
+projects
 *.jar
 *.war
 *.class
 .idea
 *.iml
-
-projects/*
-!projects/default

@@ -4,7 +4,7 @@ public class ProjectContants {
 
     public static final String PATH_ALL_PROJECTS        = "c:/Temp/Dropbox/PRG/Java/DP/projects/";
 
-    public static final String PATH_DEFAULT_PROJECT     = PATH_ALL_PROJECTS + "default/";
+    public static final String PATH_DEFAULT_PROJECT     = "empty_project/";
 
     public static final String PROJECT_POM              = "pom.xml";
 
@@ -20,7 +20,7 @@ public class ProjectContants {
 
     public static final String PATH_RESOURCES           = PATH_MAIN + "resources/";
 
-    public static final String DEFAULT_JAVA_FILE        = "default.txt";
+    public static final String DEFAULT_JAVA_FILE        = "default_class.txt";
 
     public static final String PATH_RESULT              = "result/";
 
