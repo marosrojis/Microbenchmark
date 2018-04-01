@@ -38,33 +38,32 @@ public class App {
         LocalDateTime now = LocalDateTime.now();
 
         Template input = reader.readInputs();
-        String className = generator.generateJavaClass(input);
-        Set<String> errors = runner.compileProject();
+        String projectId = generator.generateJavaClass(input);
+        Set<String> errors = runner.compileProject(projectId);
 
         if (errors.size() == 0) {
             try {
-                runner.runProject(className, input);
+                runner.runProject(projectId, input);
             } catch (DockerCertificateException | DockerException | InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Throw exception during run docker container with project.");
             }
-            Result result = resultParser.parseResult(ProjectContants.RESULT_JSON_FILE, now);
-            generatorHTML.generateHTMLFile(result, input);
+            Result result = resultParser.parseResult(projectId, now);
+            generatorHTML.generateHTMLFile(result, projectId, input);
         }
         else {
             ProcessInfo processInfo = new ProcessInfo(Operation.ERROR_COMPILE);
 
             List<Error> errorList = errorsParser.getSyntaxErrors(errors);
-            List<ErrorInfo> errorInfoList = errorsParser.processErrorList(errorList, className);
+            List<ErrorInfo> errorInfoList = errorsParser.processErrorList(errorList, projectId);
 
             Result result = new Result(now, false)
                     .setErrors(errorInfoList);
-            generatorHTML.generateHTMLFile(result, input);
+            generatorHTML.generateHTMLFile(result, projectId, input);
         }
 
     }
 
     public static void main(String[] args) {
         new App();
-        logger.info("koneeeeeeeeeeeeec");
     }
 }

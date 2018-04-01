@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 public class Generator {
 
@@ -22,11 +23,12 @@ public class Generator {
     }
 
     public String generateJavaClass(Template template) {
+        String projectID = copyProjectFolder();
         String fileContent = readDefaultFile();
         String newContent = generateContent(template, fileContent);
-        saveFile(ProjectContants.JAVA_CLASS_FILE, newContent);
+        saveFile(projectID, newContent);
 
-        return ProjectContants.JAVA_CLASS;
+        return projectID;
     }
 
     private String generateContent(Template template, String content) {
@@ -67,7 +69,8 @@ public class Generator {
     }
 
     private String readDefaultFile() {
-        File file = new File(ProjectContants.DEFAULT_JAVA_FILE);
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource(ProjectContants.DEFAULT_JAVA_FILE).getFile());
         String fileContent = "";
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
@@ -79,14 +82,31 @@ public class Generator {
         return fileContent;
     }
 
-    private boolean saveFile(String fileName, String content) {
+    private boolean saveFile(String projectID, String content) {
         try {
-            File file = new File(ProjectContants.PATH_JAVA_PACKAGE + fileName);
+            File file = new File(ProjectContants.PATH_ALL_PROJECTS + projectID + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
             FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8, false);
         } catch (IOException e) {
             logger.error("Save file failure");
             return false;
         }
         return true;
+    }
+
+    private String copyProjectFolder() {
+        String generatedID = UUID.randomUUID().toString();
+        logger.info("Generated unique project ID = {}", generatedID);
+
+        File srcDir = new File(ProjectContants.PATH_DEFAULT_PROJECT);
+        File destDir = new File(ProjectContants.PATH_ALL_PROJECTS + generatedID);
+
+        try {
+            logger.info("Copy default project folder to new folder {}", generatedID);
+            FileUtils.copyDirectory(srcDir, destDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return generatedID;
     }
 }

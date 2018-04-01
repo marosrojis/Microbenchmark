@@ -38,8 +38,8 @@ public class ErrorsParser {
         return errorList;
     }
 
-    public List<ErrorInfo> processErrorList(List<Error> errors, String className) {
-        errors = insertCodeToError(className, errors);
+    public List<ErrorInfo> processErrorList(List<Error> errors, String projectId) {
+        errors = insertCodeToError(projectId, errors);
 
         List<ErrorInfo> errorInfoList = new ArrayList<>();
 
@@ -83,13 +83,13 @@ public class ErrorsParser {
         return errorList;
     }
 
-    private List<Error> insertCodeToError(String className, List<Error> errors) {
+    private List<Error> insertCodeToError(String projectId, List<Error> errors) {
         List<String> codes;
         try {
-            codes = Files.readAllLines(Paths.get(ProjectContants.PATH_JAVA_PACKAGE + className + ProjectContants.JAVA_FILE_FORMAT));
+            codes = Files.readAllLines(Paths.get(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
-            logger.error("Cannot open file {0}", className);
-            throw new ReadFileException(className);
+            logger.error("Cannot open class from project witd ID {0}", projectId);
+            throw new ReadFileException(projectId);
 
         }
 

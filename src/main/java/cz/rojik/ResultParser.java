@@ -1,5 +1,6 @@
 package cz.rojik;
 
+import cz.rojik.constant.ProjectContants;
 import cz.rojik.exception.ReadFileException;
 import cz.rojik.model.MicrobenchmarkResult;
 import cz.rojik.model.Result;
@@ -21,9 +22,9 @@ public class ResultParser {
         jParser = new JsonParser();
     }
 
-    public Result parseResult(String fileName, LocalDateTime time) {
+    public Result parseResult(String projectId, LocalDateTime time) {
         List<MicrobenchmarkResult> mbResults = new ArrayList<>();
-        String resultContent = readResultFile(fileName);
+        String resultContent = readResultFile(projectId);
 
         JsonElement parsed = jParser.parse(resultContent);
         JsonArray jsonResults = parsed.getAsJsonArray();
@@ -61,14 +62,14 @@ public class ResultParser {
         return new MicrobenchmarkResult(name, warmupIterations, measurementIterations, unit, score, error);
     }
 
-    private String readResultFile(String fileName) {
-        File file = new File(fileName);
+    private String readResultFile(String projectId) {
+        File file = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
         String fileContent = "";
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new ReadFileException(fileName);
+            throw new ReadFileException(projectId);
         }
 
         return fileContent;

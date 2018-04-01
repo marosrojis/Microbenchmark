@@ -5,3 +5,6 @@ result
 *.class
 .idea
 *.iml
+
+projects/*
+!projects/default

@@ -22,7 +22,7 @@ public class GeneratorHTML {
 
     public GeneratorHTML() {}
 
-    public void generateHTMLFile(Result result, Template template) {
+    public void generateHTMLFile(Result result, String projectId, Template template) {
         StringBuilder sb = new StringBuilder();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -43,7 +43,7 @@ public class GeneratorHTML {
         sb.append("</body></html>");
 
         try {
-            File file = new File(ProjectContants.RESULT_HTML_FILE);
+            File file = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.HTML_FILE_FORMAT);
             FileUtils.writeStringToFile(file, sb.toString(), StandardCharsets.UTF_8, false);
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,7 +1,0 @@
-target
-src/main/java/*
-*.jar
-*.war
-*.class
-.idea
-*.iml
