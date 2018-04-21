@@ -32,6 +32,7 @@ public class Generator {
     }
 
     private String generateContent(Template template, String content) {
+        content = replaceTemplateMark(content, TemplateConstants.JMH_LIBRARIES, template.getJMHLibraries());
         content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
         content = replaceTemplateMark(content, TemplateConstants.WARMUP, template.getWarmup() + "");
         content = replaceTemplateMark(content, TemplateConstants.MEASUREMENT, template.getMeasurement() + "");

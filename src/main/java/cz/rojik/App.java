@@ -2,7 +2,6 @@ package cz.rojik;
 
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
-import cz.rojik.constant.ProjectContants;
 import cz.rojik.enums.Operation;
 import cz.rojik.model.ErrorInfo;
 import cz.rojik.model.ProcessInfo;
@@ -22,6 +21,7 @@ public class App {
 
     private Reader reader;
     private Generator generator;
+    private Importer importer;
     private Runner runner;
     private ResultParser resultParser;
     private ErrorsParser errorsParser;
@@ -30,6 +30,7 @@ public class App {
     public App() {
         reader = new Reader();
         generator = new Generator();
+        importer = new Importer();
         runner = new Runner();
         resultParser = new ResultParser();
         errorsParser = new ErrorsParser();
@@ -38,6 +39,7 @@ public class App {
         LocalDateTime now = LocalDateTime.now();
 
         Template input = reader.readInputs();
+        input.setLibraries(getAllImports(input));
         String projectId = generator.generateJavaClass(input);
         Set<String> errors = runner.compileProject(projectId);
 
@@ -60,7 +62,20 @@ public class App {
                     .setErrors(errorInfoList);
             generatorHTML.generateHTMLFile(result, projectId, input);
         }
+    }
 
+    private String getAllImports(Template template) {
+        Set<String> imports = importer.getLibrariesToImport(template.getDeclare());
+        imports.addAll(importer.getLibrariesToImport(template.getInit()));
+        template.getTestMethods().forEach(method -> imports.addAll(importer.getLibrariesToImport(method)));
+
+        StringBuilder sb = new StringBuilder();
+        imports.forEach(value -> sb.append("import ")
+                .append(value)
+                .append(";\n"));
+
+        String output = sb.toString();
+        return output;
     }
 
     public static void main(String[] args) {

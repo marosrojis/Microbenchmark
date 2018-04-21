@@ -6,6 +6,7 @@ import java.util.List;
 public class Template {
 
     private String libraries;
+    private String JMHLibraries;
     private int warmup;
     private int measurement;
     private String declare;
@@ -14,6 +15,7 @@ public class Template {
 
     public Template() {
         this.libraries = "";
+        this.JMHLibraries = "";
         this.warmup = 1;
         this.measurement = 1;
         this.declare = "";
@@ -72,6 +74,15 @@ public class Template {
 
     public Template setLibraries(String libraries) {
         this.libraries = libraries;
+        return this;
+    }
+
+    public String getJMHLibraries() {
+        return JMHLibraries;
+    }
+
+    public Template setJMHLibraries(String JMHLibraries) {
+        this.JMHLibraries = JMHLibraries;
         return this;
     }
 }

@@ -10,7 +10,7 @@ public class Reader {
     public Template readInputs() {
         Template template = new Template();
 
-        template.setLibraries(readLibraries())
+        template.setJMHLibraries(readJMHLibraries())
                 .setWarmup(readWarmup())
                 .setMeasurement(readMeasurement())
                 .setDeclare(readDeclare())
@@ -60,14 +60,8 @@ public class Reader {
         return "Collections.sort(arrayList);";
     }
 
-    private String readLibraries() {
-        return "import java.util.ArrayList;\n" +
-                "import java.util.Arrays;\n" +
-                "import java.util.Collections;\n" +
-                "import java.util.List;\n" +
-                "import java.util.Random;\n" +
-                "import java.util.concurrent.TimeUnit;\n" +
-                "\n" +
+    private String readJMHLibraries() {
+        return "import java.util.concurrent.TimeUnit;\n" +
                 "import org.openjdk.jmh.annotations.*;\n" +
                 "import org.openjdk.jmh.profile.GCProfiler;\n" +
                 "import org.openjdk.jmh.profile.StackProfiler;\n" +

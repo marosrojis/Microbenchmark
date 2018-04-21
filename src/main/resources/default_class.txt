@@ -1,5 +1,6 @@
 package cz.rojik;
 
+[config.JMH_libraries]
 [config.libraries]
 
 @State(Scope.Thread)
