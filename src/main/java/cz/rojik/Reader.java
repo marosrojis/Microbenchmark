@@ -1,6 +1,6 @@
 package cz.rojik;
 
-import cz.rojik.model.Template;
+import cz.rojik.dto.Template;
 
 import java.util.ArrayList;
 import java.util.List;

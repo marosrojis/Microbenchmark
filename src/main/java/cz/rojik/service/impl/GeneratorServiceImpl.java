@@ -1,35 +1,46 @@
-package cz.rojik;
+package cz.rojik.service.impl;
 
-import cz.rojik.constant.ProjectContants;
-import cz.rojik.constant.TemplateConstants;
+import cz.rojik.constants.ProjectContants;
+import cz.rojik.constants.TemplateConstants;
 import cz.rojik.exception.ReadFileException;
-import cz.rojik.model.Template;
+import cz.rojik.dto.Template;
+import cz.rojik.service.GeneratorService;
+import cz.rojik.service.ImporterService;
 import cz.rojik.utils.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-public class Generator {
+@Service
+public class GeneratorServiceImpl implements GeneratorService {
 
-    private static Logger logger = LoggerFactory.getLogger(Generator.class);
+    private static Logger logger = LoggerFactory.getLogger(GeneratorServiceImpl.class);
 
-    public Generator() {
-    }
+    @Autowired
+    private ImporterService importerService;
 
+    @Override
     public String generateJavaClass(Template template) {
         String projectID = copyProjectFolder();
         String fileContent = readDefaultFile();
+
+        template.setLibraries(getAllImports(template));
         String newContent = generateContent(template, fileContent);
         saveFile(projectID, newContent);
 
         return projectID;
     }
+
+    // PRIVATE
 
     private String generateContent(Template template, String content) {
         content = replaceTemplateMark(content, TemplateConstants.JMH_LIBRARIES, template.getJMHLibraries());
@@ -67,6 +78,20 @@ public class Generator {
 
         content = replaceTemplateMark(content, TemplateConstants.TEST_METHODS, sb.toString());
         return content;
+    }
+
+    private String getAllImports(Template template) {
+        Set<String> imports = importerService.getLibrariesToImport(template.getDeclare());
+        imports.addAll(importerService.getLibrariesToImport(template.getInit()));
+        template.getTestMethods().forEach(method -> imports.addAll(importerService.getLibrariesToImport(method)));
+
+        StringBuilder sb = new StringBuilder();
+        imports.forEach(value -> sb.append("import ")
+                .append(value)
+                .append(";\n"));
+
+        String output = sb.toString();
+        return output;
     }
 
     private String readDefaultFile() {

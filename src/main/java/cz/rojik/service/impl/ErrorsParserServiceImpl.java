@@ -1,11 +1,13 @@
-package cz.rojik;
+package cz.rojik.service.impl;
 
-import cz.rojik.constant.ProjectContants;
+import cz.rojik.constants.ProjectContants;
 import cz.rojik.exception.ReadFileException;
-import cz.rojik.model.Error;
-import cz.rojik.model.ErrorInfo;
+import cz.rojik.dto.Error;
+import cz.rojik.dto.ErrorInfo;
+import cz.rojik.service.ErrorsParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,9 +19,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ErrorsParser {
+@Service
+public class ErrorsParserServiceImpl implements ErrorsParserService {
 
-    private static Logger logger = LoggerFactory.getLogger(ErrorsParser.class);
+    private static Logger logger = LoggerFactory.getLogger(ErrorsParserServiceImpl.class);
 
     private static final String ERROR_HELP = "[ERROR] -> [Help 1]";
     private static final String ERROR_COMPILATION = "[ERROR] COMPILATION ERROR : ";
@@ -29,6 +32,7 @@ public class ErrorsParser {
     private static final String PARSE_ERROR_REGEX = "\\[(\\d+),\\d+\\] (.*)";
     private static final String PARSE_ERROR_WITHOUT_ABSOLUTE_PATH = "\\[ERROR\\] {3}([a-z]+:.*)"; //e.g. [ERROR]   symbol:   class List
 
+    @Override
     public List<Error> getSyntaxErrors(Set<String> errors) {
         errors = removeCertainErrors(errors);
         errors = removeErrorsHelp(errors);
@@ -38,6 +42,7 @@ public class ErrorsParser {
         return errorList;
     }
 
+    @Override
     public List<ErrorInfo> processErrorList(List<Error> errors, String projectId) {
         errors = insertCodeToError(projectId, errors);
 
@@ -59,6 +64,8 @@ public class ErrorsParser {
 
         return errorInfoList;
     }
+
+    // PRIVATE
 
     private List<Error> getErrorsInfo(Set<String> errors) {
         Pattern regexParseError = Pattern.compile(PARSE_ERROR_REGEX);

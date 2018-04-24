@@ -1,4 +1,4 @@
-package cz.rojik.model;
+package cz.rojik.dto;
 
 import cz.rojik.enums.Operation;
 import org.slf4j.Logger;

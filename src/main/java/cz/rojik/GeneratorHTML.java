@@ -1,11 +1,11 @@
 package cz.rojik;
 
-import cz.rojik.constant.ProjectContants;
-import cz.rojik.model.Error;
-import cz.rojik.model.ErrorInfo;
-import cz.rojik.model.MicrobenchmarkResult;
-import cz.rojik.model.Result;
-import cz.rojik.model.Template;
+import cz.rojik.constants.ProjectContants;
+import cz.rojik.dto.Error;
+import cz.rojik.dto.ErrorInfo;
+import cz.rojik.dto.MicrobenchmarkResult;
+import cz.rojik.dto.Result;
+import cz.rojik.dto.Template;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

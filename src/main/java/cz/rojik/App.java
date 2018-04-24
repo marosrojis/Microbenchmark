@@ -3,11 +3,16 @@ package cz.rojik;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.enums.Operation;
-import cz.rojik.model.ErrorInfo;
-import cz.rojik.model.ProcessInfo;
-import cz.rojik.model.Result;
-import cz.rojik.model.Error;
-import cz.rojik.model.Template;
+import cz.rojik.dto.ErrorInfo;
+import cz.rojik.dto.ProcessInfo;
+import cz.rojik.dto.Result;
+import cz.rojik.dto.Error;
+import cz.rojik.dto.Template;
+import cz.rojik.service.impl.ErrorsParserServiceImpl;
+import cz.rojik.service.impl.GeneratorServiceImpl;
+import cz.rojik.service.impl.ImporterServiceImpl;
+import cz.rojik.service.impl.ResultParserServiceImpl;
+import cz.rojik.service.impl.RunnerServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,20 +25,20 @@ public class App {
     private static Logger logger = LoggerFactory.getLogger(App.class);
 
     private Reader reader;
-    private Generator generator;
-    private Importer importer;
-    private Runner runner;
-    private ResultParser resultParser;
-    private ErrorsParser errorsParser;
+    private GeneratorServiceImpl generator;
+    private ImporterServiceImpl importer;
+    private RunnerServiceImpl runner;
+    private ResultParserServiceImpl resultParser;
+    private ErrorsParserServiceImpl errorsParser;
     private GeneratorHTML generatorHTML;
 
     public App() {
         reader = new Reader();
-        generator = new Generator();
-        importer = new Importer();
-        runner = new Runner();
-        resultParser = new ResultParser();
-        errorsParser = new ErrorsParser();
+        generator = new GeneratorServiceImpl();
+        importer = new ImporterServiceImpl();
+        runner = new RunnerServiceImpl();
+        resultParser = new ResultParserServiceImpl();
+        errorsParser = new ErrorsParserServiceImpl();
         generatorHTML = new GeneratorHTML();
 
         LocalDateTime now = LocalDateTime.now();
@@ -78,7 +83,7 @@ public class App {
         return output;
     }
 
-    public static void main(String[] args) {
-        new App();
-    }
+//    public static void main(String[] args) {
+//        new App();
+//    }
 }

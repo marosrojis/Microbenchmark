@@ -1,5 +1,6 @@
 package cz.rojik;
 
+import cz.rojik.service.impl.ImporterServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,11 +11,11 @@ import java.util.Set;
 
 public class ImporterTest {
 
-    private Importer importer;
+    private ImporterServiceImpl importer;
 
     @Before
     public void setUp() throws Exception {
-        importer = new Importer();
+        importer = new ImporterServiceImpl();
     }
 
     @Test

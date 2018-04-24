@@ -1,9 +1,11 @@
-package cz.rojik;
+package cz.rojik.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import cz.rojik.constant.OtherConstants;
+import cz.rojik.constants.OtherConstants;
+import cz.rojik.service.ImporterService;
 import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +22,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Importer {
+@Service
+public class ImporterServiceImpl implements ImporterService {
 
     private static final String LIBRARIES_FILE = "importer_files/libraries.json";
     private static final String IGNORE_CLASS_FILE = "importer_files/ignore_class.txt";
@@ -30,11 +33,12 @@ public class Importer {
     private Map<String, List<String>> javaLibraries;
     private Set<String> ignoreClasses;
 
-    public Importer() {
+    public ImporterServiceImpl() {
         javaLibraries = readJavaLibraries();
         ignoreClasses = readIgnoreClasses();
     }
 
+    @Override
     public Set<String> getLibrariesToImport(String input) {
         String[] inputs = input.split("[ =<>()\n\t]");
         Set<String> values = new HashSet<>(Arrays.asList(inputs));
@@ -72,6 +76,8 @@ public class Importer {
 
         return libraries;
     }
+
+    // PRIVATE
 
     private Map<String, List<String>> readJavaLibraries() {
         Gson gson = new Gson();

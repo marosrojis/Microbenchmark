@@ -1,4 +1,4 @@
-package cz.rojik.model;
+package cz.rojik.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

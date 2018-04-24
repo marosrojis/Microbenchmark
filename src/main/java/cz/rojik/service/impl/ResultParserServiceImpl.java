@@ -1,11 +1,13 @@
-package cz.rojik;
+package cz.rojik.service.impl;
 
-import cz.rojik.constant.ProjectContants;
+import cz.rojik.constants.ProjectContants;
 import cz.rojik.exception.ReadFileException;
-import cz.rojik.model.MicrobenchmarkResult;
-import cz.rojik.model.Result;
+import cz.rojik.dto.MicrobenchmarkResult;
+import cz.rojik.dto.Result;
+import cz.rojik.service.ResultParserService;
 import org.apache.commons.io.FileUtils;
 import com.google.gson.*;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +16,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultParser {
+@Service
+public class ResultParserServiceImpl implements ResultParserService {
 
-    private JsonParser jParser;
-
-    public ResultParser() {
-        jParser = new JsonParser();
-    }
-
+    @Override
     public Result parseResult(String projectId, LocalDateTime time) {
+        JsonParser jParser = new JsonParser();
+
         List<MicrobenchmarkResult> mbResults = new ArrayList<>();
         String resultContent = readResultFile(projectId);
 
@@ -48,6 +48,8 @@ public class ResultParser {
                 .setResults(mbResults);
         return result;
     }
+
+    // PRIVATE
 
     private MicrobenchmarkResult parseBenchmarkResult(JsonElement element) {
         JsonObject object = (JsonObject) element;

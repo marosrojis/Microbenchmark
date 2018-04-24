@@ -1,25 +1,26 @@
-package cz.rojik;
+package cz.rojik.service.impl;
 
 import cz.rojik.enums.Operation;
-import cz.rojik.model.ProcessInfo;
-import cz.rojik.model.Template;
+import cz.rojik.dto.ProcessInfo;
+import cz.rojik.dto.Template;
+import cz.rojik.service.MessageLogParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MessageLogParser {
+@Service
+public class MessageLogParserServiceImpl implements MessageLogParserService {
 
-    private static Logger logger = LoggerFactory.getLogger(MessageLogParser.class);
+    private static Logger logger = LoggerFactory.getLogger(MessageLogParserServiceImpl.class);
 
     private static final String MEASUREMENT_REGEX = "Iteration[ \\t]*(\\d+):.*";
     private static final String WARMUP_REGEX = "# Warmup Iteration[ \\t]*(\\d+):.*";
     private static final String RESULT_REGEX = "Result \"cz\\.rojik\\.Microbenchmark\\.benchmarkTest(\\d+)\":";
 
-
-    public MessageLogParser() {}
-
+    @Override
     public ProcessInfo parseMessage(String message, Template template) {
         ProcessInfo info = null;
         final Pattern pMeasurement = Pattern.compile(MEASUREMENT_REGEX);
@@ -38,6 +39,8 @@ public class MessageLogParser {
 
         return info;
     }
+
+    // PRIVATE
 
     private int getNumberFromRegex(Matcher matcher) {
         if (matcher.find()) {

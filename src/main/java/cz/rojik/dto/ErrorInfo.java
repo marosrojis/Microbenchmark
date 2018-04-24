@@ -1,4 +1,4 @@
-package cz.rojik.model;
+package cz.rojik.dto;
 
 import java.util.ArrayList;
 import java.util.List;

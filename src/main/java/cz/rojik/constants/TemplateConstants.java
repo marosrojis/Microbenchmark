@@ -1,4 +1,4 @@
-package cz.rojik.constant;
+package cz.rojik.constants;
 
 public class TemplateConstants {
 
