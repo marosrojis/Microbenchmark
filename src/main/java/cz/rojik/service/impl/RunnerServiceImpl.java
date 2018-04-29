@@ -152,14 +152,23 @@ public class RunnerServiceImpl implements RunnerService {
             processInfo = messageLogParser.parseMessage(logMessage, template);
         }
 
-        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(id, ProjectContants.DOCKER_RESULT_FILE))) {
-            TarArchiveEntry entry = tarStream.getNextTarEntry();
-            File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
-            IOUtils.copy(tarStream, new FileOutputStream(newFile));
-        } catch (IOException e) {
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec("docker cp " + id + ":/benchmark/result/results.json " +
+                    ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT); // TODO: try copy result file via docker-client library (below commented code)
+            p.waitFor();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+//        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(id, ProjectContants.DOCKER_RESULT_FILE))) {
+//            TarArchiveEntry entry = tarStream.getNextTarEntry();
+//            File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
+//            IOUtils.copy(tarStream, new FileOutputStream(newFile));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
         client.killContainer(id);
         client.removeContainer(id);
 
