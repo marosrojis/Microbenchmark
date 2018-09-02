@@ -3,11 +3,11 @@ package cz.rojik;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.enums.Operation;
-import cz.rojik.dto.ErrorInfo;
-import cz.rojik.dto.ProcessInfo;
-import cz.rojik.dto.Result;
-import cz.rojik.dto.Error;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.ErrorInfoDTO;
+import cz.rojik.dto.ProcessInfoDTO;
+import cz.rojik.dto.ResultDTO;
+import cz.rojik.dto.ErrorDTO;
+import cz.rojik.dto.TemplateDTO;
 import cz.rojik.service.impl.ErrorsParserServiceImpl;
 import cz.rojik.service.impl.GeneratorServiceImpl;
 import cz.rojik.service.impl.ImporterServiceImpl;
@@ -43,7 +43,7 @@ public class App {
 
         LocalDateTime now = LocalDateTime.now();
 
-        Template input = reader.readInputs();
+        TemplateDTO input = reader.readInputs();
         input.setLibraries(getAllImports(input));
         String projectId = generator.generateJavaClass(input);
         Set<String> errors = runner.compileProject(projectId);
@@ -54,22 +54,22 @@ public class App {
             } catch (DockerCertificateException | DockerException | InterruptedException e) {
                 logger.error("Throw exception during run docker container with project.");
             }
-            Result result = resultParser.parseResult(projectId, now);
+            ResultDTO result = resultParser.parseResult(projectId, now);
             generatorHTML.generateHTMLFile(result, projectId, input);
         }
         else {
-            ProcessInfo processInfo = new ProcessInfo(Operation.ERROR_COMPILE);
+            ProcessInfoDTO processInfo = new ProcessInfoDTO(Operation.ERROR_COMPILE);
 
-            List<Error> errorList = errorsParser.getSyntaxErrors(errors);
-            List<ErrorInfo> errorInfoList = errorsParser.processErrorList(errorList, projectId);
+            List<ErrorDTO> errorList = errorsParser.getSyntaxErrors(errors);
+            List<ErrorInfoDTO> errorInfoList = errorsParser.processErrorList(errorList, projectId);
 
-            Result result = new Result(now, false)
+            ResultDTO result = new ResultDTO(now, false)
                     .setErrors(errorInfoList);
             generatorHTML.generateHTMLFile(result, projectId, input);
         }
     }
 
-    private String getAllImports(Template template) {
+    private String getAllImports(TemplateDTO template) {
         Set<String> imports = importer.getLibrariesToImport(template.getDeclare());
         imports.addAll(importer.getLibrariesToImport(template.getInit()));
         template.getTestMethods().forEach(method -> imports.addAll(importer.getLibrariesToImport(method)));

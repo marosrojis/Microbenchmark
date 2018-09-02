@@ -3,23 +3,23 @@ package cz.rojik.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ErrorInfo {
+public class ErrorInfoDTO {
 
-    private List<Error> errors;
+    private List<ErrorDTO> errors;
 
-    public ErrorInfo() {
+    public ErrorInfoDTO() {
         this.errors = new ArrayList<>();
     }
 
-    public ErrorInfo(List<Error> errors) {
+    public ErrorInfoDTO(List<ErrorDTO> errors) {
         this.errors = errors;
     }
 
-    public List<Error> getErrors() {
+    public List<ErrorDTO> getErrors() {
         return errors;
     }
 
-    public ErrorInfo setErrors(List<Error> errors) {
+    public ErrorInfoDTO setErrors(List<ErrorDTO> errors) {
         this.errors = errors;
         return this;
     }

@@ -3,19 +3,19 @@ package cz.rojik.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Result {
+public class ResultDTO {
 
     private LocalDateTime time;
-    private List<MicrobenchmarkResult> results;
-    private List<ErrorInfo> errors;
+    private List<MicrobenchmarkResultDTO> results;
+    private List<ErrorInfoDTO> errors;
     private boolean success;
 
-    public Result(LocalDateTime time, boolean success) {
+    public ResultDTO(LocalDateTime time, boolean success) {
         this.time = time;
         this.success = success;
     }
 
-    public Result(LocalDateTime time, List<MicrobenchmarkResult> results, boolean success) {
+    public ResultDTO(LocalDateTime time, List<MicrobenchmarkResultDTO> results, boolean success) {
         this.time = time;
         this.results = results;
         this.success = success;
@@ -25,16 +25,16 @@ public class Result {
         return time;
     }
 
-    public Result setTime(LocalDateTime time) {
+    public ResultDTO setTime(LocalDateTime time) {
         this.time = time;
         return this;
     }
 
-    public List<MicrobenchmarkResult> getResults() {
+    public List<MicrobenchmarkResultDTO> getResults() {
         return results;
     }
 
-    public Result setResults(List<MicrobenchmarkResult> results) {
+    public ResultDTO setResults(List<MicrobenchmarkResultDTO> results) {
         this.results = results;
         return this;
     }
@@ -43,16 +43,16 @@ public class Result {
         return success;
     }
 
-    public Result setSuccess(boolean success) {
+    public ResultDTO setSuccess(boolean success) {
         this.success = success;
         return this;
     }
 
-    public List<ErrorInfo> getErrors() {
+    public List<ErrorInfoDTO> getErrors() {
         return errors;
     }
 
-    public Result setErrors(List<ErrorInfo> errors) {
+    public ResultDTO setErrors(List<ErrorInfoDTO> errors) {
         this.errors = errors;
         return this;
     }

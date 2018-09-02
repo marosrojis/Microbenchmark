@@ -1,9 +1,9 @@
 package cz.rojik.service;
 
-import cz.rojik.dto.Template;
+import cz.rojik.dto.TemplateDTO;
 
 public interface GeneratorService {
 
-    String generateJavaClass(Template template);
+    String generateJavaClass(TemplateDTO template);
 
 }

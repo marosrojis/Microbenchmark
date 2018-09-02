@@ -2,8 +2,8 @@ package cz.rojik.controller;
 
 import cz.rojik.Reader;
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.dto.Result;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.ResultDTO;
+import cz.rojik.dto.TemplateDTO;
 import cz.rojik.service.GeneratorService;
 import cz.rojik.service.RunnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ public class BaseController {
     @RequestMapping(MappingURLConstants.MAIN_PAGE)
     public ResponseEntity<?> homepage() {
         Reader reader = new Reader();
-        Template input = reader.readInputs();
+        TemplateDTO input = reader.readInputs();
 
         LocalDateTime now = LocalDateTime.now();
         String projectId = generatorService.generateJavaClass(input);
 
-        Result result = runnerService.compileAndStartProject(projectId, input, now);
+        ResultDTO result = runnerService.compileAndStartProject(projectId, input, now);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

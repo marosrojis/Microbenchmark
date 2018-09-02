@@ -7,37 +7,37 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ProcessInfo {
+public class ProcessInfoDTO {
 
-    private static Logger logger = LoggerFactory.getLogger(ProcessInfo.class);
+    private static Logger logger = LoggerFactory.getLogger(ProcessInfoDTO.class);
 
     private LocalDateTime time;
     private Operation operation;
     private int number;
     private String note;
 
-    public ProcessInfo() {
+    public ProcessInfoDTO() {
         this.time = LocalDateTime.now();
         this.note = "";
     }
 
-    public ProcessInfo(Operation operation) {
+    public ProcessInfoDTO(Operation operation) {
         this(LocalDateTime.now(), operation);
     }
 
-    public ProcessInfo(Operation operation, int number, String note) {
+    public ProcessInfoDTO(Operation operation, int number, String note) {
         this(LocalDateTime.now(), operation, number, note);
     }
 
-    public ProcessInfo(LocalDateTime time, Operation operation) {
+    public ProcessInfoDTO(LocalDateTime time, Operation operation) {
         this(LocalDateTime.now(), operation, -1,"");
     }
 
-    public ProcessInfo(LocalDateTime time, Operation operation, int number) {
+    public ProcessInfoDTO(LocalDateTime time, Operation operation, int number) {
         this(LocalDateTime.now(), operation, number,"");
     }
 
-    public ProcessInfo(LocalDateTime time, Operation operation, int number, String note) {
+    public ProcessInfoDTO(LocalDateTime time, Operation operation, int number, String note) {
         this.time = time;
         this.operation = operation;
         this.number = number;
@@ -69,7 +69,7 @@ public class ProcessInfo {
         return time;
     }
 
-    public ProcessInfo setTime(LocalDateTime time) {
+    public ProcessInfoDTO setTime(LocalDateTime time) {
         this.time = time;
         return this;
     }
@@ -78,7 +78,7 @@ public class ProcessInfo {
         return operation;
     }
 
-    public ProcessInfo setOperation(Operation operation) {
+    public ProcessInfoDTO setOperation(Operation operation) {
         this.operation = operation;
         return this;
     }
@@ -87,7 +87,7 @@ public class ProcessInfo {
         return note;
     }
 
-    public ProcessInfo setNote(String note) {
+    public ProcessInfoDTO setNote(String note) {
         this.note = note;
         return this;
     }
@@ -96,7 +96,7 @@ public class ProcessInfo {
         return number;
     }
 
-    public ProcessInfo setNumber(int number) {
+    public ProcessInfoDTO setNumber(int number) {
         this.number = number;
         return this;
     }

@@ -1,12 +1,12 @@
 package cz.rojik.dto;
 
-public class Error {
+public class ErrorDTO {
 
     private String message;
     private int row;
     private String code;
 
-    public Error(String message, int row) {
+    public ErrorDTO(String message, int row) {
         this.message = message;
         this.row = row;
     }
@@ -15,7 +15,7 @@ public class Error {
         return message;
     }
 
-    public Error setMessage(String message) {
+    public ErrorDTO setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -24,7 +24,7 @@ public class Error {
         return row;
     }
 
-    public Error setRow(int row) {
+    public ErrorDTO setRow(int row) {
         this.row = row;
         return this;
     }
@@ -33,7 +33,7 @@ public class Error {
         return code;
     }
 
-    public Error setCode(String code) {
+    public ErrorDTO setCode(String code) {
         this.code = code;
         return this;
     }

@@ -1,11 +1,11 @@
 package cz.rojik;
 
 import cz.rojik.constants.ProjectContants;
-import cz.rojik.dto.Error;
-import cz.rojik.dto.ErrorInfo;
-import cz.rojik.dto.MicrobenchmarkResult;
-import cz.rojik.dto.Result;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.ErrorDTO;
+import cz.rojik.dto.ErrorInfoDTO;
+import cz.rojik.dto.MicrobenchmarkResultDTO;
+import cz.rojik.dto.ResultDTO;
+import cz.rojik.dto.TemplateDTO;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class GeneratorHTML {
 
     public GeneratorHTML() {}
 
-    public void generateHTMLFile(Result result, String projectId, Template template) {
+    public void generateHTMLFile(ResultDTO result, String projectId, TemplateDTO template) {
         StringBuilder sb = new StringBuilder();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -50,14 +50,14 @@ public class GeneratorHTML {
         }
     }
 
-    private void generateResultTable(StringBuilder sb, Result result, Template template) {
+    private void generateResultTable(StringBuilder sb, ResultDTO result, TemplateDTO template) {
         logger.info("Generate HTML page with results");
         int i = 1;
 
         sb.append("<table class=\"table table-hover\">")
                 .append("<thead><tr><th scope=\"col\">#</th><th scope=\"col\">Název</th><th scope=\"col\">Tělo metody</th><th scope=\"col\">Počet warmup iterací</th><th scope=\"col\">Počet měření</th><th scope=\"col\">Naměřený čas</th><th scope=\"col\">+- chyba</th><th scope=\"col\">Jednotky</th></tr></thead>")
                 .append("<tbody>");
-        for (MicrobenchmarkResult mbResult : result.getResults()) {
+        for (MicrobenchmarkResultDTO mbResult : result.getResults()) {
             if (mbResult.isFastest()) {
                 sb.append("<tr class=\"table-success\">");
             }
@@ -86,19 +86,19 @@ public class GeneratorHTML {
         sb.append("</tbody></table>");
     }
 
-    private void generateErrorHTMLFile(StringBuilder sb, List<ErrorInfo> errors) {
+    private void generateErrorHTMLFile(StringBuilder sb, List<ErrorInfoDTO> errors) {
         logger.info("Generate ERROR HTML page with results");
         int i = 1;
 
         sb.append("<table class=\"table table-hover\">")
                 .append("<thead><tr><th scope=\"col\">#</th><th scope=\"col\">Chybný kód</th><th scope=\"col\">Popis chyby</th></tr></thead>")
                 .append("<tbody>");
-        for (ErrorInfo errorInfo : errors) {
+        for (ErrorInfoDTO errorInfo : errors) {
             int row = -1;
             sb.append("<tr><th scope=\"row\">")
                     .append(i)
                     .append("</th><td>");
-            for (Error error : errorInfo.getErrors()) {
+            for (ErrorDTO error : errorInfo.getErrors()) {
                 if (row != error.getRow()) {
                     sb.append(error.getCode())
                             .append("<br />");
@@ -106,7 +106,7 @@ public class GeneratorHTML {
                 row = error.getRow();
             }
             sb.append("</td><td>");
-            for (Error error : errorInfo.getErrors()) {
+            for (ErrorDTO error : errorInfo.getErrors()) {
                 sb.append(error.getMessage())
                         .append("<br />");
             }

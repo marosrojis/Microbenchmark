@@ -1,10 +1,10 @@
 package cz.rojik.service;
 
-import cz.rojik.dto.Result;
+import cz.rojik.dto.ResultDTO;
 
 import java.time.LocalDateTime;
 
 public interface ResultParserService {
 
-    Result parseResult(String projectId, LocalDateTime time);
+    ResultDTO parseResult(String projectId, LocalDateTime time);
 }

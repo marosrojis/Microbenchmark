@@ -40,7 +40,7 @@ public class ImporterServiceImpl implements ImporterService {
 
     @Override
     public Set<String> getLibrariesToImport(String input) {
-        String[] inputs = input.split("[ =<>()\n\t]");
+        String[] inputs = input.split("[ =<>();\n\t]");
         Set<String> values = new HashSet<>(Arrays.asList(inputs));
         Set<String> libraries = new HashSet<>();
         for (String value : values) {

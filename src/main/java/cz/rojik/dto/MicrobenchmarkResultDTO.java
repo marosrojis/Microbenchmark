@@ -1,6 +1,6 @@
 package cz.rojik.dto;
 
-public class MicrobenchmarkResult {
+public class MicrobenchmarkResultDTO {
 
     private String name;
     private int warmupIterations;
@@ -11,7 +11,7 @@ public class MicrobenchmarkResult {
     private double error;
     private boolean fastest;
 
-    public MicrobenchmarkResult(String name, int warmupIterations, int measurementIterations, String unit, double score, double error) {
+    public MicrobenchmarkResultDTO(String name, int warmupIterations, int measurementIterations, String unit, double score, double error) {
         this.name = name;
         this.warmupIterations = warmupIterations;
         this.measurementIterations = measurementIterations;
@@ -25,7 +25,7 @@ public class MicrobenchmarkResult {
         return name;
     }
 
-    public MicrobenchmarkResult setName(String name) {
+    public MicrobenchmarkResultDTO setName(String name) {
         this.name = name;
         return this;
     }
@@ -34,7 +34,7 @@ public class MicrobenchmarkResult {
         return warmupIterations;
     }
 
-    public MicrobenchmarkResult setWarmupIterations(int warmupIterations) {
+    public MicrobenchmarkResultDTO setWarmupIterations(int warmupIterations) {
         this.warmupIterations = warmupIterations;
         return this;
     }
@@ -43,7 +43,7 @@ public class MicrobenchmarkResult {
         return measurementIterations;
     }
 
-    public MicrobenchmarkResult setMeasurementIterations(int measurementIterations) {
+    public MicrobenchmarkResultDTO setMeasurementIterations(int measurementIterations) {
         this.measurementIterations = measurementIterations;
         return this;
     }
@@ -52,7 +52,7 @@ public class MicrobenchmarkResult {
         return unit;
     }
 
-    public MicrobenchmarkResult setUnit(String unit) {
+    public MicrobenchmarkResultDTO setUnit(String unit) {
         this.unit = unit;
         return this;
     }
@@ -61,7 +61,7 @@ public class MicrobenchmarkResult {
         return score;
     }
 
-    public MicrobenchmarkResult setScore(double score) {
+    public MicrobenchmarkResultDTO setScore(double score) {
         this.score = score;
         return this;
     }
@@ -70,7 +70,7 @@ public class MicrobenchmarkResult {
         return error;
     }
 
-    public MicrobenchmarkResult setError(double error) {
+    public MicrobenchmarkResultDTO setError(double error) {
         this.error = error;
         return this;
     }

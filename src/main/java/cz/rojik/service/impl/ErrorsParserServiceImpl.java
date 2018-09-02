@@ -2,8 +2,8 @@ package cz.rojik.service.impl;
 
 import cz.rojik.constants.ProjectContants;
 import cz.rojik.exception.ReadFileException;
-import cz.rojik.dto.Error;
-import cz.rojik.dto.ErrorInfo;
+import cz.rojik.dto.ErrorDTO;
+import cz.rojik.dto.ErrorInfoDTO;
 import cz.rojik.service.ErrorsParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,26 +33,26 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
     private static final String PARSE_ERROR_WITHOUT_ABSOLUTE_PATH = "\\[ERROR\\] {3}([a-z]+:.*)"; //e.g. [ERROR]   symbol:   class List
 
     @Override
-    public List<Error> getSyntaxErrors(Set<String> errors) {
+    public List<ErrorDTO> getSyntaxErrors(Set<String> errors) {
         errors = removeCertainErrors(errors);
         errors = removeErrorsHelp(errors);
         errors = removeMavenErrors(errors);
-        List<Error> errorList = getErrorsInfo(errors);
+        List<ErrorDTO> errorList = getErrorsInfo(errors);
 
         return errorList;
     }
 
     @Override
-    public List<ErrorInfo> processErrorList(List<Error> errors, String projectId) {
+    public List<ErrorInfoDTO> processErrorList(List<ErrorDTO> errors, String projectId) {
         errors = insertCodeToError(projectId, errors);
 
-        List<ErrorInfo> errorInfoList = new ArrayList<>();
+        List<ErrorInfoDTO> errorInfoList = new ArrayList<>();
 
         int i = 0;
         while (i < errors.size()) {
-            Error error;
+            ErrorDTO error;
 
-            ErrorInfo errorInfo = new ErrorInfo();
+            ErrorInfoDTO errorInfo = new ErrorInfoDTO();
             do {
                 error = errors.get(i);
                 errorInfo.getErrors().add(error);
@@ -67,10 +67,10 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
 
     // PRIVATE
 
-    private List<Error> getErrorsInfo(Set<String> errors) {
+    private List<ErrorDTO> getErrorsInfo(Set<String> errors) {
         Pattern regexParseError = Pattern.compile(PARSE_ERROR_REGEX);
         Pattern regexWithoutAbsolutePath = Pattern.compile(PARSE_ERROR_WITHOUT_ABSOLUTE_PATH);
-        List<Error> errorList = new ArrayList<>();
+        List<ErrorDTO> errorList = new ArrayList<>();
         int row = -1;
 
         for (String error : errors) {
@@ -80,17 +80,17 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
 
             if (mParseError.find()) {
                 row = Integer.parseInt(mParseError.group(1));
-                errorList.add(new Error(mParseError.group(2), row));
+                errorList.add(new ErrorDTO(mParseError.group(2), row));
             }
             else if (mWithoutAbsolutePath.find()){
-                errorList.add(new Error(mWithoutAbsolutePath.group(1), row));
+                errorList.add(new ErrorDTO(mWithoutAbsolutePath.group(1), row));
             }
         }
 
         return errorList;
     }
 
-    private List<Error> insertCodeToError(String projectId, List<Error> errors) {
+    private List<ErrorDTO> insertCodeToError(String projectId, List<ErrorDTO> errors) {
         List<String> codes;
         try {
             codes = Files.readAllLines(Paths.get(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
@@ -100,7 +100,7 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
 
         }
 
-        for (Error error : errors) {
+        for (ErrorDTO error : errors) {
             error.setCode(codes.get(error.getRow() - 1));
         }
 

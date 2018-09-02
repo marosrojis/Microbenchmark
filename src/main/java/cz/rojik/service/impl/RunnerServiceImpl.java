@@ -11,13 +11,13 @@ import com.spotify.docker.client.messages.ExecCreation;
 import com.spotify.docker.client.messages.HostConfig;
 import cz.rojik.GeneratorHTML;
 import cz.rojik.constants.ProjectContants;
-import cz.rojik.dto.Error;
-import cz.rojik.dto.ErrorInfo;
-import cz.rojik.dto.Result;
+import cz.rojik.dto.ErrorDTO;
+import cz.rojik.dto.ErrorInfoDTO;
+import cz.rojik.dto.ResultDTO;
 import cz.rojik.enums.Operation;
 import cz.rojik.exception.MavenCompileException;
-import cz.rojik.dto.ProcessInfo;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.ProcessInfoDTO;
+import cz.rojik.dto.TemplateDTO;
 import cz.rojik.service.ErrorsParserService;
 import cz.rojik.service.ResultParserService;
 import cz.rojik.service.RunnerService;
@@ -59,10 +59,10 @@ public class RunnerServiceImpl implements RunnerService {
     private ErrorsParserService errorsParserService;
 
     @Override
-    public Result compileAndStartProject(String projectId, Template template, LocalDateTime now) {
+    public ResultDTO compileAndStartProject(String projectId, TemplateDTO template, LocalDateTime now) {
         GeneratorHTML generatorHTML = new GeneratorHTML();
 
-        Result result;
+        ResultDTO result;
         Set<String> errors = compileProject(projectId);
 
         if (errors.size() == 0) {
@@ -75,12 +75,12 @@ public class RunnerServiceImpl implements RunnerService {
             generatorHTML.generateHTMLFile(result, projectId, template);
         }
         else {
-            ProcessInfo processInfo = new ProcessInfo(Operation.ERROR_COMPILE);
+            ProcessInfoDTO processInfo = new ProcessInfoDTO(Operation.ERROR_COMPILE);
 
-            List<Error> errorList = errorsParserService.getSyntaxErrors(errors);
-            List<ErrorInfo> errorInfoList = errorsParserService.processErrorList(errorList, projectId);
+            List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
+            List<ErrorInfoDTO> errorInfoList = errorsParserService.processErrorList(errorList, projectId);
 
-            result = new Result(now, false)
+            result = new ResultDTO(now, false)
                     .setErrors(errorInfoList);
             generatorHTML.generateHTMLFile(result, projectId, template);
         }
@@ -91,7 +91,7 @@ public class RunnerServiceImpl implements RunnerService {
     @Override
     public Set<String> compileProject(String projectId) {
         Set<String> output = new LinkedHashSet<>();
-        ProcessInfo processInfo;
+        ProcessInfoDTO processInfo;
         final Pattern p = Pattern.compile(REGEX_ERROR);
 
         InvocationRequest request = new DefaultInvocationRequest();
@@ -105,20 +105,20 @@ public class RunnerServiceImpl implements RunnerService {
             }
         });
         try {
-            processInfo = new ProcessInfo(Operation.START_COMPILE);
+            processInfo = new ProcessInfoDTO(Operation.START_COMPILE);
             invoker.execute(request);
         } catch (MavenInvocationException e) {
-            processInfo = new ProcessInfo(Operation.ERROR_COMPILE);
+            processInfo = new ProcessInfoDTO(Operation.ERROR_COMPILE);
             throw new MavenCompileException();
         }
 
-        processInfo = new ProcessInfo(Operation.END_COMPILE);
+        processInfo = new ProcessInfoDTO(Operation.END_COMPILE);
         return output;
     }
 
     @Override
-    public boolean runProject(String projectId, Template template) throws DockerCertificateException, DockerException, InterruptedException {
-        ProcessInfo processInfo;
+    public boolean runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException {
+        ProcessInfoDTO processInfo;
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
         final HostConfig hostConfig = HostConfig.builder()
@@ -152,23 +152,23 @@ public class RunnerServiceImpl implements RunnerService {
             processInfo = messageLogParser.parseMessage(logMessage, template);
         }
 
-        Process p;
-        try {
-            p = Runtime.getRuntime().exec("docker cp " + id + ":/benchmark/result/results.json " +
-                    ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT); // TODO: try copy result file via docker-client library (below commented code)
-            p.waitFor();
-        } catch (Exception e) {
+//        Process p;
+//        try {
+//            p = Runtime.getRuntime().exec("docker cp " + id + ":/benchmark/result/results.json " +
+//                    ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT); // TODO: try copy result file via docker-client library (below commented code)
+//            p.waitFor();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(id, ProjectContants.DOCKER_RESULT_FILE))) {
+            TarArchiveEntry entry = tarStream.getNextTarEntry();
+            File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
+            IOUtils.copy(tarStream, new FileOutputStream(newFile));
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-//        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(id, ProjectContants.DOCKER_RESULT_FILE))) {
-//            TarArchiveEntry entry = tarStream.getNextTarEntry();
-//            File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
-//            IOUtils.copy(tarStream, new FileOutputStream(newFile));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
         client.killContainer(id);
         client.removeContainer(id);
 

@@ -3,7 +3,7 @@ package cz.rojik.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Template {
+public class TemplateDTO {
 
     private String libraries;
     private String JMHLibraries;
@@ -13,7 +13,7 @@ public class Template {
     private String init;
     private List<String> testMethods;
 
-    public Template() {
+    public TemplateDTO() {
         this.libraries = "";
         this.JMHLibraries = "";
         this.warmup = 1;
@@ -27,7 +27,7 @@ public class Template {
         return warmup;
     }
 
-    public Template setWarmup(int warmup) {
+    public TemplateDTO setWarmup(int warmup) {
         this.warmup = warmup;
         return this;
     }
@@ -36,7 +36,7 @@ public class Template {
         return measurement;
     }
 
-    public Template setMeasurement(int measurement) {
+    public TemplateDTO setMeasurement(int measurement) {
         this.measurement = measurement;
         return this;
     }
@@ -45,7 +45,7 @@ public class Template {
         return declare;
     }
 
-    public Template setDeclare(String declare) {
+    public TemplateDTO setDeclare(String declare) {
         this.declare = declare;
         return this;
     }
@@ -54,7 +54,7 @@ public class Template {
         return init;
     }
 
-    public Template setInit(String init) {
+    public TemplateDTO setInit(String init) {
         this.init = init;
         return this;
     }
@@ -63,7 +63,7 @@ public class Template {
         return testMethods;
     }
 
-    public Template setTestMethods(List<String> testMethods) {
+    public TemplateDTO setTestMethods(List<String> testMethods) {
         this.testMethods = testMethods;
         return this;
     }
@@ -72,7 +72,7 @@ public class Template {
         return libraries;
     }
 
-    public Template setLibraries(String libraries) {
+    public TemplateDTO setLibraries(String libraries) {
         this.libraries = libraries;
         return this;
     }
@@ -81,7 +81,7 @@ public class Template {
         return JMHLibraries;
     }
 
-    public Template setJMHLibraries(String JMHLibraries) {
+    public TemplateDTO setJMHLibraries(String JMHLibraries) {
         this.JMHLibraries = JMHLibraries;
         return this;
     }

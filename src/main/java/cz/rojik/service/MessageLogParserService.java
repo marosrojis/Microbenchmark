@@ -1,9 +1,9 @@
 package cz.rojik.service;
 
-import cz.rojik.dto.ProcessInfo;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.ProcessInfoDTO;
+import cz.rojik.dto.TemplateDTO;
 
 public interface MessageLogParserService {
 
-    ProcessInfo parseMessage(String message, Template template);
+    ProcessInfoDTO parseMessage(String message, TemplateDTO template);
 }

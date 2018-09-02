@@ -2,8 +2,8 @@ package cz.rojik.service.impl;
 
 import cz.rojik.constants.ProjectContants;
 import cz.rojik.exception.ReadFileException;
-import cz.rojik.dto.MicrobenchmarkResult;
-import cz.rojik.dto.Result;
+import cz.rojik.dto.MicrobenchmarkResultDTO;
+import cz.rojik.dto.ResultDTO;
 import cz.rojik.service.ResultParserService;
 import org.apache.commons.io.FileUtils;
 import com.google.gson.*;
@@ -20,10 +20,10 @@ import java.util.List;
 public class ResultParserServiceImpl implements ResultParserService {
 
     @Override
-    public Result parseResult(String projectId, LocalDateTime time) {
+    public ResultDTO parseResult(String projectId, LocalDateTime time) {
         JsonParser jParser = new JsonParser();
 
-        List<MicrobenchmarkResult> mbResults = new ArrayList<>();
+        List<MicrobenchmarkResultDTO> mbResults = new ArrayList<>();
         String resultContent = readResultFile(projectId);
 
         JsonElement parsed = jParser.parse(resultContent);
@@ -36,7 +36,7 @@ public class ResultParserServiceImpl implements ResultParserService {
         int minIndex = 0;
         double minScore = mbResults.get(0).getScore();
         for (int i = 1; i < mbResults.size(); i++) {
-            MicrobenchmarkResult mbResult = mbResults.get(i);
+            MicrobenchmarkResultDTO mbResult = mbResults.get(i);
             if (mbResult.getScore() < minScore) {
                 minScore = mbResult.getScore();
                 minIndex = i;
@@ -44,14 +44,14 @@ public class ResultParserServiceImpl implements ResultParserService {
         }
         mbResults.get(minIndex).setFastest(true);
 
-        Result result = new Result(time, true)
+        ResultDTO result = new ResultDTO(time, true)
                 .setResults(mbResults);
         return result;
     }
 
     // PRIVATE
 
-    private MicrobenchmarkResult parseBenchmarkResult(JsonElement element) {
+    private MicrobenchmarkResultDTO parseBenchmarkResult(JsonElement element) {
         JsonObject object = (JsonObject) element;
         String name = object.get("benchmark").getAsString();
         int warmupIterations = object.get("warmupIterations").getAsInt();
@@ -61,7 +61,7 @@ public class ResultParserServiceImpl implements ResultParserService {
         String unit = primaryMetric.get("scoreUnit").getAsString();
         double score = primaryMetric.get("score").getAsDouble();
         double error = primaryMetric.get("scoreError").getAsDouble();
-        return new MicrobenchmarkResult(name, warmupIterations, measurementIterations, unit, score, error);
+        return new MicrobenchmarkResultDTO(name, warmupIterations, measurementIterations, unit, score, error);
     }
 
     private String readResultFile(String projectId) {

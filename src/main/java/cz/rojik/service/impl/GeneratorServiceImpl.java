@@ -3,7 +3,7 @@ package cz.rojik.service.impl;
 import cz.rojik.constants.ProjectContants;
 import cz.rojik.constants.TemplateConstants;
 import cz.rojik.exception.ReadFileException;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.TemplateDTO;
 import cz.rojik.service.GeneratorService;
 import cz.rojik.service.ImporterService;
 import cz.rojik.utils.StringUtils;
@@ -29,7 +29,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private ImporterService importerService;
 
     @Override
-    public String generateJavaClass(Template template) {
+    public String generateJavaClass(TemplateDTO template) {
         String projectID = copyProjectFolder();
         String fileContent = readDefaultFile();
 
@@ -42,7 +42,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     // PRIVATE
 
-    private String generateContent(Template template, String content) {
+    private String generateContent(TemplateDTO template, String content) {
         content = replaceTemplateMark(content, TemplateConstants.JMH_LIBRARIES, template.getJMHLibraries());
         content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
         content = replaceTemplateMark(content, TemplateConstants.WARMUP, template.getWarmup() + "");
@@ -80,7 +80,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         return content;
     }
 
-    private String getAllImports(Template template) {
+    private String getAllImports(TemplateDTO template) {
         Set<String> imports = importerService.getLibrariesToImport(template.getDeclare());
         imports.addAll(importerService.getLibrariesToImport(template.getInit()));
         template.getTestMethods().forEach(method -> imports.addAll(importerService.getLibrariesToImport(method)));

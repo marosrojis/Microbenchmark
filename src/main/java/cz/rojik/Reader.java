@@ -1,14 +1,14 @@
 package cz.rojik;
 
-import cz.rojik.dto.Template;
+import cz.rojik.dto.TemplateDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Reader {
 
-    public Template readInputs() {
-        Template template = new Template();
+    public TemplateDTO readInputs() {
+        TemplateDTO template = new TemplateDTO();
 
         template.setJMHLibraries(readJMHLibraries())
                 .setWarmup(readWarmup())
@@ -31,7 +31,8 @@ public class Reader {
     private String readDeclare() {
         return "List<Integer> arrayList;\n" +
                 "\tint[] array;\n" +
-                "\tRandom random;";
+                "\tRandom random;\n" +
+                "\tList<String> temp;";
     }
 
     private String readInit() {

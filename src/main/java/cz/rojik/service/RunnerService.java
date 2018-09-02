@@ -2,17 +2,17 @@ package cz.rojik.service;
 
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
-import cz.rojik.dto.Result;
-import cz.rojik.dto.Template;
+import cz.rojik.dto.ResultDTO;
+import cz.rojik.dto.TemplateDTO;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 public interface RunnerService {
 
-    Result compileAndStartProject(String projectId, Template template, LocalDateTime now);
+    ResultDTO compileAndStartProject(String projectId, TemplateDTO template, LocalDateTime now);
 
     Set<String> compileProject(String projectId);
 
-    boolean runProject(String projectId, Template template) throws DockerCertificateException, DockerException, InterruptedException;
+    boolean runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException;
 }
