@@ -58,7 +58,7 @@ public class GeneratorHTML {
                 .append("<thead><tr><th scope=\"col\">#</th><th scope=\"col\">Název</th><th scope=\"col\">Tělo metody</th><th scope=\"col\">Počet warmup iterací</th><th scope=\"col\">Počet měření</th><th scope=\"col\">Naměřený čas</th><th scope=\"col\">+- chyba</th><th scope=\"col\">Jednotky</th></tr></thead>")
                 .append("<tbody>");
         for (MicrobenchmarkResultDTO mbResult : result.getResults()) {
-            if (mbResult.isFastest()) {
+            if (result.getBestScoreIndex() == i - 1) {
                 sb.append("<tr class=\"table-success\">");
             }
             else {

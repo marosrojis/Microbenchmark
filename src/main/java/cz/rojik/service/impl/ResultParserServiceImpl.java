@@ -42,10 +42,9 @@ public class ResultParserServiceImpl implements ResultParserService {
                 minIndex = i;
             }
         }
-        mbResults.get(minIndex).setFastest(true);
-
         ResultDTO result = new ResultDTO(time, true)
-                .setResults(mbResults);
+                .setResults(mbResults)
+                .setBestScoreIndex(minIndex);
         return result;
     }
 

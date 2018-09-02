@@ -9,16 +9,18 @@ public class ResultDTO {
     private List<MicrobenchmarkResultDTO> results;
     private List<ErrorInfoDTO> errors;
     private boolean success;
+    private int bestScoreIndex;
 
     public ResultDTO(LocalDateTime time, boolean success) {
         this.time = time;
         this.success = success;
     }
 
-    public ResultDTO(LocalDateTime time, List<MicrobenchmarkResultDTO> results, boolean success) {
+    public ResultDTO(LocalDateTime time, List<MicrobenchmarkResultDTO> results, boolean success, int fasterstIndex) {
         this.time = time;
         this.results = results;
         this.success = success;
+        this.bestScoreIndex = fasterstIndex;
     }
 
     public LocalDateTime getTime() {
@@ -54,6 +56,15 @@ public class ResultDTO {
 
     public ResultDTO setErrors(List<ErrorInfoDTO> errors) {
         this.errors = errors;
+        return this;
+    }
+
+    public int getBestScoreIndex() {
+        return bestScoreIndex;
+    }
+
+    public ResultDTO setBestScoreIndex(int bestScoreIndex) {
+        this.bestScoreIndex = bestScoreIndex;
         return this;
     }
 }

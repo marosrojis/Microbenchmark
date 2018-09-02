@@ -9,7 +9,6 @@ public class MicrobenchmarkResultDTO {
 
     private double score;
     private double error;
-    private boolean fastest;
 
     public MicrobenchmarkResultDTO(String name, int warmupIterations, int measurementIterations, String unit, double score, double error) {
         this.name = name;
@@ -18,7 +17,6 @@ public class MicrobenchmarkResultDTO {
         this.unit = unit;
         this.score = score;
         this.error = error;
-        this.fastest = false;
     }
 
     public String getName() {
@@ -73,13 +71,5 @@ public class MicrobenchmarkResultDTO {
     public MicrobenchmarkResultDTO setError(double error) {
         this.error = error;
         return this;
-    }
-
-    public boolean isFastest() {
-        return fastest;
-    }
-
-    public void setFastest(boolean fastest) {
-        this.fastest = fastest;
     }
 }
