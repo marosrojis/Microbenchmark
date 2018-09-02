@@ -1,22 +1,23 @@
-package cz.rojik;
+package cz.rojik.service;
 
-import cz.rojik.service.impl.ImporterServiceImpl;
-import org.junit.Before;
+import cz.rojik.MBMarkApplicationTest;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 import java.util.Set;
 
-public class ImporterTest {
+public class ImporterServiceTest extends MBMarkApplicationTest {
 
-    private ImporterServiceImpl importer;
+    @Autowired
+    private ImporterService importerService;
 
-    @Before
-    public void setUp() throws Exception {
-        importer = new ImporterServiceImpl();
-    }
+//    @Before
+//    public void setUp() throws Exception {
+//        importerService = new ImporterServiceImpl();
+//    }
 
     @Test
     public void getLibrariesToImportTest1() {
@@ -32,7 +33,7 @@ public class ImporterTest {
                 "arrayList.add(new Integer(randomNumber));\n" +
                 "}";
 
-        Set<String> result = importer.getLibrariesToImport(input);
+        Set<String> result = importerService.getLibrariesToImport(input);
 
         assertTrue(result.contains("java.util.List"));
         assertTrue(result.contains("java.util.ArrayList"));
@@ -47,7 +48,7 @@ public class ImporterTest {
                 "File srcDir = new File(classLoader.getResource().getFile());\n" +
                 "File destDir = new File();";
 
-        Set<String> result = importer.getLibrariesToImport(input);
+        Set<String> result = importerService.getLibrariesToImport(input);
 
         assertTrue(result.contains("java.util.UUID"));
         assertTrue(result.contains("java.io.File"));
@@ -75,7 +76,7 @@ public class ImporterTest {
                 "Integer abs = Math.abs(5)\n" +
                 "java.util.List hash = new LinkedList<>();";
 
-        Set<String> result = importer.getLibrariesToImport(input);
+        Set<String> result = importerService.getLibrariesToImport(input);
 
         assertTrue(result.contains("java.util.List"));
         assertTrue(result.contains("java.util.LinkedList"));
@@ -105,7 +106,7 @@ public class ImporterTest {
                 "        }\n" +
                 "        con = temp.con;";
 
-        Set<String> result = importer.getLibrariesToImport(input);
+        Set<String> result = importerService.getLibrariesToImport(input);
 
         assertTrue(result.contains("java.util.LinkedList"));
         assertEquals(result.size(), 1);
@@ -150,7 +151,7 @@ public class ImporterTest {
                 "        System.arraycopy(result, 0, result2, 0, numUnique);\n" +
                 "        return result2;";
 
-        Set<String> result = importer.getLibrariesToImport(input);
+        Set<String> result = importerService.getLibrariesToImport(input);
 
         assertTrue(result.contains("java.awt.Rectangle"));
         assertTrue(result.contains("java.util.Arrays"));
@@ -236,7 +237,7 @@ public class ImporterTest {
                 "            return foundPath;\n" +
                 "        }";
 
-        Set<String> result = importer.getLibrariesToImport(input);
+        Set<String> result = importerService.getLibrariesToImport(input);
 
         assertTrue(result.contains("java.util.ArrayList"));
         assertTrue(result.contains("java.util.Scanner"));
