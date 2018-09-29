@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 
 public interface ResultParserService {
 
-    ResultDTO parseResult(String projectId, LocalDateTime time);
+    ResultDTO parseResult(String projectId);
 }

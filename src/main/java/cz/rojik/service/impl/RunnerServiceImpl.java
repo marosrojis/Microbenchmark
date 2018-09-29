@@ -71,7 +71,7 @@ public class RunnerServiceImpl implements RunnerService {
             } catch (DockerCertificateException | DockerException | InterruptedException e) {
                 logger.error("Throw exception during run docker container with project.");
             }
-            result = resultParserService.parseResult(projectId, now);
+            result = resultParserService.parseResult(projectId);
             generatorHTML.generateHTMLFile(result, projectId, template);
         }
         else {
@@ -80,7 +80,7 @@ public class RunnerServiceImpl implements RunnerService {
             List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
             List<ErrorInfoDTO> errorInfoList = errorsParserService.processErrorList(errorList, projectId);
 
-            result = new ResultDTO(now, false)
+            result = new ResultDTO(false)
                     .setErrors(errorInfoList);
             generatorHTML.generateHTMLFile(result, projectId, template);
         }
@@ -117,7 +117,7 @@ public class RunnerServiceImpl implements RunnerService {
     }
 
     @Override
-    public boolean runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException {
+    public ResultDTO runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException {
         ProcessInfoDTO processInfo;
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
@@ -172,7 +172,8 @@ public class RunnerServiceImpl implements RunnerService {
         client.killContainer(id);
         client.removeContainer(id);
 
-        return true;
+        ResultDTO result = resultParserService.parseResult(projectId);
+        return result;
     }
 
 }

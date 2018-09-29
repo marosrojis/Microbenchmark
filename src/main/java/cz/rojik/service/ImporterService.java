@@ -1,8 +1,8 @@
 package cz.rojik.service;
 
-import java.util.Set;
+import cz.rojik.utils.pojo.ImportsResult;
 
 public interface ImporterService {
 
-    Set<String> getLibrariesToImport(String input);
+    ImportsResult getLibrariesToImport(ImportsResult imports, String input);
 }

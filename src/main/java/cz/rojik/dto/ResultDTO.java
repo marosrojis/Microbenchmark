@@ -11,8 +11,8 @@ public class ResultDTO {
     private boolean success;
     private int bestScoreIndex;
 
-    public ResultDTO(LocalDateTime time, boolean success) {
-        this.time = time;
+    public ResultDTO(boolean success) {
+        this.time = LocalDateTime.now();
         this.success = success;
     }
 

@@ -1,23 +1,25 @@
 package cz.rojik.service;
 
 import cz.rojik.MBMarkApplicationTest;
+import cz.rojik.utils.pojo.ImportsResult;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
-import java.util.Set;
-
 public class ImporterServiceTest extends MBMarkApplicationTest {
 
     @Autowired
     private ImporterService importerService;
 
-//    @Before
-//    public void setUp() throws Exception {
-//        importerService = new ImporterServiceImpl();
-//    }
+    private ImportsResult imports;
+
+    @Before
+    public void setUp() throws Exception {
+        imports = new ImportsResult();
+    }
 
     @Test
     public void getLibrariesToImportTest1() {
@@ -33,12 +35,12 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
                 "arrayList.add(new Integer(randomNumber));\n" +
                 "}";
 
-        Set<String> result = importerService.getLibrariesToImport(input);
+        imports = importerService.getLibrariesToImport(imports, input);
 
-        assertTrue(result.contains("java.util.List"));
-        assertTrue(result.contains("java.util.ArrayList"));
-        assertTrue(result.contains("java.util.Random"));
-        assertEquals(result.size(), 3);
+        assertTrue(imports.getLibraries().contains("java.util.List"));
+        assertTrue(imports.getLibraries().contains("java.util.ArrayList"));
+        assertTrue(imports.getLibraries().contains("java.util.Random"));
+        assertEquals(imports.getLibraries().size(), 3);
     }
 
     @Test
@@ -48,11 +50,11 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
                 "File srcDir = new File(classLoader.getResource().getFile());\n" +
                 "File destDir = new File();";
 
-        Set<String> result = importerService.getLibrariesToImport(input);
+        imports = importerService.getLibrariesToImport(imports, input);
 
-        assertTrue(result.contains("java.util.UUID"));
-        assertTrue(result.contains("java.io.File"));
-        assertEquals(result.size(), 2);
+        assertTrue(imports.getLibraries().contains("java.util.UUID"));
+        assertTrue(imports.getLibraries().contains("java.io.File"));
+        assertEquals(imports.getLibraries().size(), 2);
     }
 
     @Test
@@ -76,11 +78,11 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
                 "Integer abs = Math.abs(5)\n" +
                 "java.util.List hash = new LinkedList<>();";
 
-        Set<String> result = importerService.getLibrariesToImport(input);
+        imports = importerService.getLibrariesToImport(imports, input);
 
-        assertTrue(result.contains("java.util.List"));
-        assertTrue(result.contains("java.util.LinkedList"));
-        assertEquals(result.size(), 2);
+        assertTrue(imports.getLibraries().contains("java.util.List"));
+        assertTrue(imports.getLibraries().contains("java.util.LinkedList"));
+        assertEquals(imports.getLibraries().size(), 2);
     }
 
     @Test
@@ -106,10 +108,10 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
                 "        }\n" +
                 "        con = temp.con;";
 
-        Set<String> result = importerService.getLibrariesToImport(input);
+        imports = importerService.getLibrariesToImport(imports, input);
 
-        assertTrue(result.contains("java.util.LinkedList"));
-        assertEquals(result.size(), 1);
+        assertTrue(imports.getLibraries().contains("java.util.LinkedList"));
+        assertEquals(imports.getLibraries().size(), 1);
     }
 
     @Test
@@ -151,11 +153,11 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
                 "        System.arraycopy(result, 0, result2, 0, numUnique);\n" +
                 "        return result2;";
 
-        Set<String> result = importerService.getLibrariesToImport(input);
+        imports = importerService.getLibrariesToImport(imports, input);
 
-        assertTrue(result.contains("java.awt.Rectangle"));
-        assertTrue(result.contains("java.util.Arrays"));
-        assertEquals(result.size(), 2);
+        assertTrue(imports.getLibraries().contains("java.awt.Rectangle"));
+        assertTrue(imports.getLibraries().contains("java.util.Arrays"));
+        assertEquals(imports.getLibraries().size(), 2);
     }
 
     @Test
@@ -237,12 +239,12 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
                 "            return foundPath;\n" +
                 "        }";
 
-        Set<String> result = importerService.getLibrariesToImport(input);
+        imports = importerService.getLibrariesToImport(imports, input);
 
-        assertTrue(result.contains("java.util.ArrayList"));
-        assertTrue(result.contains("java.util.Scanner"));
-        assertTrue(result.contains("java.io.IOException"));
-        assertTrue(result.contains("java.io.File"));
-        assertEquals(result.size(), 4);
+        assertTrue(imports.getLibraries().contains("java.util.ArrayList"));
+        assertTrue(imports.getLibraries().contains("java.util.Scanner"));
+        assertTrue(imports.getLibraries().contains("java.io.IOException"));
+        assertTrue(imports.getLibraries().contains("java.io.File"));
+        assertEquals(imports.getLibraries().size(), 4);
     }
 }

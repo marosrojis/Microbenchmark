@@ -2,6 +2,7 @@ package cz.rojik.service.impl;
 
 import cz.rojik.dto.ResultDTO;
 import cz.rojik.dto.TemplateDTO;
+import cz.rojik.exception.ImportsToChooseException;
 import cz.rojik.service.BenchmarkService;
 import cz.rojik.service.GeneratorService;
 import cz.rojik.service.RunnerService;
@@ -21,10 +22,17 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public ResultDTO runBenchmark(TemplateDTO template) {
-        LocalDateTime now = LocalDateTime.now();
-        String projectId = generatorService.generateJavaClass(template);
+//        LocalDateTime now = LocalDateTime.now();
+//        String projectId = generatorService.generateJavaClass(template);
+//
+//        ResultDTO result = runnerService.compileAndStartProject(projectId, template, now);
+//        return result;
+        return new ResultDTO(false);
+    }
 
-        ResultDTO result = runnerService.compileAndStartProject(projectId, template, now);
-        return result;
+    @Override
+    public String createProject(TemplateDTO template) throws ImportsToChooseException {
+        String projectId = generatorService.generateJavaClass(template);
+        return projectId;
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 public class ResultParserServiceImpl implements ResultParserService {
 
     @Override
-    public ResultDTO parseResult(String projectId, LocalDateTime time) {
+    public ResultDTO parseResult(String projectId) {
         JsonParser jParser = new JsonParser();
 
         List<MicrobenchmarkResultDTO> mbResults = new ArrayList<>();
@@ -42,7 +42,7 @@ public class ResultParserServiceImpl implements ResultParserService {
                 minIndex = i;
             }
         }
-        ResultDTO result = new ResultDTO(time, true)
+        ResultDTO result = new ResultDTO(true)
                 .setResults(mbResults)
                 .setBestScoreIndex(minIndex);
         return result;

@@ -2,6 +2,8 @@ package cz.rojik.service.impl;
 
 import cz.rojik.constants.ProjectContants;
 import cz.rojik.constants.TemplateConstants;
+import cz.rojik.utils.pojo.ImportsResult;
+import cz.rojik.exception.ImportsToChooseException;
 import cz.rojik.exception.ReadFileException;
 import cz.rojik.dto.TemplateDTO;
 import cz.rojik.service.GeneratorService;
@@ -29,11 +31,19 @@ public class GeneratorServiceImpl implements GeneratorService {
     private ImporterService importerService;
 
     @Override
-    public String generateJavaClass(TemplateDTO template) {
+    public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
         String projectID = copyProjectFolder();
-        String fileContent = readDefaultFile();
 
-        template.setLibraries(getAllImports(template));
+        ImportsResult imports = getAllImports(template);
+        template.setLibraries(generateImports(imports.getLibraries()));
+        cz.rojik.utils.FileUtils.saveTemplateToJson(template, projectID);
+
+        if (imports.getLibrariesToChoose().size() != 0) {
+            logger.info("Code contains libraries that can not be imported automatically.");
+            throw new ImportsToChooseException(projectID, imports.getLibrariesToChoose());
+        }
+
+        String fileContent = readDefaultFile();
         String newContent = generateContent(template, fileContent);
         saveFile(projectID, newContent);
 
@@ -43,8 +53,8 @@ public class GeneratorServiceImpl implements GeneratorService {
     // PRIVATE
 
     private String generateContent(TemplateDTO template, String content) {
-        content = replaceTemplateMark(content, TemplateConstants.JMH_LIBRARIES, template.getJMHLibraries());
-        content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
+        content = replaceTemplateMark(content, TemplateConstants.JMH_LIBRARIES, template.getJmhLibraries());
+        content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getJmhLibraries());
         content = replaceTemplateMark(content, TemplateConstants.WARMUP, template.getWarmup() + "");
         content = replaceTemplateMark(content, TemplateConstants.MEASUREMENT, template.getMeasurement() + "");
         content = replaceTemplateMark(content, TemplateConstants.CLASS_NAME, ProjectContants.JAVA_CLASS);
@@ -80,18 +90,17 @@ public class GeneratorServiceImpl implements GeneratorService {
         return content;
     }
 
-    private String getAllImports(TemplateDTO template) {
-        Set<String> imports = importerService.getLibrariesToImport(template.getDeclare());
-        imports.addAll(importerService.getLibrariesToImport(template.getInit()));
-        template.getTestMethods().forEach(method -> imports.addAll(importerService.getLibrariesToImport(method)));
+    private ImportsResult getAllImports(TemplateDTO template) {
+        ImportsResult imports = new ImportsResult();
 
-        StringBuilder sb = new StringBuilder();
-        imports.forEach(value -> sb.append("import ")
-                .append(value)
-                .append(";\n"));
+        imports = importerService.getLibrariesToImport(imports, template.getDeclare());
+        imports = importerService.getLibrariesToImport(imports, template.getInit());
 
-        String output = sb.toString();
-        return output;
+        for (String method : template.getTestMethods()) {
+            imports = importerService.getLibrariesToImport(imports, method);
+        }
+
+        return imports;
     }
 
     private String readDefaultFile() {
@@ -135,5 +144,16 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
 
         return generatedID;
+    }
+
+    private String generateImports(Set<String> libraries) {
+        StringBuilder sb = new StringBuilder();
+        libraries.forEach(value -> sb.append("import ")
+                .append(value)
+                .append(";\n"));
+
+        String output = sb.toString();
+
+        return output;
     }
 }

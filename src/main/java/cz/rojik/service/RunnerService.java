@@ -14,5 +14,5 @@ public interface RunnerService {
 
     Set<String> compileProject(String projectId);
 
-    boolean runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException;
+    ResultDTO runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException;
 }

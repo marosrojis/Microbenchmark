@@ -3,6 +3,7 @@ package cz.rojik.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import cz.rojik.constants.OtherConstants;
+import cz.rojik.utils.pojo.ImportsResult;
 import cz.rojik.service.ImporterService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -39,10 +40,12 @@ public class ImporterServiceImpl implements ImporterService {
     }
 
     @Override
-    public Set<String> getLibrariesToImport(String input) {
+    public ImportsResult getLibrariesToImport(ImportsResult imports, String input) {
         String[] inputs = input.split("[ =<>();\n\t]");
         Set<String> values = new HashSet<>(Arrays.asList(inputs));
         Set<String> libraries = new HashSet<>();
+        Map<String, List<String>> selectImports = new HashMap<>();
+
         for (String value : values) {
             value = value.trim();
             Matcher m = JAVA_PACKAGE_CLASS_REGEX.matcher(value);
@@ -60,6 +63,8 @@ public class ImporterServiceImpl implements ImporterService {
                             libraries.add(library);
                         }
                         else {
+                            selectImports.put(className, packages);
+                            // TODO - delete
                             System.out.println("Select which package you want to use with class: " + className);
                             for (int i = 1; i <= packages.size(); i++) {
                                 System.out.println(i + ") " + packages.get(i - 1));
@@ -74,7 +79,10 @@ public class ImporterServiceImpl implements ImporterService {
             }
         }
 
-        return libraries;
+        imports.getLibraries().addAll(libraries);
+        imports.getLibrariesToChoose().putAll(selectImports);
+
+        return imports;
     }
 
     // PRIVATE
