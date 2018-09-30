@@ -8,5 +8,7 @@ public interface BenchmarkService {
 
     String createProject(TemplateDTO template) throws ImportsToChooseException;
 
+    boolean compile(String projectId);
+
     ResultDTO runBenchmark(TemplateDTO template);
 }
