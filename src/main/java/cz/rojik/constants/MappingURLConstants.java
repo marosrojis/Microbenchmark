@@ -13,4 +13,5 @@ public class MappingURLConstants {
     // WEBSOCKET
     public static final String BENCHMARK_RUN = "/benchmark/run";
     public static final String BENCHMARK_RESULT = "/benchmark/result";
+    public static final String BENCHMARK_RESULT_STEP = "/benchmark/result/step";
 }

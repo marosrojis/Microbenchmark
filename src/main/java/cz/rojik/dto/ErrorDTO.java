@@ -37,4 +37,13 @@ public class ErrorDTO {
         this.code = code;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "ErrorDTO{" +
+                "message='" + message + '\'' +
+                ", row=" + row +
+                ", code='" + code + '\'' +
+                '}';
+    }
 }

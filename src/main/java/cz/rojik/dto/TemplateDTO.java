@@ -6,7 +6,6 @@ import java.util.List;
 public class TemplateDTO {
 
     private String libraries;
-    private String jmhLibraries;
     private int warmup;
     private int measurement;
     private String declare;
@@ -15,7 +14,6 @@ public class TemplateDTO {
 
     public TemplateDTO() {
         this.libraries = "";
-        this.jmhLibraries = "";
         this.warmup = 1;
         this.measurement = 1;
         this.declare = "";
@@ -77,12 +75,4 @@ public class TemplateDTO {
         return this;
     }
 
-    public String getJmhLibraries() {
-        return jmhLibraries;
-    }
-
-    public TemplateDTO setJmhLibraries(String jmhLibraries) {
-        this.jmhLibraries = jmhLibraries;
-        return this;
-    }
 }

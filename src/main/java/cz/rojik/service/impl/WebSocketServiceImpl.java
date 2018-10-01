@@ -21,6 +21,6 @@ public class WebSocketServiceImpl implements WebSocketService {
         Gson gson = new GsonBuilder().create();
         String output = gson.toJson(processInfo);
 
-        this.template.convertAndSendToUser(headerAccessor.getSessionId(), MappingURLConstants.BENCHMARK_RESULT, output, headerAccessor.getMessageHeaders());
+        this.template.convertAndSendToUser(headerAccessor.getSessionId(), MappingURLConstants.BENCHMARK_RESULT_STEP, processInfo.toString(), headerAccessor.getMessageHeaders());
     }
 }

@@ -53,7 +53,6 @@ public class GeneratorServiceImpl implements GeneratorService {
     // PRIVATE
 
     private String generateContent(TemplateDTO template, String content) {
-        content = replaceTemplateMark(content, TemplateConstants.JMH_LIBRARIES, template.getJmhLibraries());
         content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
         content = replaceTemplateMark(content, TemplateConstants.WARMUP, template.getWarmup() + "");
         content = replaceTemplateMark(content, TemplateConstants.MEASUREMENT, template.getMeasurement() + "");

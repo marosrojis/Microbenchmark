@@ -11,8 +11,7 @@ public class Reader {
     public TemplateDTO readInputs() {
         TemplateDTO template = new TemplateDTO();
 
-        template.setJmhLibraries(StringUtils.getJMHLibraries())
-                .setWarmup(readWarmup())
+        template.setWarmup(readWarmup())
                 .setMeasurement(readMeasurement())
                 .setDeclare(readDeclare())
                 .setInit(readInit())
