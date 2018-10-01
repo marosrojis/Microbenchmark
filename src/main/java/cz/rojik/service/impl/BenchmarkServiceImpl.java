@@ -1,5 +1,7 @@
 package cz.rojik.service.impl;
 
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.dto.ErrorDTO;
 import cz.rojik.dto.ErrorInfoDTO;
 import cz.rojik.dto.ResultDTO;
@@ -9,10 +11,13 @@ import cz.rojik.exception.MavenCompileException;
 import cz.rojik.service.BenchmarkService;
 import cz.rojik.service.ErrorsParserService;
 import cz.rojik.service.GeneratorService;
+import cz.rojik.service.ResultParserService;
 import cz.rojik.service.RunnerService;
+import cz.rojik.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,17 +36,10 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     private RunnerService runnerService;
 
     @Autowired
-    private ErrorsParserService errorsParserService;
+    private ResultParserService resultParserService;
 
-    @Override
-    public ResultDTO runBenchmark(TemplateDTO template) {
-//        LocalDateTime now = LocalDateTime.now();
-//        String projectId = generatorService.generateJavaClass(template);
-//
-//        ResultDTO result = runnerService.compileAndStartProject(projectId, template, now);
-//        return result;
-        return new ResultDTO(false);
-    }
+    @Autowired
+    private ErrorsParserService errorsParserService;
 
     @Override
     public String createProject(TemplateDTO template) throws ImportsToChooseException {
@@ -63,5 +61,19 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         logger.info("Compilation is successful.");
 
         return true;
+    }
+
+    @Override
+    public ResultDTO runBenchmark(String projectId, SimpMessageHeaderAccessor socketHeader) {
+        TemplateDTO template = FileUtils.getTemplateFromJson(projectId);
+
+        ResultDTO result = null;
+        try {
+            projectId = runnerService.runProject(projectId, template, socketHeader);
+            result = resultParserService.parseResult(projectId);
+        } catch (DockerCertificateException | DockerException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

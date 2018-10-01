@@ -4,9 +4,13 @@ public class MappingURLConstants {
 
     public static final String MAIN_PAGE = "/";
 
+    // REST API
     public static final String BENCHMARK = "benchmark";
-    public static final String BENCHMARK_RUN = "run";
     public static final String BENCHMARK_CREATE = "create";
     public static final String BENCHMARK_IMPORT_LIBRARY = "importLibrary";
     public static final String BENCHMARK_COMPILE = "compile/{projectId}";
+
+    // WEBSOCKET
+    public static final String BENCHMARK_RUN = "/benchmark/run";
+    public static final String BENCHMARK_RESULT = "/benchmark/result";
 }

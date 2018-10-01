@@ -21,6 +21,7 @@ import cz.rojik.dto.TemplateDTO;
 import cz.rojik.service.ErrorsParserService;
 import cz.rojik.service.ResultParserService;
 import cz.rojik.service.RunnerService;
+import cz.rojik.service.WebSocketService;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
@@ -28,6 +29,7 @@ import org.apache.maven.shared.invoker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -53,39 +55,37 @@ public class RunnerServiceImpl implements RunnerService {
     private MessageLogParserServiceImpl messageLogParser;
 
     @Autowired
-    private ResultParserService resultParserService;
-
-    @Autowired
-    private ErrorsParserService errorsParserService;
+    private WebSocketService webSocketService;
 
     @Override
     public ResultDTO compileAndStartProject(String projectId, TemplateDTO template, LocalDateTime now) {
-        GeneratorHTML generatorHTML = new GeneratorHTML();
-
-        ResultDTO result;
-        Set<String> errors = compileProject(projectId);
-
-        if (errors.size() == 0) {
-            try {
-                runProject(projectId, template);
-            } catch (DockerCertificateException | DockerException | InterruptedException e) {
-                logger.error("Throw exception during run docker container with project.");
-            }
-            result = resultParserService.parseResult(projectId);
-            generatorHTML.generateHTMLFile(result, projectId, template);
-        }
-        else {
-            ProcessInfoDTO processInfo = new ProcessInfoDTO(Operation.ERROR_COMPILE);
-
-            List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
-            List<ErrorInfoDTO> errorInfoList = errorsParserService.processErrorList(errorList, projectId);
-
-            result = new ResultDTO(false)
-                    .setErrors(errorInfoList);
-            generatorHTML.generateHTMLFile(result, projectId, template);
-        }
-
-        return result;
+//        GeneratorHTML generatorHTML = new GeneratorHTML();
+//
+//        ResultDTO result;
+//        Set<String> errors = compileProject(projectId);
+//
+//        if (errors.size() == 0) {
+//            try {
+//                runProject(projectId, template);
+//            } catch (DockerCertificateException | DockerException | InterruptedException e) {
+//                logger.error("Throw exception during run docker container with project.");
+//            }
+//            result = resultParserService.parseResult(projectId);
+//            generatorHTML.generateHTMLFile(result, projectId, template);
+//        }
+//        else {
+//            ProcessInfoDTO processInfo = new ProcessInfoDTO(Operation.ERROR_COMPILE);
+//
+//            List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
+//            List<ErrorInfoDTO> errorInfoList = errorsParserService.processErrorList(errorList, projectId);
+//
+//            result = new ResultDTO(false)
+//                    .setErrors(errorInfoList);
+//            generatorHTML.generateHTMLFile(result, projectId, template);
+//        }
+//
+//        return result;
+        return null;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class RunnerServiceImpl implements RunnerService {
     }
 
     @Override
-    public ResultDTO runProject(String projectId, TemplateDTO template) throws DockerCertificateException, DockerException, InterruptedException {
+    public String runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws DockerCertificateException, DockerException, InterruptedException {
         ProcessInfoDTO processInfo;
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
@@ -150,6 +150,9 @@ public class RunnerServiceImpl implements RunnerService {
         while (output.hasNext()) {
             final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
             processInfo = messageLogParser.parseMessage(logMessage, template);
+            if (processInfo != null) {
+                webSocketService.sendProcessInfo(processInfo, socketHeader);
+            }
         }
 
 //        Process p;
@@ -172,8 +175,7 @@ public class RunnerServiceImpl implements RunnerService {
         client.killContainer(id);
         client.removeContainer(id);
 
-        ResultDTO result = resultParserService.parseResult(projectId);
-        return result;
+        return projectId;
     }
 
 }

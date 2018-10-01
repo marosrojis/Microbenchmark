@@ -67,4 +67,15 @@ public class ResultDTO {
         this.bestScoreIndex = bestScoreIndex;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "ResultDTO{" +
+                "time=" + time +
+                ", results=" + results +
+                ", errors=" + errors +
+                ", success=" + success +
+                ", bestScoreIndex=" + bestScoreIndex +
+                '}';
+    }
 }

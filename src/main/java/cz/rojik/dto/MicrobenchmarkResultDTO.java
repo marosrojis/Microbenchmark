@@ -72,4 +72,16 @@ public class MicrobenchmarkResultDTO {
         this.error = error;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "MicrobenchmarkResultDTO{" +
+                "name='" + name + '\'' +
+                ", warmupIterations=" + warmupIterations +
+                ", measurementIterations=" + measurementIterations +
+                ", unit='" + unit + '\'' +
+                ", score=" + score +
+                ", error=" + error +
+                '}';
+    }
 }
