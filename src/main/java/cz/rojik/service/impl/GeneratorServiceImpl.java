@@ -168,7 +168,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private String generateImports(Set<String> libraries) {
         StringBuilder sb = new StringBuilder();
         libraries.forEach(value -> sb.append("import ")
-                .append(value)
+                .append(value.replaceAll("\\s+",""))
                 .append(";\n"));
 
         String output = sb.toString();
