@@ -7,7 +7,7 @@ public class MappingURLConstants {
     // REST API
     public static final String BENCHMARK = "benchmark";
     public static final String BENCHMARK_CREATE = "create";
-    public static final String BENCHMARK_IMPORT_LIBRARY = "importLibrary";
+    public static final String BENCHMARK_IMPORT_LIBRARIES = "importLibraries";
     public static final String BENCHMARK_COMPILE = "compile/{projectId}";
 
     // WEBSOCKET

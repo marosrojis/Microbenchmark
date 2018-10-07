@@ -4,6 +4,7 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.dto.ErrorDTO;
 import cz.rojik.dto.ErrorInfoDTO;
+import cz.rojik.dto.LibrariesDTO;
 import cz.rojik.dto.ResultDTO;
 import cz.rojik.dto.TemplateDTO;
 import cz.rojik.exception.ImportsToChooseException;
@@ -44,6 +45,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     public String createProject(TemplateDTO template) throws ImportsToChooseException {
         String projectId = generatorService.generateJavaClass(template);
+        return projectId;
+    }
+
+    @Override
+    public String importLibraries(LibrariesDTO libraries) {
+        String projectId = generatorService.importLibraries(libraries);
         return projectId;
     }
 

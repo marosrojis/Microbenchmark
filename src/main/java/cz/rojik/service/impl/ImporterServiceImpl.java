@@ -64,15 +64,15 @@ public class ImporterServiceImpl implements ImporterService {
                         }
                         else {
                             selectImports.put(className, packages);
-                            // TODO - delete
-                            System.out.println("Select which package you want to use with class: " + className);
-                            for (int i = 1; i <= packages.size(); i++) {
-                                System.out.println(i + ") " + packages.get(i - 1));
-                            }
-                            Scanner sc = new Scanner(System.in);
-                            int choice = sc.nextInt();
-                            String library = new StringBuilder().append(packages.get(choice - 1)).append(".").append(className).toString();
-                            libraries.add(library);
+//                            TODO - delete
+//                            System.out.println("Select which package you want to use with class: " + className);
+//                            for (int i = 1; i <= packages.size(); i++) {
+//                                System.out.println(i + ") " + packages.get(i - 1));
+//                            }
+//                            Scanner sc = new Scanner(System.in);
+//                            int choice = sc.nextInt();
+//                            String library = new StringBuilder().append(packages.get(choice - 1)).append(".").append(className).toString();
+//                            libraries.add(library);
                         }
                     }
                 }

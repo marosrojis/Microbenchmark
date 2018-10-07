@@ -2,6 +2,7 @@ package cz.rojik.service.impl;
 
 import cz.rojik.constants.ProjectContants;
 import cz.rojik.constants.TemplateConstants;
+import cz.rojik.dto.LibrariesDTO;
 import cz.rojik.utils.pojo.ImportsResult;
 import cz.rojik.exception.ImportsToChooseException;
 import cz.rojik.exception.ReadFileException;
@@ -48,6 +49,25 @@ public class GeneratorServiceImpl implements GeneratorService {
         saveFile(projectID, newContent);
 
         return projectID;
+    }
+
+    @Override
+    public String importLibraries(LibrariesDTO libraries) {
+        String projectId = libraries.getProjectId();
+
+        TemplateDTO template = cz.rojik.utils.FileUtils.getTemplateFromJson(projectId);
+        String generatedImports = generateImports(libraries.getLibraries());
+
+        StringBuilder sb = new StringBuilder(template.getLibraries());
+        sb.append(generatedImports);
+        template.setLibraries(sb.toString());
+
+        cz.rojik.utils.FileUtils.saveTemplateToJson(template, projectId);
+        String fileContent = readDefaultFile();
+        String newContent = generateContent(template, fileContent);
+        saveFile(projectId, newContent);
+
+        return projectId;
     }
 
     // PRIVATE

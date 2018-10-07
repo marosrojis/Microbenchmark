@@ -2,6 +2,7 @@ package cz.rojik.controller.rest;
 
 import cz.rojik.Reader;
 import cz.rojik.constants.MappingURLConstants;
+import cz.rojik.dto.LibrariesDTO;
 import cz.rojik.dto.LibrariesToChooseDTO;
 import cz.rojik.dto.ProjectDTO;
 import cz.rojik.dto.TemplateDTO;
@@ -36,6 +37,13 @@ public class BenchmarkController {
             LibrariesToChooseDTO libraries = new LibrariesToChooseDTO(exception.getProjectId(), exception.getImportsToChoose());
             return new ResponseEntity<>(libraries, HttpStatus.CONFLICT);
         }
+
+        return new ResponseEntity<>(new ProjectDTO(projectId), HttpStatus.OK);
+    }
+
+    @PostMapping(MappingURLConstants.BENCHMARK_IMPORT_LIBRARIES)
+    public ResponseEntity<ProjectDTO> importLibraries(@RequestBody LibrariesDTO libraries) {
+        String projectId = benchmarkService.importLibraries(libraries);
 
         return new ResponseEntity<>(new ProjectDTO(projectId), HttpStatus.OK);
     }
