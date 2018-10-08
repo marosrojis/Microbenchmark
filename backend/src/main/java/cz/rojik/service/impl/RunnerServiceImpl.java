@@ -116,7 +116,7 @@ public class RunnerServiceImpl implements RunnerService {
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
         final HostConfig hostConfig = HostConfig.builder()
-                .binds(HostConfig.Bind.from(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR)
+                .binds(HostConfig.Bind.from(System.getProperty("user.dir") + "/" + ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR)
                         .to(ProjectContants.DOCKER_SHARED_FOLDER)
                         .readOnly(true)
                         .build())
