@@ -1,0 +1,93 @@
+<div id="main-content" class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <form (ngSubmit)="submitForm(f)" #f="ngForm" novalidate>
+        <div class="row">
+          <div class="col-sm-6 form-group">
+              <div class="form-group">
+                <label for="declare">Declare</label>
+                <textarea class="form-control" id="declare" name="declare" rows="5" ngModel required></textarea>
+              </div>
+          </div>
+          <div class="col-sm-6 form-group">
+              <div class="form-group">
+                <label for="init">Init</label>
+                <textarea class="form-control" id="init" name="init" rows="5" ngModel required></textarea>
+              </div>
+          </div>
+          <div class="col-sm-6 form-group">
+            <label for="warmup">Warmup</label>
+            <input
+              type="number"
+              id="warmup"
+              class="form-control"
+              name="warmup"
+              ngModel
+              required
+            >
+          </div>
+          <div class="col-sm-6 form-group">
+            <label for="measurement">Measurement</label>
+            <input
+              type="number"
+              id="measurement"
+              class="form-control"
+              name="measurement"
+              ngModel
+              required
+            >
+          </div>
+          <div class="col-sm-6 form-group">
+              <div class="form-group">
+                <label for="testMethod1">Test method 1</label>
+                <textarea class="form-control" id="testMethod1" name="testMethod1" rows="5" ngModel required></textarea>
+              </div>
+          </div>
+          <div class="col-sm-6 form-group">
+              <div class="form-group">
+                <label for="testMethod2">Test method 2</label>
+                <textarea class="form-control" id="testMethod2" name="testMethod2" rows="5" ngModel required></textarea>
+              </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="isNeedChooseImports">
+          <div class="col-sm-12 form-group">
+              <div class="form-group">
+                <label for="imports">Import libraries</label>
+                <div *ngFor="let class of objectKeys(libraries.imports)">
+                  <span *ngFor="let package of libraries.imports[class]">
+                    {{ package }}.{{ class }} <br />
+                  </span>
+                  <hr>
+                </div>
+              </div>
+            <textarea class="form-control" id="imports" name="imports" rows="5" ngModel required></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <button
+              class="btn btn-success"
+              type="submit"
+              >{{ isNeedChooseImports ? 'Continue benchmark' : 'Run benchmark' }}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" *ngIf="showConversation">
+      <table id="conversation" class="table table-striped">
+        <thead>
+        <tr>
+          <th>Messages</th>
+        </tr>
+        </thead>
+        <tbody *ngFor="let message of messages" >
+          <tr><td> {{message}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
