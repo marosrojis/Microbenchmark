@@ -60,7 +60,13 @@ public class ResultParserServiceImpl implements ResultParserService {
         String unit = primaryMetric.get("scoreUnit").getAsString();
         double score = primaryMetric.get("score").getAsDouble();
         double error = primaryMetric.get("scoreError").getAsDouble();
-        return new MicrobenchmarkResultDTO(name, warmupIterations, measurementIterations, unit, score, error);
+
+        List<Double> measureValues = new ArrayList<>();
+        primaryMetric.getAsJsonArray("rawData").get(0).getAsJsonArray().forEach(value -> {
+            measureValues.add(value.getAsDouble());
+        });
+
+        return new MicrobenchmarkResultDTO(name, warmupIterations, measurementIterations, unit, measureValues, score, error);
     }
 
     private String readResultFile(String projectId) {

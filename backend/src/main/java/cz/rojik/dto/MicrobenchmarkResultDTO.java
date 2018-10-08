@@ -1,5 +1,7 @@
 package cz.rojik.dto;
 
+import java.util.List;
+
 public class MicrobenchmarkResultDTO {
 
     private String name;
@@ -9,12 +11,14 @@ public class MicrobenchmarkResultDTO {
 
     private double score;
     private double error;
+    private List<Double> measureValues;
 
-    public MicrobenchmarkResultDTO(String name, int warmupIterations, int measurementIterations, String unit, double score, double error) {
+    public MicrobenchmarkResultDTO(String name, int warmupIterations, int measurementIterations, String unit, List<Double> measureValues, double score, double error) {
         this.name = name;
         this.warmupIterations = warmupIterations;
         this.measurementIterations = measurementIterations;
         this.unit = unit;
+        this.measureValues = measureValues;
         this.score = score;
         this.error = error;
     }
@@ -73,6 +77,14 @@ public class MicrobenchmarkResultDTO {
         return this;
     }
 
+    public List<Double> getMeasureValues() {
+        return measureValues;
+    }
+
+    public void setMeasureValues(List<Double> measureValues) {
+        this.measureValues = measureValues;
+    }
+
     @Override
     public String toString() {
         return "MicrobenchmarkResultDTO{" +
@@ -82,6 +94,7 @@ public class MicrobenchmarkResultDTO {
                 ", unit='" + unit + '\'' +
                 ", score=" + score +
                 ", error=" + error +
+                ", measureValues=" + measureValues +
                 '}';
     }
 }
