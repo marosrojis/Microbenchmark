@@ -2,7 +2,7 @@ package cz.rojik.constants;
 
 public class ProjectContants {
 
-    public static final String PATH_ALL_PROJECTS        = "c:/Temp/Dropbox/PRG/Java/DP/backend/projects/";
+    public static final String PROJECTS_FOLDER          = "projects/";
 
     public static final String PATH_DEFAULT_PROJECT     = "empty_project/";
 

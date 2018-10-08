@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import cz.rojik.constants.ProjectContants;
 import cz.rojik.dto.TemplateDTO;
+import cz.rojik.entity.Project;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,7 +16,7 @@ import java.io.Writer;
 public class FileUtils {
 
     public static void saveTemplateToJson(TemplateDTO template, String projectId) {
-        try (Writer writer = new FileWriter(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + "template.json")) {
+        try (Writer writer = new FileWriter(ProjectContants.PROJECTS_FOLDER + projectId + "/" + "template.json")) {
             Gson gson = new GsonBuilder().create();
             gson.toJson(template, writer);
         } catch (IOException e) {
@@ -27,7 +28,7 @@ public class FileUtils {
         BufferedReader reader = null;
         TemplateDTO template = null;
         try {
-            reader = new BufferedReader(new FileReader(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + "template.json"));
+            reader = new BufferedReader(new FileReader(ProjectContants.PROJECTS_FOLDER + projectId + "/" + "template.json"));
             Gson gson = new GsonBuilder().create();
             template = gson.fromJson(reader, TemplateDTO.class);
 

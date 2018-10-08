@@ -93,7 +93,7 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
     private List<ErrorDTO> insertCodeToError(String projectId, List<ErrorDTO> errors) {
         List<String> codes;
         try {
-            codes = Files.readAllLines(Paths.get(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
+            codes = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
             logger.error("Cannot open class from project witd ID {0}", projectId);
             throw new ReadFileException(projectId);

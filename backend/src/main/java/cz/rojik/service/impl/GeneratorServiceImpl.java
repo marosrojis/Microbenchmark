@@ -138,7 +138,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     private boolean saveFile(String projectID, String content) {
         try {
-            File file = new File(ProjectContants.PATH_ALL_PROJECTS + projectID + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
+            File file = new File(ProjectContants.PROJECTS_FOLDER + projectID + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
             FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8, false);
         } catch (IOException e) {
             logger.error("Save file failure");
@@ -153,7 +153,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File srcDir = new File(classLoader.getResource(ProjectContants.PATH_DEFAULT_PROJECT).getFile());
-        File destDir = new File(ProjectContants.PATH_ALL_PROJECTS + generatedID);
+        File destDir = new File(ProjectContants.PROJECTS_FOLDER + generatedID);
 
         try {
             logger.info("Copy default project folder to new folder {}", generatedID);

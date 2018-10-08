@@ -9,17 +9,12 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
 import com.spotify.docker.client.messages.HostConfig;
-import cz.rojik.GeneratorHTML;
 import cz.rojik.constants.ProjectContants;
-import cz.rojik.dto.ErrorDTO;
-import cz.rojik.dto.ErrorInfoDTO;
 import cz.rojik.dto.ResultDTO;
 import cz.rojik.enums.Operation;
 import cz.rojik.exception.MavenCompileException;
 import cz.rojik.dto.ProcessInfoDTO;
 import cz.rojik.dto.TemplateDTO;
-import cz.rojik.service.ErrorsParserService;
-import cz.rojik.service.ResultParserService;
 import cz.rojik.service.RunnerService;
 import cz.rojik.service.WebSocketService;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -39,7 +34,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -95,7 +89,7 @@ public class RunnerServiceImpl implements RunnerService {
         final Pattern p = Pattern.compile(REGEX_ERROR);
 
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + ProjectContants.PROJECT_POM));
+        request.setPomFile(new File(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PROJECT_POM));
         request.setGoals( Arrays.asList("clean", "install", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
@@ -122,7 +116,7 @@ public class RunnerServiceImpl implements RunnerService {
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
         final HostConfig hostConfig = HostConfig.builder()
-                .binds(HostConfig.Bind.from(ProjectContants.PATH_ALL_PROJECTS + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR)
+                .binds(HostConfig.Bind.from(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR)
                         .to(ProjectContants.DOCKER_SHARED_FOLDER)
                         .readOnly(true)
                         .build())
