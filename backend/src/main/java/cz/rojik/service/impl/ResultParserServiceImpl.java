@@ -62,9 +62,7 @@ public class ResultParserServiceImpl implements ResultParserService {
         double error = primaryMetric.get("scoreError").getAsDouble();
 
         List<Double> measureValues = new ArrayList<>();
-        primaryMetric.getAsJsonArray("rawData").get(0).getAsJsonArray().forEach(value -> {
-            measureValues.add(value.getAsDouble());
-        });
+        primaryMetric.getAsJsonArray("rawData").get(0).getAsJsonArray().forEach(value -> measureValues.add(value.getAsDouble()));
 
         return new MicrobenchmarkResultDTO(name, warmupIterations, measurementIterations, unit, measureValues, score, error);
     }

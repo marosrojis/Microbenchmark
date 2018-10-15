@@ -1,8 +1,6 @@
 package cz.rojik.exception;
 
-import cz.rojik.dto.ErrorInfoDTO;
-
-import java.util.List;
+import cz.rojik.dto.ErrorInfoWithSourceCodeDTO;
 
 public class MavenCompileException extends RuntimeException {
 
@@ -10,7 +8,7 @@ public class MavenCompileException extends RuntimeException {
         super("Failure maven compilation");
     }
 
-    public MavenCompileException(List<ErrorInfoDTO> errors) {
+    public MavenCompileException(ErrorInfoWithSourceCodeDTO errors) {
         super("Failure maven compilation");
         this.errors = errors;
     }
@@ -19,9 +17,9 @@ public class MavenCompileException extends RuntimeException {
         super(error);
     }
 
-    private List<ErrorInfoDTO> errors;
+    private ErrorInfoWithSourceCodeDTO errors;
 
-    public List<ErrorInfoDTO> getErrors() {
+    public ErrorInfoWithSourceCodeDTO getErrors() {
         return errors;
     }
 }

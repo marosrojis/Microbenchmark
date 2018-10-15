@@ -4,6 +4,7 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.dto.ErrorDTO;
 import cz.rojik.dto.ErrorInfoDTO;
+import cz.rojik.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.dto.LibrariesDTO;
 import cz.rojik.dto.ResultDTO;
 import cz.rojik.dto.TemplateDTO;
@@ -61,7 +62,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         if (errors.size() != 0) {
             logger.error("Compilation is failed!! ({} errors)", errors.size());
             List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
-            List<ErrorInfoDTO> errorInfoList = errorsParserService.processErrorList(errorList, projectId);
+            ErrorInfoWithSourceCodeDTO errorInfoList = errorsParserService.processErrorList(errorList, projectId);
 
             throw new MavenCompileException(errorInfoList);
         }

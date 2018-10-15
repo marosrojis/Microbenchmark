@@ -1,6 +1,7 @@
 package cz.rojik.service.impl;
 
 import cz.rojik.constants.ProjectContants;
+import cz.rojik.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.exception.ReadFileException;
 import cz.rojik.dto.ErrorDTO;
 import cz.rojik.dto.ErrorInfoDTO;
@@ -43,8 +44,8 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
     }
 
     @Override
-    public List<ErrorInfoDTO> processErrorList(List<ErrorDTO> errors, String projectId) {
-        errors = insertCodeToError(projectId, errors);
+    public ErrorInfoWithSourceCodeDTO processErrorList(List<ErrorDTO> errors, String projectId) {
+        List<String> sourceCode = insertSourceCodeToError(projectId, errors);
 
         List<ErrorInfoDTO> errorInfoList = new ArrayList<>();
 
@@ -62,7 +63,8 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
             errorInfoList.add(errorInfo);
         }
 
-        return errorInfoList;
+        ErrorInfoWithSourceCodeDTO errorsWithSourceCode = new ErrorInfoWithSourceCodeDTO(errorInfoList, sourceCode);
+        return errorsWithSourceCode;
     }
 
     // PRIVATE
@@ -90,10 +92,10 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
         return errorList;
     }
 
-    private List<ErrorDTO> insertCodeToError(String projectId, List<ErrorDTO> errors) {
-        List<String> codes;
+    private List<String> insertSourceCodeToError(String projectId, List<ErrorDTO> errors) {
+        List<String> sourceCode;
         try {
-            codes = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
+            sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
             logger.error("Cannot open class from project witd ID {0}", projectId);
             throw new ReadFileException(projectId);
@@ -101,10 +103,10 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
         }
 
         for (ErrorDTO error : errors) {
-            error.setCode(codes.get(error.getRow() - 1));
+            error.setCode(sourceCode.get(error.getRow() - 1));
         }
 
-        return errors;
+        return sourceCode;
     }
 
     private Set<String> removeErrorsHelp(Set<String> errors) {
