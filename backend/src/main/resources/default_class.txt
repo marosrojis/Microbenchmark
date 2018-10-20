@@ -9,7 +9,10 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+
+// START LIBRARIES
 [config.libraries]
+// END LIBRARIES
 
 @State(Scope.Thread)
 @BenchmarkMode({Mode.AverageTime})
@@ -18,14 +21,20 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @Measurement(iterations = [config.measurement])
 public class [config.className] {
 
+// START DECLARE
 	[microbenchmark.declare]
+// END DECLARE
 
 	@Setup(Level.Trial)
 	public void init() {
+// START INIT
 		[microbenchmark.init]
+// END INIT
 	}
 
+// START TEST_METHODS
 [microbenchmark.testMethods]
+// END TEST_METHODS
 
 	public static void main(String[] args) throws RunnerException {
 
