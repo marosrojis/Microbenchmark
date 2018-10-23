@@ -13,8 +13,8 @@ import java.util.List;
 
 @RestController()
 @CrossOrigin(origins = "*")
-@RequestMapping(MappingURLConstants.TEST)
-public class ProjectController {
+@RequestMapping(MappingURLConstants.TEST3)
+public class ProjectController3 {
 
     @Autowired
     private ProjectService projectService;

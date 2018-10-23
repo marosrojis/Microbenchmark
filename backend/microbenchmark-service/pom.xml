@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>microbenchmark-backend</artifactId>
+    <artifactId>microbenchmark-service</artifactId>
 
     <properties>
         <docker-client.version>8.13.0</docker-client.version>
@@ -43,6 +43,13 @@
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-invoker</artifactId>
             <version>${maven-invoker.version}</version>
+        </dependency>
+
+        <!-- OTHER -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
 
     </dependencies>

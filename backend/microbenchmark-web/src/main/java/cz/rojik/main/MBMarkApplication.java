@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAutoConfiguration
 @EnableCaching
 @ComponentScan(basePackages = ConfigConstants.COMPONENT_SCAN_BASE_PACKAGE)
-@EnableJpaRepositories(basePackages = ConfigConstants.BACKEND_REPOSITORIES_PACKAGE)
-@EntityScan(basePackages = ConfigConstants.BACKEND_ENTITIES_PACKAGE)
+@EnableJpaRepositories(basePackages = ConfigConstants.REPOSITORIES_PACKAGE)
+@EntityScan(basePackages = ConfigConstants.ENTITIES_PACKAGE)
 @EnableTransactionManagement
 public class MBMarkApplication extends SpringBootServletInitializer {
 
