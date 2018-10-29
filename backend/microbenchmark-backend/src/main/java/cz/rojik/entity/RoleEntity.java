@@ -9,15 +9,15 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "mbmark_role")
-public class Role extends BaseEntity {
+public class RoleEntity extends BaseEntity {
 
     @Column(length=15, unique=true, nullable=false)
     private String type = RoleType.USER.getRoleType();
     
-    public Role(){
+    public RoleEntity(){
     }
     
-    public Role(RoleType role){
+    public RoleEntity(RoleType role){
     	this.type = role.name();
     }
 
@@ -35,7 +35,7 @@ public class Role extends BaseEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Role role = (Role) o;
+        RoleEntity role = (RoleEntity) o;
 
         if (getId() != null ? !getId().equals(role.getId()) : role.getId() != null) return false;
         return type != null ? type.equals(role.type) : role.type == null;

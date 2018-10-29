@@ -18,7 +18,7 @@ import java.util.Set;
 @Entity
 @Table(name = "mbmark_user", indexes = {
         @Index(columnList = "email", unique = true) })
-public class User extends BaseEntity {
+public class UserEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String firstname;
@@ -42,13 +42,16 @@ public class User extends BaseEntity {
     @JoinTable(name = "mbmark_user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private Set<Role> roles = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
-    public User() {
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
+    List<ResultEntity> results;
+
+    public UserEntity() {
 
     }
 
-    public User(String firstName, String lastName, String email, String password) {
+    public UserEntity(String firstName, String lastName, String email, String password) {
         this.firstname = firstName;
         this.lastname = lastName;
         this.email = email;
@@ -75,7 +78,7 @@ public class User extends BaseEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        User user = (User) o;
+        UserEntity user = (UserEntity) o;
 
         if (enabled != user.enabled) return false;
         if (firstname != null ? !firstname.equals(user.firstname) : user.firstname != null) return false;
@@ -98,11 +101,11 @@ public class User extends BaseEntity {
         return result;
     }
 
-    public Set<Role> getRoles() {
+    public Set<RoleEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
     }
 
@@ -154,4 +157,11 @@ public class User extends BaseEntity {
         return this.password;
     }
 
+    public List<ResultEntity> getResults() {
+        return results;
+    }
+
+    public void setResults(List<ResultEntity> results) {
+        this.results = results;
+    }
 }

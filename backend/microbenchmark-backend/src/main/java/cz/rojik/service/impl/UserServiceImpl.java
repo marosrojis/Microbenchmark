@@ -2,7 +2,7 @@ package cz.rojik.service.impl;
 
 import cz.rojik.dto.user.UserDTO;
 import cz.rojik.dto.user.UserRegistrationForm;
-import cz.rojik.entity.User;
+import cz.rojik.entity.UserEntity;
 import cz.rojik.repository.UserRepository;
 import cz.rojik.service.RoleService;
 import cz.rojik.service.UserService;
@@ -36,15 +36,15 @@ public class UserServiceImpl implements UserService {
     public UserDTO createUser(UserRegistrationForm userForm) {
 		boolean verifyExistEmail = verifyExistEmail(userForm.getEmail());
 		if (!verifyExistEmail) {
-            User user = createAndSaveRegisteredUser(userForm);
+            UserEntity user = createAndSaveRegisteredUser(userForm);
             return new UserDTO(user);
 		}
 		return null;
 	}
 
 	/**
-	 * Method that returns list of {@link User} that are enabled
-	 * @return a list of {@link User} that are enabled
+	 * Method that returns list of {@link UserEntity} that are enabled
+	 * @return a list of {@link UserEntity} that are enabled
 	 */
     @Override
     public List<UserDTO> getAllEnabled() {
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Method that returns user by its email address
      * @param email the email address to find from
-     * @return the {@link User} found
+     * @return the {@link UserEntity} found
      */
     @Override
     public UserDTO getByEmail(String email) {
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getUser(Long id) {
-        User user = userRepository.findOne(id);
+        UserEntity user = userRepository.findOne(id);
 
         if (user == null) {
             return null;
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private User createAndSaveRegisteredUser(UserRegistrationForm userForm) {
+    private UserEntity createAndSaveRegisteredUser(UserRegistrationForm userForm) {
 //        User user = new User(userForm.getFirstname(), userForm.getLastname(), userForm.getEmail(), passwordEncoder.encode(userForm.getPassword()));
 //        user.getRoles().add(roleService.getByType(RoleType.getRoleById(userForm.getRoleId())));
 

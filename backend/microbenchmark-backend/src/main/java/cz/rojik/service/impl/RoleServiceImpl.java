@@ -1,7 +1,7 @@
 package cz.rojik.service.impl;
 
 import cz.rojik.dto.user.RoleDTO;
-import cz.rojik.entity.Role;
+import cz.rojik.entity.RoleEntity;
 import cz.rojik.entity.RoleType;
 import cz.rojik.repository.RoleRepository;
 import cz.rojik.service.RoleService;
@@ -18,9 +18,9 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     /**
-	 * Getting {@link Role} by its type
+	 * Getting {@link RoleEntity} by its type
 	 * @param type to find from
-	 * @return the {@link Role} found
+	 * @return the {@link RoleEntity} found
 	 */
 	@Override
 	public RoleDTO getByType(String type) {
@@ -28,9 +28,9 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	/**
-	 * Getting {@link Role} by its type (enum)
+	 * Getting {@link RoleEntity} by its type (enum)
 	 * @param roleType to find from
-	 * @return the {@link Role} found
+	 * @return the {@link RoleEntity} found
 	 */
 	@Override
 	public RoleDTO getByType(RoleType roleType) {
@@ -43,10 +43,10 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public List<RoleDTO> findAll() {
-		List<Role> roles = roleRepository.findAll();
+		List<RoleEntity> roles = roleRepository.findAll();
 
 		List<RoleDTO> output = new ArrayList<>();
-		for (Role role : roles) {
+		for (RoleEntity role : roles) {
 			output.add(new RoleDTO(role));
 		}
 		return output;

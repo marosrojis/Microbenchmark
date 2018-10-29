@@ -1,5 +1,6 @@
 package cz.rojik.config;
 
+import cz.rojik.constants.MappingURLConstants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
@@ -9,12 +10,9 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
 
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
-//        messages
-//                .simpSubscribeDestMatchers("/socket/**").permitAll()
-//                .anyMessage().authenticated();
         messages
-                .simpSubscribeDestMatchers("/benchmark/**").permitAll()
-                .simpDestMatchers("/app/**").permitAll();
+                .simpSubscribeDestMatchers(MappingURLConstants.BENCHMARK_WEBSOCKET + "/**").permitAll()
+                .simpDestMatchers(MappingURLConstants.APP_WEBSOCKET + "/**").permitAll();
     }
 
     @Override

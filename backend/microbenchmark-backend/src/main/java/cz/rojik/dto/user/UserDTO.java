@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.rojik.auth.user.Login;
 import cz.rojik.dto.BaseDTO;
-import cz.rojik.entity.Role;
-import cz.rojik.entity.User;
+import cz.rojik.entity.RoleEntity;
+import cz.rojik.entity.UserEntity;
 import cz.rojik.util.serialization.LocalDateTimeDeserializer;
 import cz.rojik.util.serialization.LocalDateTimeSerializer;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,7 +43,7 @@ public class UserDTO extends BaseDTO implements UserDetails {
 
 	}
 
-	public UserDTO(User user) {
+	public UserDTO(UserEntity user) {
 		this.id = user.getId();
 		this.email = user.getEmail();
 		this.firstname = user.getFirstname();
@@ -52,7 +52,7 @@ public class UserDTO extends BaseDTO implements UserDetails {
 		this.created = user.getCreated();
 		this.password = user.getPassword();
 
-        for (Role role : user.getRoles()) {
+        for (RoleEntity role : user.getRoles()) {
             this.roles.add(new RoleDTO(role));
         }
 	}

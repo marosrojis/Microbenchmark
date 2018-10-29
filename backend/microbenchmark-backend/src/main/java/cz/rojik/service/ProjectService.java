@@ -1,10 +1,10 @@
 package cz.rojik.service;
 
-import cz.rojik.entity.Project;
+import cz.rojik.entity.ProjectEntity;
 
 import java.util.List;
 
 public interface ProjectService {
 
-    List<Project> fetchAll();
+    List<ProjectEntity> fetchAll();
 }

@@ -14,10 +14,14 @@ public class MappingURLConstants {
     public static final String LOGIN = API_PREFIX + "/login";
 
     // WEBSOCKET
-    public static final String BENCHMARK_RUN = "/benchmark/run";
-    public static final String BENCHMARK_RESULT = "/benchmark/result";
-    public static final String BENCHMARK_RESULT_STEP = "/benchmark/result/step";
+    public static final String APP_WEBSOCKET = "/app";
+    public static final String BENCHMARK_WEBSOCKET = "/benchmark";
 
+    public static final String BENCHMARK_RUN = BENCHMARK_WEBSOCKET + "/run";
+    public static final String BENCHMARK_RESULT = BENCHMARK_WEBSOCKET + "/result";
+    public static final String BENCHMARK_RESULT_STEP = BENCHMARK_RESULT + "/step";
+
+    public static final String SOCKET = "/socket";
     public static final String TEST = API_PREFIX + "/test";
 
 }

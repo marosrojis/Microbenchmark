@@ -1,7 +1,7 @@
 package cz.rojik.controller.rest;
 
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.entity.Project;
+import cz.rojik.entity.ProjectEntity;
 import cz.rojik.service.ProjectService;
 import cz.rojik.util.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @GetMapping("/")
-    public List<Project> getProjects() {
+    public List<ProjectEntity> getProjects() {
 
         SecurityHelper.getCurrentUser();
         return projectService.fetchAll();

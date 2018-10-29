@@ -40,11 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private StatelessAuthenticationFilter statelessAuthenticationFilter;
 
 	@Bean
-	public TokenBasedRememberMeServices rememberMeServices() {
-		return new TokenBasedRememberMeServices("remember-me-key", userDetailService);
-	}
-
-	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
@@ -72,19 +67,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				.csrf()
-				.ignoringAntMatchers("/socket/**")
-				.and()
-				.headers()
-				// allow same origin to frame our site to support iframe SockJS
-				.frameOptions().sameOrigin()
-				.and()
 			.authorizeRequests()
 				.antMatchers(MappingURLConstants.LOGIN).permitAll()
-				.antMatchers("/socket/**").permitAll()
-//				.antMatchers(MappingURLConstants.TEST2 + "/**").permitAll()
-				.antMatchers(MappingURLConstants.TEST3+ "/**").permitAll()
-				.antMatchers(MappingURLConstants.TEST2 + "/**").hasRole(RoleType.ADMIN.getRoleType())
+				.antMatchers(MappingURLConstants.SOCKET + "/**").permitAll()
 				.antMatchers(MappingURLConstants.TEST + "/**").hasRole(RoleType.USER.getRoleType())
                 .antMatchers()
                     .hasRole(RoleType.Values.ROLE_USER_VALUE)
@@ -96,10 +81,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// custom JSON based authentication by POST of {"username":"<name>","password":"<password>"} which sets the token header upon authentication
 			.addFilterBefore(new StatelessLoginFilter(MappingURLConstants.LOGIN, tokenAuthenticationService, userDetailService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
 				// custom Token based authentication based on the header previously given to the client
-//			.addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(statelessAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
-			.csrf().disable(); // XXX WARNING: CSRF disabled for POST JSON. Consider enabling for any browser-based interaction
+			.csrf().disable();
 	}
 
 }

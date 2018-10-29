@@ -2,6 +2,7 @@ package cz.rojik.config;
 
 import cz.rojik.auth.TokenAuthenticationService;
 import cz.rojik.auth.TokenHandler;
+import cz.rojik.constants.MappingURLConstants;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -28,15 +29,15 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/socket")
+        registry.addEndpoint(MappingURLConstants.SOCKET)
                 .setAllowedOrigins("*")
                 .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app")
-                .enableSimpleBroker("/benchmark");
+        registry.setApplicationDestinationPrefixes(MappingURLConstants.APP_WEBSOCKET)
+                .enableSimpleBroker(MappingURLConstants.BENCHMARK_WEBSOCKET);
     }
 
     @Override

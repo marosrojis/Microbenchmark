@@ -1,7 +1,7 @@
 package cz.rojik.dto.user;
 
 import cz.rojik.dto.BaseDTO;
-import cz.rojik.entity.Role;
+import cz.rojik.entity.RoleEntity;
 
 public class RoleDTO extends BaseDTO {
 
@@ -12,7 +12,7 @@ public class RoleDTO extends BaseDTO {
 
     public RoleDTO() {}
 
-    public RoleDTO(Role role) {
+    public RoleDTO(RoleEntity role) {
 	    this.id = role.getId();
 	    this.type = role.getType();
     }
