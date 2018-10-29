@@ -27,7 +27,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 	private String email;
 	private String firstname;
 	private String lastname;
-	private Double balance;
 	private boolean enabled;
 	private long expires;
 
@@ -96,7 +95,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 		if (email != null ? !email.equals(userDTO.email) : userDTO.email != null) return false;
 		if (firstname != null ? !firstname.equals(userDTO.firstname) : userDTO.firstname != null) return false;
 		if (lastname != null ? !lastname.equals(userDTO.lastname) : userDTO.lastname != null) return false;
-		if (balance != null ? !balance.equals(userDTO.balance) : userDTO.balance != null) return false;
 		if (created != null ? !created.equals(userDTO.created) : userDTO.created != null) return false;
 		return !(password != null ? !password.equals(userDTO.password) : userDTO.password != null);
 
@@ -108,7 +106,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 		result = 31 * result + (email != null ? email.hashCode() : 0);
 		result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
 		result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
-		result = 31 * result + (balance != null ? balance.hashCode() : 0);
 		result = 31 * result + (enabled ? 1 : 0);
 		result = 31 * result + (created != null ? created.hashCode() : 0);
 		result = 31 * result + (password != null ? password.hashCode() : 0);
@@ -122,7 +119,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 				", firstname='" + firstname + '\'' +
 				", lastname='" + lastname + '\'' +
 				", password='" + password + '\'' +
-				", balance=" + balance +
 				", created=" + created +
 				", enabled=" + enabled +
 				'}';
@@ -191,14 +187,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
-	}
-
-	public Double getBalance() {
-		return balance;
-	}
-
-	public void setBalance(Double balance) {
-		this.balance = balance;
 	}
 
 	public void setPassword(String password) {

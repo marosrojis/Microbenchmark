@@ -19,11 +19,5 @@ public class MappingURLConstants {
     public static final String BENCHMARK_RESULT_STEP = "/benchmark/result/step";
 
     public static final String TEST = API_PREFIX + "/test";
-    public static final String TEST2 = API_PREFIX + "/test2";
-    public static final String TEST3 = API_PREFIX + "/test3";
-//    public static final String TEST = "test";
-//    public static final String TEST2= "test2";
-
-
 
 }

@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -73,8 +72,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+				.csrf()
+				.ignoringAntMatchers("/socket/**")
+				.and()
+				.headers()
+				// allow same origin to frame our site to support iframe SockJS
+				.frameOptions().sameOrigin()
+				.and()
 			.authorizeRequests()
 				.antMatchers(MappingURLConstants.LOGIN).permitAll()
+				.antMatchers("/socket/**").permitAll()
 //				.antMatchers(MappingURLConstants.TEST2 + "/**").permitAll()
 				.antMatchers(MappingURLConstants.TEST3+ "/**").permitAll()
 				.antMatchers(MappingURLConstants.TEST2 + "/**").hasRole(RoleType.ADMIN.getRoleType())

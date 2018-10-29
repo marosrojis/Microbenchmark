@@ -36,6 +36,10 @@ public class TokenAuthenticationService {
 
 	public Authentication getAuthentication(HttpServletRequest request) {
 		final String token = request.getHeader(AUTH_HEADER_NAME);
+        return getAuthentication(token);
+	}
+
+	public Authentication getAuthentication(String token) {
 		if (token != null) {
 			final UserDTO user = tokenHandler.parseUserFromToken(token);
 			if (user != null) {

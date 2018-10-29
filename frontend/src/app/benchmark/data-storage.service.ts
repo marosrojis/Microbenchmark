@@ -103,12 +103,18 @@ export class DataStorageService implements OnInit {
   }
 
   createWebSocketConnection() {
+    const token = 'eyJlbWFpbCI6InRlc3RAdGVzdC5jeiIsInBhc3N3b3JkIjoiJDJhJDEwJExjbENTVUpzQzJ1QlIvd3hhS1EzZXVDaGxLLnppSC5iQXc2MDRlSXY4Y0RVa1o5UGsxY3dPIiwiZXhwaXJlcyI6MTU0MTU3ODU2MzIxOCwicm9sZXMiOlt7ImlkIjoxLCJ0eXBlIjoiVVNFUiIsIm5ldyI6ZmFsc2V9XSwiZmlyc3ROYW1lIjoiVGVzdCIsImxhc3ROYW1lIjoiVGVzdG92aWMifQ==.ITrzSJ+rcqfuTMKZlk4sqAA/RQVomLEo3Ycn4Nk6qUU=';
     const socket = new WebSocket(WEBSOCKET_URL);
     this.ws = Stomp.over(socket);
     const that = this;
 
+    const headers = {
+            Authorization : 'Bearer ' + token,
+        };
+
     that.ws.connect(
-      {},
+      headers,
+      // {},
       function(frame) {
         that.ws.subscribe('/errors', function(message) {
           alert('Error ' + message.body);
@@ -123,7 +129,8 @@ export class DataStorageService implements OnInit {
         });
       },
       function(error) {
-        alert('STOMP error ' + error);
+        debugger;
+        alert('STOMP error ' + error + ', headers = ' + error.headers);
       },
     );
   }
