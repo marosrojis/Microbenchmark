@@ -1,7 +1,8 @@
 package cz.rojik.service;
 
 import cz.rojik.MBMarkApplicationTest;
-import cz.rojik.utils.pojo.ImportsResult;
+import cz.rojik.service.service.ImporterService;
+import cz.rojik.service.utils.pojo.ImportsResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

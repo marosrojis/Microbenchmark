@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import cz.rojik.dto.LibrariesDTO;
-import cz.rojik.dto.LibrariesToChooseDTO;
-import cz.rojik.dto.ProjectDTO;
-import cz.rojik.dto.TemplateDTO;
-import cz.rojik.exception.ImportsToChooseException;
-import cz.rojik.exception.MavenCompileException;
-import cz.rojik.service.BenchmarkService;
+import cz.rojik.service.dto.LibrariesDTO;
+import cz.rojik.service.dto.LibrariesToChooseDTO;
+import cz.rojik.service.dto.ProjectDTO;
+import cz.rojik.service.dto.TemplateDTO;
+import cz.rojik.service.exception.ImportsToChooseException;
+import cz.rojik.service.exception.MavenCompileException;
+import cz.rojik.service.service.BenchmarkService;
 
 @RestController("restBenchmarkController")
 @CrossOrigin(origins = "*")

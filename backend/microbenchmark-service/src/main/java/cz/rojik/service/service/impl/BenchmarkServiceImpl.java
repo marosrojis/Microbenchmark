@@ -1,0 +1,84 @@
+package cz.rojik.service.service.impl;
+
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
+import cz.rojik.service.dto.ErrorDTO;
+import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
+import cz.rojik.service.dto.LibrariesDTO;
+import cz.rojik.service.dto.ResultDTO;
+import cz.rojik.service.dto.TemplateDTO;
+import cz.rojik.service.exception.ImportsToChooseException;
+import cz.rojik.service.exception.MavenCompileException;
+import cz.rojik.service.service.BenchmarkService;
+import cz.rojik.service.service.GeneratorService;
+import cz.rojik.service.service.ResultParserService;
+import cz.rojik.service.utils.FileUtils;
+import cz.rojik.service.service.ErrorsParserService;
+import cz.rojik.service.service.RunnerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+
+@Service
+public class BenchmarkServiceImpl implements BenchmarkService {
+
+    private static Logger logger = LoggerFactory.getLogger(BenchmarkServiceImpl.class);
+
+
+    @Autowired
+    private GeneratorService generatorService;
+
+    @Autowired
+    private RunnerService runnerService;
+
+    @Autowired
+    private ResultParserService resultParserService;
+
+    @Autowired
+    private ErrorsParserService errorsParserService;
+
+    @Override
+    public String createProject(TemplateDTO template) throws ImportsToChooseException {
+        String projectId = generatorService.generateJavaClass(template);
+        return projectId;
+    }
+
+    @Override
+    public String importLibraries(LibrariesDTO libraries) {
+        String projectId = generatorService.importLibraries(libraries);
+        return projectId;
+    }
+
+    @Override
+    public boolean compile(String projectId) {
+        Set<String> errors = runnerService.compileProject(projectId);
+
+        if (errors.size() != 0) {
+            logger.error("Compilation is failed!! ({} errors)", errors.size());
+            List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
+            ErrorInfoWithSourceCodeDTO errorInfoList = errorsParserService.processErrorList(errorList, projectId);
+
+            throw new MavenCompileException(errorInfoList);
+        }
+        logger.info("Compilation is successful.");
+
+        return true;
+    }
+
+    @Override
+    public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) {
+        ResultDTO result = null;
+        try {
+            projectId = runnerService.runProject(projectId, template, socketHeader);
+            result = resultParserService.parseResult(projectId);
+        } catch (DockerCertificateException | DockerException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+}

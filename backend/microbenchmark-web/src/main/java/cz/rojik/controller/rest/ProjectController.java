@@ -1,9 +1,9 @@
 package cz.rojik.controller.rest;
 
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.entity.ProjectEntity;
-import cz.rojik.service.ProjectService;
-import cz.rojik.util.SecurityHelper;
+import cz.rojik.backend.entity.ProjectEntity;
+import cz.rojik.backend.service.ProjectService;
+import cz.rojik.backend.util.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

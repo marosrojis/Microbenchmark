@@ -1,8 +1,13 @@
 package cz.rojik.controller.websocket;
 
+import cz.rojik.backend.service.ResultService;
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.dto.ResultDTO;
-import cz.rojik.service.BenchmarkService;
+import cz.rojik.controller.rest.util.converter.ResultConverter;
+import cz.rojik.service.TransformService;
+import cz.rojik.service.dto.ResultDTO;
+import cz.rojik.service.dto.TemplateDTO;
+import cz.rojik.service.service.BenchmarkService;
+import cz.rojik.service.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -11,7 +16,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,6 +28,12 @@ public class BenchmarkController {
     @Autowired
     private BenchmarkService benchmarkService;
 
+    @Autowired
+    private TransformService transformService;
+
+    @Autowired
+    private ResultService resultService;
+
     @MessageMapping(MappingURLConstants.BENCHMARK_RUN)
     @SendToUser(MappingURLConstants.BENCHMARK_RESULT)
     public String runBenchmark(SimpMessageHeaderAccessor headerAccessor, String projectId) {
@@ -33,9 +43,13 @@ public class BenchmarkController {
         messageHeaderAccessor.setSessionId(headerAccessor.getSessionId());
         messageHeaderAccessor.setLeaveMutable(true);
 
-        ResultDTO result = benchmarkService.runBenchmark(projectId, messageHeaderAccessor);
+        TemplateDTO template = FileUtils.getTemplateFromJson(projectId);
+        ResultDTO benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
 
-        return new SimpleDateFormat("HH:mm:ss").format(new Date())+" - " + result;
+        cz.rojik.backend.dto.ResultDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
+        resultToSave = resultService.saveResult(resultToSave);
+
+        return new SimpleDateFormat("HH:mm:ss").format(new Date())+" - " + benchmarkResult;
     }
 
 }

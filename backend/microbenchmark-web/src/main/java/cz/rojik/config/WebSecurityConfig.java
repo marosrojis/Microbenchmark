@@ -1,11 +1,11 @@
 package cz.rojik.config;
 
-import cz.rojik.auth.StatelessAuthenticationFilter;
-import cz.rojik.auth.StatelessLoginFilter;
-import cz.rojik.auth.TokenAuthenticationService;
-import cz.rojik.auth.user.UserDetailService;
+import cz.rojik.backend.auth.StatelessAuthenticationFilter;
+import cz.rojik.backend.auth.StatelessLoginFilter;
+import cz.rojik.backend.auth.TokenAuthenticationService;
+import cz.rojik.backend.auth.user.UserDetailService;
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.entity.RoleType;
+import cz.rojik.backend.entity.RoleType;
 import cz.rojik.error.MBenchmarkAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;

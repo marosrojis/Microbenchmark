@@ -1,7 +1,6 @@
 package cz.rojik.config;
 
-import cz.rojik.auth.TokenAuthenticationService;
-import cz.rojik.auth.TokenHandler;
+import cz.rojik.backend.auth.TokenAuthenticationService;
 import cz.rojik.constants.MappingURLConstants;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
