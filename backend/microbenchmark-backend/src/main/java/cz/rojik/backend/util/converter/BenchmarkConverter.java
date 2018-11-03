@@ -1,20 +1,19 @@
 package cz.rojik.backend.util.converter;
 
 import cz.rojik.backend.dto.MeasureMethodDTO;
-import cz.rojik.backend.dto.ResultDTO;
+import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.user.UserDTO;
-import cz.rojik.backend.entity.ResultEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import cz.rojik.backend.entity.BenchmarkEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ResultConverter {
+public class BenchmarkConverter {
 
-    public ResultDTO entityToDTO(ResultEntity entity) {
-        ResultDTO result = new ResultDTO();
+    public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
+        BenchmarkDTO result = new BenchmarkDTO();
 
         result.setContent(entity.getContent())
                 .setCreated(entity.getCreated())
@@ -33,8 +32,8 @@ public class ResultConverter {
         return result;
     }
 
-    public ResultEntity dtoToEntity(ResultDTO dto) {
-        ResultEntity entity = new ResultEntity();
+    public BenchmarkEntity dtoToEntity(BenchmarkDTO dto) {
+        BenchmarkEntity entity = new BenchmarkEntity();
 
         entity.setContent(dto.getContent())
                 .setCreated(dto.getCreated())

@@ -20,7 +20,7 @@ public class MeasureMethodEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id", nullable = false)
-    private ResultEntity result;
+    private BenchmarkEntity result;
 
     public int getOrder() {
         return order;
@@ -40,11 +40,11 @@ public class MeasureMethodEntity extends BaseEntity {
         return this;
     }
 
-    public ResultEntity getResult() {
+    public BenchmarkEntity getResult() {
         return result;
     }
 
-    public MeasureMethodEntity setResult(ResultEntity result) {
+    public MeasureMethodEntity setResult(BenchmarkEntity result) {
         this.result = result;
         return this;
     }

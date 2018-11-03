@@ -45,7 +45,7 @@ public class UserEntity extends BaseEntity {
     private Set<RoleEntity> roles = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
-    List<ResultEntity> results;
+    List<BenchmarkEntity> results;
 
     public UserEntity() {
 
@@ -157,11 +157,11 @@ public class UserEntity extends BaseEntity {
         return this.password;
     }
 
-    public List<ResultEntity> getResults() {
+    public List<BenchmarkEntity> getResults() {
         return results;
     }
 
-    public void setResults(List<ResultEntity> results) {
+    public void setResults(List<BenchmarkEntity> results) {
         this.results = results;
     }
 }

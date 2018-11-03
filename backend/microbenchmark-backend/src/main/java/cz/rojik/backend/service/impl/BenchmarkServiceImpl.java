@@ -1,15 +1,15 @@
 package cz.rojik.backend.service.impl;
 
 import cz.rojik.backend.dto.MeasureMethodDTO;
-import cz.rojik.backend.dto.ResultDTO;
+import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.entity.MeasureMethodEntity;
-import cz.rojik.backend.entity.ResultEntity;
+import cz.rojik.backend.entity.BenchmarkEntity;
 import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.repository.MeasureMethodRepository;
-import cz.rojik.backend.repository.ResultRepository;
+import cz.rojik.backend.repository.BenchmarkRepository;
 import cz.rojik.backend.repository.UserRepository;
-import cz.rojik.backend.service.ResultService;
-import cz.rojik.backend.util.converter.ResultConverter;
+import cz.rojik.backend.service.BenchmarkService;
+import cz.rojik.backend.util.converter.BenchmarkConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class ResultServiceImpl implements ResultService {
+@Service("benchmarkServiceBackend")
+public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Autowired
-    private ResultConverter resultConverter;
+    private BenchmarkConverter benchmarkConverter;
 
     @Autowired
-    private ResultRepository resultRepository;
+    private BenchmarkRepository benchmarkRepository;
 
     @Autowired
     private MeasureMethodRepository measureMethodRepository;
@@ -34,13 +34,13 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @Transactional
-    public ResultDTO saveResult(ResultDTO result) {
+    public BenchmarkDTO saveResult(BenchmarkDTO result) {
         UserEntity user = userRepository.findOne(result.getUser().getId());
 
-        ResultEntity entity = resultConverter.dtoToEntity(result);
+        BenchmarkEntity entity = benchmarkConverter.dtoToEntity(result);
         entity.setUser(user);
 
-        entity = resultRepository.saveAndFlush(entity);
+        entity = benchmarkRepository.saveAndFlush(entity);
 
         List<MeasureMethodEntity> measureMethodEntityList = new ArrayList<>();
         for (MeasureMethodDTO method : result.getMeasureMethods()) {
@@ -53,6 +53,6 @@ public class ResultServiceImpl implements ResultService {
         }
 
         entity.setMeasureMethods(measureMethodEntityList);
-        return resultConverter.entityToDTO(entity);
+        return benchmarkConverter.entityToDTO(entity);
     }
 }

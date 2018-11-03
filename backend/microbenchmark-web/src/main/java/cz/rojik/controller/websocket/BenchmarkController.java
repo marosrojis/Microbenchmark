@@ -1,12 +1,12 @@
 package cz.rojik.controller.websocket;
 
-import cz.rojik.backend.service.ResultService;
+import cz.rojik.backend.dto.BenchmarkDTO;
+import cz.rojik.backend.service.BenchmarkService;
+import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.controller.rest.util.converter.ResultConverter;
 import cz.rojik.service.TransformService;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
-import cz.rojik.service.service.BenchmarkService;
 import cz.rojik.service.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,13 +26,13 @@ public class BenchmarkController {
     private SimpMessagingTemplate template;
 
     @Autowired
-    private BenchmarkService benchmarkService;
+    private cz.rojik.service.service.BenchmarkService benchmarkService;
 
     @Autowired
     private TransformService transformService;
 
     @Autowired
-    private ResultService resultService;
+    private BenchmarkService benchmarkServiceBackend;
 
     @MessageMapping(MappingURLConstants.BENCHMARK_RUN)
     @SendToUser(MappingURLConstants.BENCHMARK_RESULT)
@@ -46,8 +46,10 @@ public class BenchmarkController {
         TemplateDTO template = FileUtils.getTemplateFromJson(projectId);
         ResultDTO benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
 
-        cz.rojik.backend.dto.ResultDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
-        resultToSave = resultService.saveResult(resultToSave);
+        if (SecurityHelper.getCurrentUser() != null) {
+            BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
+            resultToSave = benchmarkServiceBackend.saveResult(resultToSave);
+        }
 
         return new SimpleDateFormat("HH:mm:ss").format(new Date())+" - " + benchmarkResult;
     }

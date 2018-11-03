@@ -5,7 +5,7 @@ import cz.rojik.backend.dto.user.UserDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ResultDTO extends BaseDTO {
+public class BenchmarkDTO extends BaseDTO {
 
     private String projectId;
     private LocalDateTime created;
@@ -20,7 +20,7 @@ public class ResultDTO extends BaseDTO {
 
     @Override
     public String toString() {
-        return "ResultDTO{" +
+        return "BenchmarkDTO{" +
                 "projectId='" + projectId + '\'' +
                 ", created=" + created +
                 ", content='" + content + '\'' +
@@ -37,7 +37,7 @@ public class ResultDTO extends BaseDTO {
         return projectId;
     }
 
-    public ResultDTO setProjectId(String projectId) {
+    public BenchmarkDTO setProjectId(String projectId) {
         this.projectId = projectId;
         return this;
     }
@@ -46,7 +46,7 @@ public class ResultDTO extends BaseDTO {
         return created;
     }
 
-    public ResultDTO setCreated(LocalDateTime created) {
+    public BenchmarkDTO setCreated(LocalDateTime created) {
         this.created = created;
         return this;
     }
@@ -55,7 +55,7 @@ public class ResultDTO extends BaseDTO {
         return content;
     }
 
-    public ResultDTO setContent(String content) {
+    public BenchmarkDTO setContent(String content) {
         this.content = content;
         return this;
     }
@@ -64,7 +64,7 @@ public class ResultDTO extends BaseDTO {
         return warmup;
     }
 
-    public ResultDTO setWarmup(int warmup) {
+    public BenchmarkDTO setWarmup(int warmup) {
         this.warmup = warmup;
         return this;
     }
@@ -73,7 +73,7 @@ public class ResultDTO extends BaseDTO {
         return measurement;
     }
 
-    public ResultDTO setMeasurement(int measurement) {
+    public BenchmarkDTO setMeasurement(int measurement) {
         this.measurement = measurement;
         return this;
     }
@@ -82,7 +82,7 @@ public class ResultDTO extends BaseDTO {
         return init;
     }
 
-    public ResultDTO setInit(String init) {
+    public BenchmarkDTO setInit(String init) {
         this.init = init;
         return this;
     }
@@ -91,7 +91,7 @@ public class ResultDTO extends BaseDTO {
         return declare;
     }
 
-    public ResultDTO setDeclare(String declare) {
+    public BenchmarkDTO setDeclare(String declare) {
         this.declare = declare;
         return this;
     }
@@ -100,7 +100,7 @@ public class ResultDTO extends BaseDTO {
         return user;
     }
 
-    public ResultDTO setUser(UserDTO user) {
+    public BenchmarkDTO setUser(UserDTO user) {
         this.user = user;
         return this;
     }
@@ -109,7 +109,7 @@ public class ResultDTO extends BaseDTO {
         return measureMethods;
     }
 
-    public ResultDTO setMeasureMethods(List<MeasureMethodDTO> measureMethods) {
+    public BenchmarkDTO setMeasureMethods(List<MeasureMethodDTO> measureMethods) {
         this.measureMethods = measureMethods;
         return this;
     }

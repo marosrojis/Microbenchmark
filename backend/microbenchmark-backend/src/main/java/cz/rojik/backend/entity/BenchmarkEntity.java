@@ -14,13 +14,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-// TODO: rename to BENCHMARK
 @Entity
 @Table(
-        name = "mbmark_result",
+        name = "mbmark_benchmark",
         uniqueConstraints = @UniqueConstraint(columnNames = {"project_id"}),
         indexes = @Index(columnList = "project_id"))
-public class ResultEntity extends BaseEntity {
+public class BenchmarkEntity extends BaseEntity {
 
     @Column(name = "project_id", nullable = false)
     private String projectId;
@@ -68,7 +67,7 @@ public class ResultEntity extends BaseEntity {
         return projectId;
     }
 
-    public ResultEntity setProjectId(String projectId) {
+    public BenchmarkEntity setProjectId(String projectId) {
         this.projectId = projectId;
         return this;
     }
@@ -77,7 +76,7 @@ public class ResultEntity extends BaseEntity {
         return created;
     }
 
-    public ResultEntity setCreated(LocalDateTime created) {
+    public BenchmarkEntity setCreated(LocalDateTime created) {
         this.created = created;
         return this;
     }
@@ -86,7 +85,7 @@ public class ResultEntity extends BaseEntity {
         return content;
     }
 
-    public ResultEntity setContent(String content) {
+    public BenchmarkEntity setContent(String content) {
         this.content = content;
         return this;
     }
@@ -95,7 +94,7 @@ public class ResultEntity extends BaseEntity {
         return measurement;
     }
 
-    public ResultEntity setMeasurement(int measurement) {
+    public BenchmarkEntity setMeasurement(int measurement) {
         this.measurement = measurement;
         return this;
     }
@@ -104,7 +103,7 @@ public class ResultEntity extends BaseEntity {
         return init;
     }
 
-    public ResultEntity setInit(String init) {
+    public BenchmarkEntity setInit(String init) {
         this.init = init;
         return this;
     }
@@ -113,7 +112,7 @@ public class ResultEntity extends BaseEntity {
         return declare;
     }
 
-    public ResultEntity setDeclare(String declare) {
+    public BenchmarkEntity setDeclare(String declare) {
         this.declare = declare;
         return this;
     }
@@ -122,7 +121,7 @@ public class ResultEntity extends BaseEntity {
         return measureMethods;
     }
 
-    public ResultEntity setMeasureMethods(List<MeasureMethodEntity> measureMethods) {
+    public BenchmarkEntity setMeasureMethods(List<MeasureMethodEntity> measureMethods) {
         this.measureMethods = measureMethods;
         return this;
     }
@@ -131,7 +130,7 @@ public class ResultEntity extends BaseEntity {
         return user;
     }
 
-    public ResultEntity setUser(UserEntity user) {
+    public BenchmarkEntity setUser(UserEntity user) {
         this.user = user;
         return this;
     }
@@ -140,7 +139,7 @@ public class ResultEntity extends BaseEntity {
         return warmup;
     }
 
-    public ResultEntity setWarmup(int warmup) {
+    public BenchmarkEntity setWarmup(int warmup) {
         this.warmup = warmup;
         return this;
     }
@@ -150,7 +149,7 @@ public class ResultEntity extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ResultEntity that = (ResultEntity) o;
+        BenchmarkEntity that = (BenchmarkEntity) o;
         return warmup == that.warmup &&
                 measurement == that.measurement &&
                 Objects.equals(projectId, that.projectId) &&

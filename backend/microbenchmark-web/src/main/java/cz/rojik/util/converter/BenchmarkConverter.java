@@ -1,7 +1,7 @@
-package cz.rojik.controller.rest.util.converter;
+package cz.rojik.util.converter;
 
 import cz.rojik.backend.dto.MeasureMethodDTO;
-import cz.rojik.backend.dto.ResultDTO;
+import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Component("resultConverterRest")
-public class ResultConverter {
+@Component("benchmarkConverterRest")
+public class BenchmarkConverter {
 
-    public ResultDTO templateToResult(TemplateDTO template) {
-        ResultDTO result = new ResultDTO();
+    public BenchmarkDTO templateToResult(TemplateDTO template) {
+        BenchmarkDTO result = new BenchmarkDTO();
 
         result.setDeclare(template.getDeclare())
                 .setInit(template.getInit())
