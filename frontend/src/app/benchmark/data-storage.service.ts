@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/Rx';
 import { Template } from '../model/template.model';
 import { Project } from '../model/project.model';
@@ -8,6 +8,9 @@ import { Operation } from '../model/operation.model';
 import * as Stomp from 'stompjs';
 import { ProcessInfo } from '../model/processInfo.model';
 import { LibrariesToChoose } from '../model/libraries-to-choose.model';
+import { User } from '../model/user.model';
+import { LoggedUser } from '../model/loggedUser.model';
+import { AuthService } from '../auth/auth.service';
 
 const REST_URL = 'http://localhost:8080';
 const WEBSOCKET_URL = 'ws://localhost:8080/socket/websocket';
@@ -19,83 +22,67 @@ export class DataStorageService implements OnInit {
   showMessage = new Subject<string>();
   librariesToChoose = new Subject<LibrariesToChoose>();
 
+  loggedUser = new Subject<User>();
+
   ws: any;
 
-  constructor(private http: Http) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit() {}
 
   createBenchmark(template: Template) {
     this.createWebSocketConnection();
 
-    this.http
-      .post(REST_URL + '/benchmark/create', template)
-      .map((response: Response) => {
-        const project: Project = response.json();
+    this.http.post(REST_URL + '/benchmark/create', template).subscribe(
+      (project: Project) => {
         project.operation = Operation.END_CREATE_PROJECT;
-        return project;
-      })
-      .subscribe(
-        (project: Project) => {
-          this.showMessageProject.next(project);
-          project.operation = Operation.START_COMPILE;
-          this.showMessageProject.next(project);
-          this.compileProject(project.id);
-        },
-        error => {
-          console.error(error._body);
-          this.showMessage.next(error._body);
-          if (error.status === 409) {
-            const result: LibrariesToChoose = JSON.parse(error._body);
-            this.librariesToChoose.next(result);
-          }
-        },
-      );
+        this.showMessageProject.next(project);
+        project.operation = Operation.START_COMPILE;
+        this.showMessageProject.next(project);
+        this.compileProject(project.id);
+      },
+      (error: HttpErrorResponse) => {
+        this.showMessage.next(Operation.END_CREATE_PROJECT);
+        this.showMessage.next(JSON.stringify(error.error));
+        if (error.status === 409) {
+          const result = new LibrariesToChoose(error.error.projectId, error.error.imports);
+          this.librariesToChoose.next(result);
+        }
+      },
+    );
   }
 
   importLibraries(libraries) {
-    this.http
-      .post(REST_URL + '/benchmark/importLibraries', libraries)
-      .map((response: Response) => {
-        const project: Project = response.json();
+    this.http.post(REST_URL + '/benchmark/importLibraries', libraries).subscribe(
+      (project: Project) => {
         project.operation = Operation.END_IMPORT_LIBRARIES;
-        return project;
-      })
-      .subscribe(
-        (project: Project) => {
-          this.showMessageProject.next(project);
-          project.operation = Operation.START_COMPILE;
-          this.showMessageProject.next(project);
-          this.compileProject(project.id);
-        },
-        error => {
-          console.error(error._body);
-          this.showMessage.next(error._body);
-        },
-      );
+        this.showMessageProject.next(project);
+        project.operation = Operation.START_COMPILE;
+        this.showMessageProject.next(project);
+        this.compileProject(project.id);
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
+        this.showMessage.next(error.error);
+      },
+    );
   }
 
   compileProject(projectId: string) {
-    this.http
-      .post(REST_URL + '/benchmark/compile/' + projectId, null)
-      .map((response: Response) => {
-        const project: Project = response.json();
+    this.http.post(REST_URL + '/benchmark/compile/' + projectId, null).subscribe(
+      (project: Project) => {
         project.operation = Operation.END_COMPILE;
-        return project;
-      })
-      .subscribe(
-        (project: Project) => {
-          this.showMessageProject.next(project);
-          project.operation = Operation.START_RUN;
-          this.showMessageProject.next(project);
+        this.showMessageProject.next(project);
+        project.operation = Operation.START_RUN;
+        this.showMessageProject.next(project);
 
-          this.runBenchmark(project.id);
-        },
-        error => {
-          console.error(error._body);
-          this.showMessage.next(error._body);
-        },
-      );
+        this.runBenchmark(project.id);
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
+        this.showMessage.next(JSON.stringify(error.error));
+      },
+    );
   }
 
   runBenchmark(projectId: string) {
@@ -103,17 +90,14 @@ export class DataStorageService implements OnInit {
   }
 
   createWebSocketConnection() {
-    const token = 'eyJlbWFpbCI6InRlc3RAdGVzdC5jeiIsInBhc3N3b3JkIjoiJDJhJDEwJExjbENTVUpzQzJ1QlIvd3hhS1EzZXVDaGxLLnppSC5iQXc2MDRlSXY4Y0RVa1o5UGsxY3dPIiwiZXhwaXJlcyI6MTU0MTU3ODU2MzIxOCwicm9sZXMiOlt7ImlkIjoxLCJ0eXBlIjoiVVNFUiIsIm5ldyI6ZmFsc2V9XSwiZmlyc3ROYW1lIjoiVGVzdCIsImxhc3ROYW1lIjoiVGVzdG92aWMifQ==.ITrzSJ+rcqfuTMKZlk4sqAA/RQVomLEo3Ycn4Nk6qUU=';
     const socket = new WebSocket(WEBSOCKET_URL);
     this.ws = Stomp.over(socket);
     const that = this;
 
-    const headers = {
-            Authorization : 'Bearer ' + token,
-        };
+    const token = this.authService.getToken();
 
     that.ws.connect(
-      headers,
+      token === null ? {} : { Authorization: 'Bearer ' + token },
       // {},
       function(frame) {
         that.ws.subscribe('/errors', function(message) {
@@ -129,8 +113,20 @@ export class DataStorageService implements OnInit {
         });
       },
       function(error) {
-        debugger;
         alert('STOMP error ' + error + ', headers = ' + error.headers);
+      },
+    );
+  }
+
+  loginUser(user) {
+    this.http.post(REST_URL + '/api/login', user).subscribe(
+      (loggedUser: LoggedUser) => {
+        localStorage.setItem('token', loggedUser.token);
+        localStorage.setItem('user', JSON.stringify(loggedUser.user));
+        this.loggedUser.next(loggedUser.user);
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
       },
     );
   }
