@@ -18,7 +18,8 @@ public class BenchmarkConverter {
         result.setDeclare(template.getDeclare())
                 .setInit(template.getInit())
                 .setMeasurement(template.getMeasurement())
-                .setWarmup(template.getWarmup());
+                .setWarmup(template.getWarmup())
+                .setName(template.getName());
 
         List<MeasureMethodDTO> methods = IntStream.range(0, template.getTestMethods().size())
                 .mapToObj(index -> new MeasureMethodDTO(index, template.getTestMethods().get(index)))

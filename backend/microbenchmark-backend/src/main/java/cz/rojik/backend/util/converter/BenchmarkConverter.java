@@ -16,6 +16,7 @@ public class BenchmarkConverter {
         BenchmarkDTO result = new BenchmarkDTO();
 
         result.setContent(entity.getContent())
+                .setName(entity.getName())
                 .setCreated(entity.getCreated())
                 .setDeclare(entity.getDeclare())
                 .setInit(entity.getInit())
@@ -36,6 +37,7 @@ public class BenchmarkConverter {
         BenchmarkEntity entity = new BenchmarkEntity();
 
         entity.setContent(dto.getContent())
+                .setName(dto.getName())
                 .setCreated(dto.getCreated())
                 .setDeclare(dto.getDeclare())
                 .setInit(dto.getInit())

@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TemplateDTO {
 
+    private String name;
     private String libraries;
     private int warmup;
     private int measurement;
@@ -13,6 +14,7 @@ public class TemplateDTO {
     private List<String> testMethods;
 
     public TemplateDTO() {
+        this.name = "";
         this.libraries = "";
         this.warmup = 1;
         this.measurement = 1;
@@ -75,4 +77,11 @@ public class TemplateDTO {
         return this;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -1,5 +1,6 @@
 package cz.rojik.backend.service.impl;
 
+import cz.rojik.backend.constants.ConfigConstants;
 import cz.rojik.backend.dto.MeasureMethodDTO;
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.entity.MeasureMethodEntity;
@@ -13,7 +14,9 @@ import cz.rojik.backend.util.converter.BenchmarkConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +39,10 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Transactional
     public BenchmarkDTO saveResult(BenchmarkDTO result) {
         UserEntity user = userRepository.findOne(result.getUser().getId());
+
+        if (StringUtils.isEmpty(result.getName())) {
+            result.setName(result.getCreated().format(DateTimeFormatter.ofPattern(ConfigConstants.LOCAL_DATE_TIME_PATTERN)));
+        }
 
         BenchmarkEntity entity = benchmarkConverter.dtoToEntity(result);
         entity.setUser(user);

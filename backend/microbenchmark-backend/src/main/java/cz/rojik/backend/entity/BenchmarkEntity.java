@@ -24,6 +24,9 @@ public class BenchmarkEntity extends BaseEntity {
     @Column(name = "project_id", nullable = false)
     private String projectId;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
@@ -53,6 +56,7 @@ public class BenchmarkEntity extends BaseEntity {
     public String toString() {
         return "ResultEntity{" +
                 "projectId='" + projectId + '\'' +
+                ", name=" + name +
                 ", created=" + created +
                 ", content='" + content + '\'' +
                 ", warmup=" + warmup +
@@ -144,6 +148,15 @@ public class BenchmarkEntity extends BaseEntity {
         return this;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public BenchmarkEntity setName(String name) {
+        this.name = name;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -153,6 +166,7 @@ public class BenchmarkEntity extends BaseEntity {
         return warmup == that.warmup &&
                 measurement == that.measurement &&
                 Objects.equals(projectId, that.projectId) &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(created, that.created) &&
                 Objects.equals(content, that.content) &&
                 Objects.equals(init, that.init) &&
@@ -164,6 +178,6 @@ public class BenchmarkEntity extends BaseEntity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), projectId, created, content, warmup, measurement, init, declare, user, measureMethods);
+        return Objects.hash(super.hashCode(), projectId, name, created, content, warmup, measurement, init, declare, user, measureMethods);
     }
 }

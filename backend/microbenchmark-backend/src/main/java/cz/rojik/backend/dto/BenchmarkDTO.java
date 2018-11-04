@@ -4,10 +4,12 @@ import cz.rojik.backend.dto.user.UserDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class BenchmarkDTO extends BaseDTO {
 
     private String projectId;
+    private String name;
     private LocalDateTime created;
     private String content;
     private int warmup;
@@ -22,6 +24,7 @@ public class BenchmarkDTO extends BaseDTO {
     public String toString() {
         return "BenchmarkDTO{" +
                 "projectId='" + projectId + '\'' +
+                ", name=" + name +
                 ", created=" + created +
                 ", content='" + content + '\'' +
                 ", warmup=" + warmup +
@@ -112,5 +115,36 @@ public class BenchmarkDTO extends BaseDTO {
     public BenchmarkDTO setMeasureMethods(List<MeasureMethodDTO> measureMethods) {
         this.measureMethods = measureMethods;
         return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BenchmarkDTO setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BenchmarkDTO that = (BenchmarkDTO) o;
+        return warmup == that.warmup &&
+                measurement == that.measurement &&
+                Objects.equals(projectId, that.projectId) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(created, that.created) &&
+                Objects.equals(content, that.content) &&
+                Objects.equals(init, that.init) &&
+                Objects.equals(declare, that.declare) &&
+                Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), projectId, name, created, content, warmup, measurement, init, declare, user, measureMethods);
     }
 }
