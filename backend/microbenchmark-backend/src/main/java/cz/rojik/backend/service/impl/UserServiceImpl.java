@@ -6,6 +6,7 @@ import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.repository.UserRepository;
 import cz.rojik.backend.service.RoleService;
 import cz.rojik.backend.service.UserService;
+import cz.rojik.backend.util.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -93,7 +94,17 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private UserEntity createAndSaveRegisteredUser(UserRegistrationForm userForm) {
+	@Override
+	public UserEntity getLoggedUserEntity() {
+		UserDTO userDTO = SecurityHelper.getCurrentUser();
+		if (userDTO != null) {
+			UserEntity entity = userRepository.findOne(userDTO.getId());
+			return entity;
+		}
+		return null;
+	}
+
+	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm userForm) {
 //        User user = new User(userForm.getFirstname(), userForm.getLastname(), userForm.getEmail(), passwordEncoder.encode(userForm.getPassword()));
 //        user.getRoles().add(roleService.getByType(RoleType.getRoleById(userForm.getRoleId())));
 

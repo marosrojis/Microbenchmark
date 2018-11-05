@@ -44,17 +44,19 @@ public class UserDTO extends BaseDTO implements UserDetails {
 	}
 
 	public UserDTO(UserEntity user) {
-		this.id = user.getId();
-		this.email = user.getEmail();
-		this.firstname = user.getFirstname();
-		this.lastname = user.getLastname();
-		this.enabled = user.isEnabled();
-		this.created = user.getCreated();
-		this.password = user.getPassword();
+		if (user != null) {
+			this.id = user.getId();
+			this.email = user.getEmail();
+			this.firstname = user.getFirstname();
+			this.lastname = user.getLastname();
+			this.enabled = user.isEnabled();
+			this.created = user.getCreated();
+			this.password = user.getPassword();
 
-        for (RoleEntity role : user.getRoles()) {
-            this.roles.add(new RoleDTO(role));
-        }
+			for (RoleEntity role : user.getRoles()) {
+				this.roles.add(new RoleDTO(role));
+			}
+		}
 	}
 
 	public UserDTO(Login user) {

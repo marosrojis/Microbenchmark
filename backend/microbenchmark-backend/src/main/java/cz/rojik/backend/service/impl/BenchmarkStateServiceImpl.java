@@ -1,0 +1,95 @@
+package cz.rojik.backend.service.impl;
+
+import cz.rojik.backend.dto.BenchmarkStateDTO;
+import cz.rojik.backend.entity.BenchmarkStateEntity;
+import cz.rojik.backend.entity.BenchmarkStateType;
+import cz.rojik.backend.entity.UserEntity;
+import cz.rojik.backend.repository.BenchmarkStateRepository;
+import cz.rojik.backend.service.BenchmarkStateService;
+import cz.rojik.backend.service.UserService;
+import cz.rojik.backend.util.converter.BenchmarkStateConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class BenchmarkStateServiceImpl implements BenchmarkStateService {
+
+    private static Logger logger = LoggerFactory.getLogger(BenchmarkStateServiceImpl.class);
+
+    @Autowired
+    private BenchmarkStateRepository benchmarkStateRepository;
+
+    @Autowired
+    private BenchmarkStateConverter benchmarkStateConverter;
+
+    @Autowired
+    private UserService userService;
+
+    @Transactional
+    @Override
+    public BenchmarkStateDTO createState(BenchmarkStateDTO state) {
+        if (state == null) {
+            throw new BadRequestException("The given benchmark state is null");
+        }
+
+        BenchmarkStateEntity entity = benchmarkStateConverter.dtoToEntity(state);
+
+        UserEntity loggedUser = userService.getLoggedUserEntity();
+        if (loggedUser != null) {
+            entity.setUser(loggedUser);
+        }
+
+        int numberOfConnections = benchmarkStateRepository.countAllByStateType(BenchmarkStateType.SUCCESS);
+        entity.setNumberOfConnections(++numberOfConnections);
+
+        entity = benchmarkStateRepository.save(entity);
+
+        increaseNumberOfConnectionsToAllActive(entity.getProjectId());
+
+        return benchmarkStateConverter.entityToDTO(entity);
+    }
+
+    @Override
+    public BenchmarkStateDTO updateState(BenchmarkStateDTO state) {
+        if (state == null) {
+            throw new BadRequestException("The given benchmark state is null");
+        }
+
+        BenchmarkStateEntity entity = benchmarkStateRepository.findFirstByProjectId(state.getProjectId());
+        if (entity == null) {
+            throw new NotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
+        }
+
+        entity.setType(state.getType());
+        entity.setUpdated(state.getUpdated());
+        entity.setContainerId(state.getContainerId());
+
+        entity = benchmarkStateRepository.saveAndFlush(entity);
+        return benchmarkStateConverter.entityToDTO(entity);
+    }
+
+    @Transactional
+    @Override
+    public void increaseNumberOfConnectionsToAllActive(String projectId) {
+        if (projectId == null) {
+            throw new BadRequestException("The given project ID is null");
+        }
+
+        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByProjectIdIsNotAndTypeIsNot(projectId, BenchmarkStateType.SUCCESS);
+        benchmarks.forEach(benchmark -> {
+            benchmark.setNumberOfConnections(benchmark.getNumberOfConnections() + 1);
+            benchmark.setUpdated(LocalDateTime.now());
+        });
+
+        benchmarks = benchmarkStateRepository.save(benchmarks);
+        logger.info("Count of increase benchmarks is " + benchmarks.size());
+    }
+}
