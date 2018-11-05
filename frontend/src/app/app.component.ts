@@ -8,6 +8,7 @@ import { Template } from './model/template.model';
 import { LibrariesToChoose } from './model/libraries-to-choose.model';
 
 const templateDefault = new Template(
+  '',
   2,
   3,
   'List<Integer> arrayList;\nint[] array;Random random;\nList<String> temp;',
@@ -40,6 +41,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.slForm.setValue({
+        name: '',
         warmup: templateDefault.warmup,
         measurement: templateDefault.measurement,
         declare: templateDefault.declare,
@@ -82,7 +84,7 @@ export class AppComponent implements OnInit {
       this.messages = [];
       this.showMessage('Operation: ' + Operation.START_CREATE_PROJECT);
 
-      const template = new Template(value.warmup, value.measurement, value.declare, value.init, [
+      const template = new Template(value.name, value.warmup, value.measurement, value.declare, value.init, [
         value.testMethod1,
         value.testMethod2,
       ]);

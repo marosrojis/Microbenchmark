@@ -98,7 +98,6 @@ export class DataStorageService implements OnInit {
 
     that.ws.connect(
       token === null ? {} : { Authorization: 'Bearer ' + token },
-      // {},
       function(frame) {
         that.ws.subscribe('/errors', function(message) {
           alert('Error ' + message.body);
