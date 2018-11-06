@@ -18,7 +18,8 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
 
     private static final String MEASUREMENT_REGEX = "Iteration[ \\t]*(\\d+):.*";
     private static final String WARMUP_REGEX = "# Warmup Iteration[ \\t]*(\\d+):.*";
-    private static final String RESULT_REGEX = "Result \"cz\\.rojik\\.Microbenchmark\\.benchmarkTest(\\d+)\":";
+    private static final String RESULT_REGEX = "Result \"cz\\.rojik\\.Microbenchmark\\.benchmarkTest(\\d+)\":.*";
+    private static final String EXCEPTION_REGEX = ".*Exception[\\s\\S]*";
 
     @Override
     public ProcessInfoDTO parseMessage(String message, TemplateDTO template) {
@@ -26,6 +27,7 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
         final Pattern pMeasurement = Pattern.compile(MEASUREMENT_REGEX);
         final Pattern pWarmup = Pattern.compile(WARMUP_REGEX);
         final Pattern pResult = Pattern.compile(RESULT_REGEX);
+        final Pattern pException = Pattern.compile(EXCEPTION_REGEX);
 
         if (pMeasurement.matcher(message).matches()) {
             info = new ProcessInfoDTO(Operation.MEASUREMENT, getNumberFromRegex(pMeasurement.matcher(message)), template.getMeasurement() + "");
@@ -36,6 +38,10 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
         else if (pResult.matcher(message).matches()) {
             info = new ProcessInfoDTO(Operation.RESULT, getNumberFromRegex(pResult.matcher(message)), template.getTestMethods().size() + "");
         }
+        else if (pException.matcher(message).matches()) {
+            info = new ProcessInfoDTO(Operation.ERROR_BENCHMARK).setNote(message);
+        }
+        // TODO: parsovat zpravu o uspesne provedenym benchmarku a vytvorit processInfo s Operation.SUCCESS_BENCHMARK
 
         return info;
     }

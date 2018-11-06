@@ -9,6 +9,9 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
 import com.spotify.docker.client.messages.HostConfig;
+import cz.rojik.backend.dto.BenchmarkStateDTO;
+import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
+import cz.rojik.backend.service.BenchmarkStateService;
 import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.TemplateDTO;
@@ -53,6 +56,9 @@ public class RunnerServiceImpl implements RunnerService {
     @Autowired
     private WebSocketService webSocketService;
 
+    @Autowired
+    private BenchmarkStateService benchmarkStateService;
+
     @Override
     public Set<String> compileProject(String projectId) {
         Set<String> output = new LinkedHashSet<>();
@@ -82,7 +88,7 @@ public class RunnerServiceImpl implements RunnerService {
     }
 
     @Override
-    public String runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws DockerCertificateException, DockerException, InterruptedException {
+    public ProcessInfoDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws DockerCertificateException, DockerException, InterruptedException {
         ProcessInfoDTO processInfo;
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
@@ -104,6 +110,11 @@ public class RunnerServiceImpl implements RunnerService {
         final ContainerCreation creation = client.createContainer(containerConfig);
         final String id = creation.id();
 
+        benchmarkStateService.updateState(new BenchmarkStateDTO()
+                .setProjectId(projectId)
+                .setContainerId(id)
+                .setType(BenchmarkStateTypeEnum.BENCHMARK_START));
+
         client.startContainer(id);
 
         final String[] command = {"java", "-jar", ProjectContants.DOCKER_SHARED_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
@@ -114,10 +125,21 @@ public class RunnerServiceImpl implements RunnerService {
 
         while (output.hasNext()) {
             final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
+//            logger.info(logMessage);
+
             processInfo = messageLogParser.parseMessage(logMessage, template);
             if (processInfo != null) {
                 webSocketService.sendProcessInfo(processInfo, socketHeader);
+
+                if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
+                    client.killContainer(id);
+                    client.removeContainer(id);
+
+                    // TODO: vytvorit a vyhodit vyjimku, ze benchmark spadnul na nejake vyjimce
+                    return processInfo;
+                }
             }
+
         }
 
 //        Process p;
@@ -140,7 +162,8 @@ public class RunnerServiceImpl implements RunnerService {
         client.killContainer(id);
         client.removeContainer(id);
 
-        return projectId;
+        processInfo = new ProcessInfoDTO(Operation.SUCCESS_BENCHMARK);
+        return processInfo;
     }
 
 }
