@@ -2,7 +2,7 @@ package cz.rojik.backend.service.impl;
 
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
-import cz.rojik.backend.entity.BenchmarkStateType;
+import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.repository.BenchmarkStateRepository;
 import cz.rojik.backend.service.BenchmarkStateService;
@@ -47,7 +47,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             entity.setUser(loggedUser);
         }
 
-        int numberOfConnections = benchmarkStateRepository.countAllByStateType(BenchmarkStateType.SUCCESS);
+        int numberOfConnections = benchmarkStateRepository.countAllByStateType(BenchmarkStateTypeEnum.runningStates());
         entity.setNumberOfConnections(++numberOfConnections);
 
         entity = benchmarkStateRepository.save(entity);
@@ -57,6 +57,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         return benchmarkStateConverter.entityToDTO(entity);
     }
 
+    @Transactional
     @Override
     public BenchmarkStateDTO updateState(BenchmarkStateDTO state) {
         if (state == null) {
@@ -70,7 +71,9 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         entity.setType(state.getType());
         entity.setUpdated(state.getUpdated());
-        entity.setContainerId(state.getContainerId());
+        if (state.getContainerId() != null) {
+            entity.setContainerId(state.getContainerId());
+        }
 
         entity = benchmarkStateRepository.saveAndFlush(entity);
         return benchmarkStateConverter.entityToDTO(entity);
@@ -83,7 +86,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             throw new BadRequestException("The given project ID is null");
         }
 
-        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByProjectIdIsNotAndTypeIsNot(projectId, BenchmarkStateType.SUCCESS);
+        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByProjectIdIsNotAndTypeIn(projectId, BenchmarkStateTypeEnum.runningStates());
         benchmarks.forEach(benchmark -> {
             benchmark.setNumberOfConnections(benchmark.getNumberOfConnections() + 1);
             benchmark.setUpdated(LocalDateTime.now());

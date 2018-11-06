@@ -1,5 +1,7 @@
 package cz.rojik.backend.entity;
 
+import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -28,7 +30,7 @@ public class BenchmarkStateEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 8)
-    private BenchmarkStateType type;
+    private BenchmarkStateTypeEnum type;
 
     @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
@@ -69,11 +71,11 @@ public class BenchmarkStateEntity extends BaseEntity {
         return this;
     }
 
-    public BenchmarkStateType getType() {
+    public BenchmarkStateTypeEnum getType() {
         return type;
     }
 
-    public BenchmarkStateEntity setType(BenchmarkStateType type) {
+    public BenchmarkStateEntity setType(BenchmarkStateTypeEnum type) {
         this.type = type;
         return this;
     }

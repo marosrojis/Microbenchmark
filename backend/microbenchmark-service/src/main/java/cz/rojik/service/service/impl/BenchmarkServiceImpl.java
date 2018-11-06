@@ -2,11 +2,16 @@ package cz.rojik.service.service.impl;
 
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
+import cz.rojik.backend.dto.BenchmarkStateDTO;
+import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
+import cz.rojik.backend.service.BenchmarkStateService;
 import cz.rojik.service.dto.ErrorDTO;
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.service.dto.LibrariesDTO;
+import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
+import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.service.BenchmarkService;
@@ -29,7 +34,6 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     private static Logger logger = LoggerFactory.getLogger(BenchmarkServiceImpl.class);
 
-
     @Autowired
     private GeneratorService generatorService;
 
@@ -41,6 +45,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Autowired
     private ErrorsParserService errorsParserService;
+
+    @Autowired
+    private BenchmarkStateService benchmarkStateService;
 
     @Override
     public String createProject(TemplateDTO template) throws ImportsToChooseException {
@@ -56,10 +63,19 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public boolean compile(String projectId) {
+        benchmarkStateService.createState(new BenchmarkStateDTO()
+                .setProjectId(projectId)
+                .setType(BenchmarkStateTypeEnum.COMPILE_START));
+
         Set<String> errors = runnerService.compileProject(projectId);
 
         if (errors.size() != 0) {
             logger.error("Compilation is failed!! ({} errors)", errors.size());
+            benchmarkStateService.updateState(new BenchmarkStateDTO()
+                    .setProjectId(projectId)
+                    .setType(BenchmarkStateTypeEnum.COMPILE_ERROR));
+
+
             List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
             ErrorInfoWithSourceCodeDTO errorInfoList = errorsParserService.processErrorList(errorList, projectId);
 
@@ -74,11 +90,24 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) {
         ResultDTO result = null;
         try {
-            projectId = runnerService.runProject(projectId, template, socketHeader);
-            result = resultParserService.parseResult(projectId);
+            ProcessInfoDTO processInfo = runnerService.runProject(projectId, template, socketHeader);
+
+            if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
+                result = resultParserService.parseResult(projectId);
+
+                benchmarkStateService.updateState(new BenchmarkStateDTO()
+                        .setProjectId(projectId)
+                        .setType(BenchmarkStateTypeEnum.BENCHMARK_SUCCESS));
+            } else {
+                benchmarkStateService.updateState(new BenchmarkStateDTO()
+                        .setProjectId(projectId)
+                        .setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR));
+            }
+
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
             e.printStackTrace();
         }
+        // TODO: odchytit vyhozenou vyjimku s obsazenou chybou, rozparsovat chybu a poslat websocketem objekt obsahujici kompletni soubor + chybu + radku s chybou
         return result;
     }
 }

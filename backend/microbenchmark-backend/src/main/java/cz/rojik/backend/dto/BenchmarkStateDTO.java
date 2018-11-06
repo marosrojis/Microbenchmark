@@ -1,7 +1,7 @@
 package cz.rojik.backend.dto;
 
 import cz.rojik.backend.dto.user.UserDTO;
-import cz.rojik.backend.entity.BenchmarkStateType;
+import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,15 +10,16 @@ public class BenchmarkStateDTO extends BaseDTO {
 
     private String projectId;
     private String containerId;
-    private BenchmarkStateType type;
+    private BenchmarkStateTypeEnum type;
     private LocalDateTime updated;
     private int numberOfConnections;
     private UserDTO user;
 
     public BenchmarkStateDTO() {
+        updated = LocalDateTime.now();
     }
 
-    public BenchmarkStateDTO(String projectId, String containerId, BenchmarkStateType type, LocalDateTime updated) {
+    public BenchmarkStateDTO(String projectId, String containerId, BenchmarkStateTypeEnum type, LocalDateTime updated) {
         this.projectId = projectId;
         this.containerId = containerId;
         this.type = type;
@@ -56,11 +57,11 @@ public class BenchmarkStateDTO extends BaseDTO {
         return this;
     }
 
-    public BenchmarkStateType getType() {
+    public BenchmarkStateTypeEnum getType() {
         return type;
     }
 
-    public BenchmarkStateDTO setType(BenchmarkStateType type) {
+    public BenchmarkStateDTO setType(BenchmarkStateTypeEnum type) {
         this.type = type;
         return this;
     }
