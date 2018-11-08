@@ -5,6 +5,7 @@ import com.spotify.docker.client.exceptions.DockerException;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.service.BenchmarkStateService;
+import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.ErrorDTO;
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.service.dto.LibrariesDTO;
@@ -12,8 +13,10 @@ import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.enums.Operation;
+import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.MavenCompileException;
+import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.BenchmarkService;
 import cz.rojik.service.service.GeneratorService;
 import cz.rojik.service.service.ResultParserService;
@@ -26,6 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -87,7 +93,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     }
 
     @Override
-    public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) {
+    public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws BenchmarkRunException {
         ResultDTO result = null;
         try {
             ProcessInfoDTO processInfo = runnerService.runProject(projectId, template, socketHeader);
@@ -102,6 +108,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 benchmarkStateService.updateState(new BenchmarkStateDTO()
                         .setProjectId(projectId)
                         .setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR));
+
+                throw new BenchmarkRunException(projectId, processInfo.getNote(), readSourceFile(projectId));
             }
 
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
@@ -109,5 +117,18 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         }
         // TODO: odchytit vyhozenou vyjimku s obsazenou chybou, rozparsovat chybu a poslat websocketem objekt obsahujici kompletni soubor + chybu + radku s chybou
         return result;
+    }
+
+    // PRIVATE
+
+    private List<String> readSourceFile(String projectId) {
+        List<String> sourceCode;
+        try {
+            sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
+        } catch (IOException e) {
+            logger.error("Cannot open class from project witd ID {0}", projectId);
+            throw new ReadFileException(projectId);
+        }
+        return sourceCode;
     }
 }

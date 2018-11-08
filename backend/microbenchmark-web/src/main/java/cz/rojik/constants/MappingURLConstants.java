@@ -22,6 +22,7 @@ public class MappingURLConstants {
     public static final String BENCHMARK_RESULT_STEP = BENCHMARK_RESULT + "/step";
 
     public static final String SOCKET = "/socket";
+    public static final String SOCKET_EXCEPTION = BENCHMARK_WEBSOCKET + "/errors";
     public static final String TEST = API_PREFIX + "/test";
 
 }

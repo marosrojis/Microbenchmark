@@ -89,7 +89,7 @@ public class RunnerServiceImpl implements RunnerService {
 
     @Override
     public ProcessInfoDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws DockerCertificateException, DockerException, InterruptedException {
-        ProcessInfoDTO processInfo;
+        ProcessInfoDTO processInfo = null;
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
         final HostConfig hostConfig = HostConfig.builder()
@@ -129,17 +129,12 @@ public class RunnerServiceImpl implements RunnerService {
 
             processInfo = messageLogParser.parseMessage(logMessage, template);
             if (processInfo != null) {
-                webSocketService.sendProcessInfo(processInfo, socketHeader);
-
-                if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
-                    client.killContainer(id);
-                    client.removeContainer(id);
-
-                    // TODO: vytvorit a vyhodit vyjimku, ze benchmark spadnul na nejake vyjimce
-                    return processInfo;
+                if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK) ||
+                        processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
+                    break;
                 }
+                webSocketService.sendProcessInfo(processInfo, socketHeader);
             }
-
         }
 
 //        Process p;
@@ -162,7 +157,6 @@ public class RunnerServiceImpl implements RunnerService {
         client.killContainer(id);
         client.removeContainer(id);
 
-        processInfo = new ProcessInfoDTO(Operation.SUCCESS_BENCHMARK);
         return processInfo;
     }
 

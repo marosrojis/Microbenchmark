@@ -5,10 +5,13 @@ import cz.rojik.backend.service.BenchmarkService;
 import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.constants.MappingURLConstants;
 import cz.rojik.service.TransformService;
+import cz.rojik.service.dto.BenchmarkRunErrorDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
+import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -44,7 +47,13 @@ public class BenchmarkController {
         messageHeaderAccessor.setLeaveMutable(true);
 
         TemplateDTO template = FileUtils.getTemplateFromJson(projectId);
-        ResultDTO benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
+
+        ResultDTO benchmarkResult = null;
+        try {
+            benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
+        } catch (BenchmarkRunException e) {
+            return new BenchmarkRunErrorDTO(e.getException(), e.getFile()).toString();
+        }
 
         if (SecurityHelper.getCurrentUser() != null) {
             BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
@@ -52,6 +61,12 @@ public class BenchmarkController {
         }
 
         return new SimpleDateFormat("HH:mm:ss").format(new Date())+" - " + benchmarkResult;
+    }
+
+    @MessageExceptionHandler
+    @SendToUser(MappingURLConstants.SOCKET_EXCEPTION)
+    public String handleException(Throwable exception) {
+        return exception.getMessage();
     }
 
 }
