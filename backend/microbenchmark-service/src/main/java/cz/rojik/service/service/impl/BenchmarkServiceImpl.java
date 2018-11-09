@@ -101,9 +101,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
                 result = resultParserService.parseResult(projectId);
 
-                benchmarkStateService.updateState(new BenchmarkStateDTO()
+                BenchmarkStateDTO state = benchmarkStateService.updateState(new BenchmarkStateDTO()
                         .setProjectId(projectId)
                         .setType(BenchmarkStateTypeEnum.BENCHMARK_SUCCESS));
+
+                result.setNumberOfConnections(state.getNumberOfConnections());
+
             } else {
                 benchmarkStateService.updateState(new BenchmarkStateDTO()
                         .setProjectId(projectId)
@@ -115,7 +118,6 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
             e.printStackTrace();
         }
-        // TODO: odchytit vyhozenou vyjimku s obsazenou chybou, rozparsovat chybu a poslat websocketem objekt obsahujici kompletni soubor + chybu + radku s chybou
         return result;
     }
 

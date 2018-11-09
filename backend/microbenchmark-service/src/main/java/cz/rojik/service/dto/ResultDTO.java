@@ -9,6 +9,7 @@ public class ResultDTO {
     private LocalDateTime time;
     private List<MicrobenchmarkResultDTO> results;
     private int bestScoreIndex;
+    private int numberOfConnections;
 
     public ResultDTO() {
         this.time = LocalDateTime.now();
@@ -47,12 +48,22 @@ public class ResultDTO {
         return this;
     }
 
+    public int getNumberOfConnections() {
+        return numberOfConnections;
+    }
+
+    public ResultDTO setNumberOfConnections(int numberOfConnections) {
+        this.numberOfConnections = numberOfConnections;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "ResultDTO{" +
                 "time=" + time +
                 ", results=" + results +
                 ", bestScoreIndex=" + bestScoreIndex +
+                ", numberOfConnections=" + numberOfConnections +
                 '}';
     }
 
@@ -62,6 +73,7 @@ public class ResultDTO {
         if (o == null || getClass() != o.getClass()) return false;
         ResultDTO resultDTO = (ResultDTO) o;
         return bestScoreIndex == resultDTO.bestScoreIndex &&
+                numberOfConnections == resultDTO.numberOfConnections &&
                 Objects.equals(time, resultDTO.time) &&
                 Objects.equals(results, resultDTO.results);
     }
@@ -69,6 +81,6 @@ public class ResultDTO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(time, results, bestScoreIndex);
+        return Objects.hash(time, results, bestScoreIndex, numberOfConnections);
     }
 }
