@@ -26,9 +26,6 @@ import java.util.Date;
 public class BenchmarkController {
 
     @Autowired
-    private SimpMessagingTemplate template;
-
-    @Autowired
     private cz.rojik.service.service.BenchmarkService benchmarkService;
 
     @Autowired
@@ -55,10 +52,8 @@ public class BenchmarkController {
             return new BenchmarkRunErrorDTO(e.getException(), e.getFile()).toString();
         }
 
-        if (SecurityHelper.getCurrentUser() != null) {
-            BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
-            resultToSave = benchmarkServiceBackend.saveResult(resultToSave);
-        }
+        BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
+        resultToSave = benchmarkServiceBackend.saveResult(resultToSave);
 
         return new SimpleDateFormat("HH:mm:ss").format(new Date())+" - " + benchmarkResult;
     }

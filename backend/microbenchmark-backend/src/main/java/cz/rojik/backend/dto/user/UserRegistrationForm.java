@@ -1,21 +1,15 @@
 package cz.rojik.backend.dto.user;
 
+import java.util.List;
+
 public class UserRegistrationForm {
 
     private String email;
     private String firstname;
     private String lastname;
-    private int roleId;
+    private List<Integer> rolesId;
 
     private String password;
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
 
     public String getPassword() {
         return password;
@@ -50,4 +44,11 @@ public class UserRegistrationForm {
     }
 
 
+    public List<Integer> getRolesId() {
+        return rolesId;
+    }
+
+    public void setRolesId(List<Integer> rolesId) {
+        this.rolesId = rolesId;
+    }
 }

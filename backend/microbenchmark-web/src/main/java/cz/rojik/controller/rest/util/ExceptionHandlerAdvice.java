@@ -1,6 +1,8 @@
 package cz.rojik.controller.rest.util;
 
+import cz.rojik.backend.exception.BenchmarkNotFoundException;
 import cz.rojik.backend.exception.InvalidBearerTokenException;
+import cz.rojik.backend.exception.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,14 @@ class ExceptionHandlerAdvice {
         return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(InvalidBearerTokenException.class)
-    public ResponseEntity<String> handleNotFoundException(Exception exception, WebRequest request) {
+    @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class })
+    public ResponseEntity<String> handleBadRequestException(Exception exception, WebRequest request) {
         return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST, false);
+    }
+
+    @ExceptionHandler(BenchmarkNotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(Exception exception, WebRequest request) {
+        return handleExceptionInternal(exception, request, HttpStatus.NOT_FOUND, false);
     }
 
     private ResponseEntity<String> handleExceptionInternal(Exception exception, WebRequest request, HttpStatus status, boolean warnLevel) {

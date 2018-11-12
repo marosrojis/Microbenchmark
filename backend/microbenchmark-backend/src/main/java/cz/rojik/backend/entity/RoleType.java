@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public enum RoleType implements Serializable {
     USER(Values.ROLE_USER_VALUE), // ID - 1
-    ADMIN(Values.ROLE_ADMIN_VALUE); // ID - 3
+    ADMIN(Values.ROLE_ADMIN_VALUE), // ID - 2
+    DEMO(Values.ROLE_DEMO_VALUE); // ID - 3
 
     String userRole;
 
@@ -21,7 +22,8 @@ public enum RoleType implements Serializable {
 
     public static String getRoleById(int id) {
         if (id == 1) return RoleType.USER.getRoleType();
-        if (id == 3) return RoleType.ADMIN.getRoleType();
+        if (id == 2) return RoleType.ADMIN.getRoleType();
+        if (id == 3) return RoleType.DEMO.getRoleType();
         return null;
     }
 
@@ -35,7 +37,7 @@ public enum RoleType implements Serializable {
     public static class Values {
 		public static final String ROLE_ADMIN_VALUE = "ADMIN";
 		public static final String ROLE_USER_VALUE = "USER";
-		public static final String ROLE_UNREGISTERED_VALUE = "UNREGISTERED";
+		public static final String ROLE_DEMO_VALUE = "DEMO";
 	}
 
 }

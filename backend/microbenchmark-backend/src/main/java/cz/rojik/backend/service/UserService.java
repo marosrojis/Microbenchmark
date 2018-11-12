@@ -17,7 +17,7 @@ public interface UserService extends UserDetailsService {
 
     UserDTO getUser(Long id);
 
-	List<UserDTO> getAllUserWithRoles();
+	List<UserDTO> getAll();
 
 	UserEntity getLoggedUserEntity();
 }

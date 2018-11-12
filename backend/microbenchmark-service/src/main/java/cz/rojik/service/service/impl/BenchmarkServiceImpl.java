@@ -2,6 +2,7 @@ package cz.rojik.service.service.impl;
 
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
+import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.service.BenchmarkStateService;
@@ -14,13 +15,13 @@ import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.BenchmarkRunException;
+import cz.rojik.service.exception.DeleteBenchmarkException;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.BenchmarkService;
 import cz.rojik.service.service.GeneratorService;
 import cz.rojik.service.service.ResultParserService;
-import cz.rojik.service.utils.FileUtils;
 import cz.rojik.service.service.ErrorsParserService;
 import cz.rojik.service.service.RunnerService;
 import org.slf4j.Logger;
@@ -28,7 +29,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,6 +57,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Autowired
     private BenchmarkStateService benchmarkStateService;
+
+    @Autowired
+    private cz.rojik.backend.service.BenchmarkService benchmarkBackendService;
 
     @Override
     public String createProject(TemplateDTO template) throws ImportsToChooseException {
@@ -119,6 +125,24 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Transactional
+    @Override
+    public void deleteBenchmark(Long id) {
+        BenchmarkDTO benchmark = benchmarkBackendService.delete(id);
+
+        try {
+            File projectDirectory = new File(Paths.get(ProjectContants.PROJECTS_FOLDER + benchmark.getProjectId()).toUri().getPath());
+            org.apache.commons.io.FileUtils.deleteDirectory(projectDirectory);
+
+            File resultFolder = new File(ProjectContants.PATH_RESULT + benchmark.getProjectId() + ProjectContants.JSON_FILE_FORMAT);
+            if (!resultFolder.delete()) { // TODO: repair delete result file
+                logger.info(String.format("Result file %s.json was not deleted", benchmark.getProjectId()));
+            }
+        } catch (IOException e) {
+            throw new DeleteBenchmarkException(String.format("Directory or result of project %s (benchmark ID is %s) was not deleted.\n%s", benchmark.getProjectId(), id, e.getMessage()));
+        }
     }
 
     // PRIVATE

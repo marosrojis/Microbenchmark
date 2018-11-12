@@ -1,15 +1,23 @@
 package cz.rojik.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
+import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 public class ResultDTO {
 
-    private LocalDateTime time;
     private List<MicrobenchmarkResultDTO> results;
     private int bestScoreIndex;
     private int numberOfConnections;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime time;
 
     public ResultDTO() {
         this.time = LocalDateTime.now();

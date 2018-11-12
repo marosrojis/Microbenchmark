@@ -12,7 +12,7 @@ import { User } from '../model/user.model';
 import { LoggedUser } from '../model/loggedUser.model';
 import { AuthService } from '../auth/auth.service';
 
-const REST_URL = 'http://localhost:8080';
+const REST_URL = 'http://localhost:8080/api';
 const WEBSOCKET_URL = 'ws://localhost:8080/socket/websocket';
 
 @Injectable()
@@ -118,7 +118,7 @@ export class DataStorageService implements OnInit {
   }
 
   loginUser(user) {
-    this.http.post(REST_URL + '/api/login', user).subscribe(
+    this.http.post(REST_URL + '/login', user).subscribe(
       (loggedUser: LoggedUser) => {
         localStorage.setItem('token', loggedUser.token);
         localStorage.setItem('user', JSON.stringify(loggedUser.user));

@@ -1,7 +1,11 @@
 package cz.rojik.backend.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
+import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
+import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,9 +15,12 @@ public class BenchmarkStateDTO extends BaseDTO {
     private String projectId;
     private String containerId;
     private BenchmarkStateTypeEnum type;
-    private LocalDateTime updated;
     private int numberOfConnections;
     private UserDTO user;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime updated;
 
     public BenchmarkStateDTO() {
         updated = LocalDateTime.now();

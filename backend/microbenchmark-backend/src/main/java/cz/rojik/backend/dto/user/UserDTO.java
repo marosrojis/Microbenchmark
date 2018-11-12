@@ -166,15 +166,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 		return roles;
 	}
 
-	public List<String> getRolesName() {
-		List<String> roles = new ArrayList<>();
-		if (this.roles == null) {
-			return roles;
-		}
-		roles.addAll(this.roles.stream().map(RoleDTO::getType).collect(Collectors.toList()));
-		return roles;
-	}
-
 	public void setRoles(List<RoleDTO> roles) {
 		this.roles = roles;
 	}

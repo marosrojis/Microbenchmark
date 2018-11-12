@@ -5,15 +5,26 @@ public class MappingURLConstants {
     public static final String API_PREFIX = "/api";
     public static final String MAIN_PAGE = "/";
 
-    // REST API
-    public static final String BENCHMARK = "benchmark";
+    // REST API //
+
+    // BENCHMARK
+    public static final String BENCHMARK = API_PREFIX + "/benchmark";
+    public static final String BENCHMARK_ID = "{id}";
     public static final String BENCHMARK_CREATE = "create";
     public static final String BENCHMARK_IMPORT_LIBRARIES = "importLibraries";
     public static final String BENCHMARK_COMPILE = "compile/{projectId}";
+    public static final String BENCHMARK_ASSIGN_TO_USER = "{id}/user/{userId}";
 
+    // USERS
+    public static final String USERS = API_PREFIX + "/users";
+
+    // BENCHMARK_STATE
+    public static final String BENCHMARK_STATE = API_PREFIX + "/benchmarkState";
+
+    // LOGIN
     public static final String LOGIN = API_PREFIX + "/login";
 
-    // WEBSOCKET
+    // WEBSOCKET //
     public static final String APP_WEBSOCKET = "/app";
     public static final String BENCHMARK_WEBSOCKET = "/benchmark";
 

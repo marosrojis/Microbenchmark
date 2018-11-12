@@ -18,6 +18,8 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BenchmarkStateServiceImpl implements BenchmarkStateService {
@@ -32,6 +34,40 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
     @Autowired
     private UserService userService;
+
+    @Override
+    public List<BenchmarkStateDTO> getAll() {
+        List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByOrderByUpdated();
+        List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
+
+        return result;
+    }
+
+    @Override
+    public List<BenchmarkStateDTO> getBenchmarksState(Optional<Boolean> running) {
+        List<BenchmarkStateDTO> result;
+
+        if (running.isPresent()) {
+            if (running.get()) {
+                result = getAllByState(BenchmarkStateTypeEnum.runningStates());
+            }
+            else {
+                result = getAllByState(BenchmarkStateTypeEnum.stopStates());
+            }
+        }
+        else {
+            result = getAll();
+        }
+        return result;
+    }
+
+    @Override
+    public List<BenchmarkStateDTO> getAllByState(List<BenchmarkStateTypeEnum> stateType) {
+        List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(stateType);
+        List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
+
+        return result;
+    }
 
     @Transactional
     @Override

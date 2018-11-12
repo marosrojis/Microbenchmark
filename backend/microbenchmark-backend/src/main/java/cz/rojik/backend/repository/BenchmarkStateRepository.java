@@ -15,6 +15,10 @@ public interface BenchmarkStateRepository extends JpaRepository<BenchmarkStateEn
     @Query("SELECT COUNT(b) FROM BenchmarkStateEntity b WHERE b.type IN :type")
     int countAllByStateType(@Param("type") List<BenchmarkStateTypeEnum> type);
 
+    List<BenchmarkStateEntity> findAllByOrderByUpdated();
+
+    List<BenchmarkStateEntity> findAllByTypeIsInOrderByUpdated(List<BenchmarkStateTypeEnum> type);
+
     List<BenchmarkStateEntity> findAllByProjectIdIsNotAndTypeIn(String projectId, List<BenchmarkStateTypeEnum> type);
 
     BenchmarkStateEntity findFirstByProjectId(String projectId);

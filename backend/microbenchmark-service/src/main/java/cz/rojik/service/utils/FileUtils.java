@@ -24,16 +24,14 @@ public class FileUtils {
     }
 
     public static TemplateDTO getTemplateFromJson(String projectId) {
-        BufferedReader reader = null;
         TemplateDTO template = null;
-        try {
-            reader = new BufferedReader(new FileReader(ProjectContants.PROJECTS_FOLDER + projectId + "/" + "template.json"));
+        try (BufferedReader reader = new BufferedReader(new FileReader(ProjectContants.PROJECTS_FOLDER + projectId + "/" + "template.json"))){
             Gson gson = new GsonBuilder().create();
             template = gson.fromJson(reader, TemplateDTO.class);
 
             System.out.println("Object mode: " + template);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return template;
     }

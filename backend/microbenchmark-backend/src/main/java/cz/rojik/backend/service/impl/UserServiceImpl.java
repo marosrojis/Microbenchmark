@@ -2,9 +2,12 @@ package cz.rojik.backend.service.impl;
 
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.dto.user.UserRegistrationForm;
+import cz.rojik.backend.entity.RoleEntity;
+import cz.rojik.backend.entity.RoleType;
 import cz.rojik.backend.entity.UserEntity;
+import cz.rojik.backend.exception.UserException;
+import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.repository.UserRepository;
-import cz.rojik.backend.service.RoleService;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.backend.util.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +16,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.ws.rs.BadRequestException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-	@Autowired
-	private RoleService roleService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
     private UserRepository userRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
     /**
      * Creating user with data from {@link UserRegistrationForm}
@@ -40,7 +48,7 @@ public class UserServiceImpl implements UserService {
             UserEntity user = createAndSaveRegisteredUser(userForm);
             return new UserDTO(user);
 		}
-		return null;
+		throw new UserException(String.format("User with email %s has already existed.", userForm.getEmail()));
 	}
 
 	/**
@@ -60,7 +68,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getByEmail(String email) {
-        return new UserDTO(userRepository.findByEmail(email));
+		UserEntity entity = userRepository.findByEmail(email);
+		if (entity == null) {
+			throw new UserException(String.format("User with email %s was not found", email));
+		}
+        return new UserDTO(entity);
     }
 
     /**
@@ -83,15 +95,11 @@ public class UserServiceImpl implements UserService {
      * @return list of {@link UserDTO} from user with admin role
      */
     @Override
-    public List<UserDTO> getAllUserWithRoles() {
-//        List<User> users = userRepository.getAllUserWithRoles();
-//
-//        List<UserDTO> output = new ArrayList<>();
-//        for (User user : users) {
-//            output.add(new UserDTO(user));
-//        }
-//        return output;
-        return null;
+    public List<UserDTO> getAll() {
+        List<UserEntity> users = userRepository.findAllWithRole();
+
+		List<UserDTO> output = users.stream().map(UserDTO::new).collect(Collectors.toList());
+		return output;
     }
 
 	@Override
@@ -105,13 +113,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm userForm) {
-//        User user = new User(userForm.getFirstname(), userForm.getLastname(), userForm.getEmail(), passwordEncoder.encode(userForm.getPassword()));
-//        user.getRoles().add(roleService.getByType(RoleType.getRoleById(userForm.getRoleId())));
+        UserEntity user = new UserEntity(userForm.getFirstname(), userForm.getLastname(), userForm.getEmail(), passwordEncoder.encode(userForm.getPassword()));
 
-//	    this.save(user);
+		Set<RoleEntity> roles = new HashSet<>();
+		RoleEntity userRole = roleRepository.findFirstByType(RoleType.USER.getRoleType());
+		roles.add(userRole);
 
-//        return user;
-    return null;
+        userForm.getRolesId().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role))));
+
+        user.setRoles(roles);
+		user = userRepository.save(user);
+        return user;
     }
 
 	/**
@@ -120,8 +132,8 @@ public class UserServiceImpl implements UserService {
 	 * @return true if email has existed
 	 */
 	private boolean verifyExistEmail(String email) {
-		UserDTO existUser = this.getByEmail(email);
-		return !(existUser == null);
+		UserEntity entity = userRepository.findByEmail(email);
+		return !(entity == null);
 	}
 
 	/**

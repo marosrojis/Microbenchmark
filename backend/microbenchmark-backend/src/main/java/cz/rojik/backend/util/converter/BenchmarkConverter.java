@@ -24,6 +24,7 @@ public class BenchmarkConverter {
                 .setWarmup(entity.getWarmup())
                 .setProjectId(entity.getProjectId())
                 .setUser(new UserDTO(entity.getUser()));
+        result.setId(entity.getId());
 
         List<MeasureMethodDTO> methods = new ArrayList<>();
         entity.getMeasureMethods().forEach(method -> methods.add(new MeasureMethodDTO(method)));

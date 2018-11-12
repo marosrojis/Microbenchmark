@@ -1,6 +1,10 @@
 package cz.rojik.backend.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.rojik.backend.dto.user.UserDTO;
+import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
+import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,12 +14,15 @@ public class BenchmarkDTO extends BaseDTO {
 
     private String projectId;
     private String name;
-    private LocalDateTime created;
     private String content;
     private int warmup;
     private int measurement;
     private String init;
     private String declare;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime created;
 
     private UserDTO user;
     private List<MeasureMethodDTO> measureMethods;
