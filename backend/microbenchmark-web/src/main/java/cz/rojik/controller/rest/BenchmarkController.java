@@ -63,9 +63,8 @@ public class BenchmarkController {
 
     @PostMapping(MappingURLConstants.BENCHMARK_COMPILE)
     public ResponseEntity<?> compile(@PathVariable String projectId) {
-        boolean success = false;
         try {
-            success = benchmarkService.compile(projectId);
+            benchmarkService.compile(projectId);
         } catch (MavenCompileException exception) {
             return new ResponseEntity<>(exception.getErrors(), HttpStatus.CONFLICT);
         }

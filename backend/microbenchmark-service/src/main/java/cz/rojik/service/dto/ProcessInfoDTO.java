@@ -1,5 +1,9 @@
 package cz.rojik.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
+import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
 import cz.rojik.service.enums.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +15,10 @@ public class ProcessInfoDTO {
 
     private static Logger logger = LoggerFactory.getLogger(ProcessInfoDTO.class);
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime time;
+
     private Operation operation;
     private int number;
     private String note;

@@ -19,9 +19,6 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public void sendProcessInfo(ProcessInfoDTO processInfo, SimpMessageHeaderAccessor headerAccessor) {
-        Gson gson = new GsonBuilder().create();
-        String output = gson.toJson(processInfo);
-
-        this.template.convertAndSendToUser(headerAccessor.getSessionId(), BENCHMARK_RESULT_STEP, processInfo.toString(), headerAccessor.getMessageHeaders());
+        this.template.convertAndSendToUser(headerAccessor.getSessionId(), BENCHMARK_RESULT_STEP, processInfo, headerAccessor.getMessageHeaders());
     }
 }

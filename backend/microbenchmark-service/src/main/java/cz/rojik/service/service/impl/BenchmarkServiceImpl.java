@@ -100,29 +100,29 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws BenchmarkRunException {
-        ResultDTO result = null;
+        ResultDTO result;
+        ProcessInfoDTO processInfo;
         try {
-            ProcessInfoDTO processInfo = runnerService.runProject(projectId, template, socketHeader);
-
-            if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
-                result = resultParserService.parseResult(projectId);
-
-                BenchmarkStateDTO state = benchmarkStateService.updateState(new BenchmarkStateDTO()
-                        .setProjectId(projectId)
-                        .setType(BenchmarkStateTypeEnum.BENCHMARK_SUCCESS));
-
-                result.setNumberOfConnections(state.getNumberOfConnections());
-
-            } else {
-                benchmarkStateService.updateState(new BenchmarkStateDTO()
-                        .setProjectId(projectId)
-                        .setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR));
-
-                throw new BenchmarkRunException(projectId, processInfo.getNote(), readSourceFile(projectId));
-            }
+            processInfo = runnerService.runProject(projectId, template, socketHeader);
 
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
-            e.printStackTrace();
+            throw new BenchmarkRunException(projectId, e.getMessage(), readSourceFile(projectId));
+        }
+
+        if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
+            result = resultParserService.parseResult(projectId);
+
+            BenchmarkStateDTO state = benchmarkStateService.updateState(new BenchmarkStateDTO()
+                    .setProjectId(projectId)
+                    .setType(BenchmarkStateTypeEnum.BENCHMARK_SUCCESS));
+
+            result.setNumberOfConnections(state.getNumberOfConnections());
+        } else {
+            benchmarkStateService.updateState(new BenchmarkStateDTO()
+                    .setProjectId(projectId)
+                    .setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR));
+
+            throw new BenchmarkRunException(projectId, processInfo.getNote(), readSourceFile(projectId));
         }
         return result;
     }

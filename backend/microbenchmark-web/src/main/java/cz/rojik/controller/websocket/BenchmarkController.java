@@ -1,5 +1,7 @@
 package cz.rojik.controller.websocket;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.service.BenchmarkService;
 import cz.rojik.backend.util.SecurityHelper;
@@ -19,6 +21,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import javax.ws.rs.BadRequestException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,6 +40,7 @@ public class BenchmarkController {
     @MessageMapping(MappingURLConstants.BENCHMARK_RUN)
     @SendToUser(MappingURLConstants.BENCHMARK_RESULT)
     public String runBenchmark(SimpMessageHeaderAccessor headerAccessor, String projectId) {
+        Gson gson = new GsonBuilder().create();
 
         SimpMessageHeaderAccessor messageHeaderAccessor = SimpMessageHeaderAccessor
                 .create(SimpMessageType.MESSAGE);
@@ -49,13 +53,14 @@ public class BenchmarkController {
         try {
             benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
         } catch (BenchmarkRunException e) {
-            return new BenchmarkRunErrorDTO(e.getException(), e.getFile()).toString();
+            BenchmarkRunErrorDTO error =  new BenchmarkRunErrorDTO(e.getException(), e.getFile());
+            return gson.toJson(error);
         }
 
         BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
         resultToSave = benchmarkServiceBackend.saveResult(resultToSave);
 
-        return new SimpleDateFormat("HH:mm:ss").format(new Date())+" - " + benchmarkResult;
+        return gson.toJson(benchmarkResult);
     }
 
     @MessageExceptionHandler

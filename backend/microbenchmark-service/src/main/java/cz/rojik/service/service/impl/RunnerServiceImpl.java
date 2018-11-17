@@ -67,7 +67,7 @@ public class RunnerServiceImpl implements RunnerService {
 
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PROJECT_POM));
-        request.setGoals( Arrays.asList("clean", "install", "-Dmaven.test.skip=true"));
+        request.setGoals( Arrays.asList("clean", "package", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setOutputHandler(text -> {
