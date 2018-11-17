@@ -13,7 +13,6 @@
 
     <properties>
         <docker-client.version>8.13.0</docker-client.version>
-        <gson.version>2.2.4</gson.version>
         <maven-invoker.version>3.0.0</maven-invoker.version>
         <hibernate.version>5.2.9.Final</hibernate.version>
         <microbenchmark-backend.version>1.0.0-SNAPSHOT</microbenchmark-backend.version>
