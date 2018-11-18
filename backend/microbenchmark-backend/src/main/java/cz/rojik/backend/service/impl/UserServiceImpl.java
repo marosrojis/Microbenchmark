@@ -62,6 +62,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Method that returns list of {@link UserEntity} that are not enabled
+     * @return a list of {@link UserEntity} that are enabled
+     */
+    @Override
+    public List<UserDTO> getAllNonEnabled() {
+        List<UserEntity> users = userRepository.findAllNonEnabled();
+
+        List<UserDTO> output = users.stream().map(UserDTO::new).collect(Collectors.toList());
+        return output;
+    }
+
+    /**
      * Method that returns user by its email address
      * @param email the email address to find from
      * @return the {@link UserEntity} found
@@ -116,12 +128,17 @@ public class UserServiceImpl implements UserService {
         UserEntity user = new UserEntity(userForm.getFirstname(), userForm.getLastname(), userForm.getEmail(), passwordEncoder.encode(userForm.getPassword()));
 
 		Set<RoleEntity> roles = new HashSet<>();
-		RoleEntity userRole = roleRepository.findFirstByType(RoleType.USER.getRoleType());
+		RoleEntity userRole = roleRepository.findFirstByType(RoleType.DEMO.getRoleType());
 		roles.add(userRole);
 
         userForm.getRolesId().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role))));
 
         user.setRoles(roles);
+
+        if (SecurityHelper.isLoggedUserAdmin()) {
+            user.setEnabled(true);
+        }
+
 		user = userRepository.save(user);
         return user;
     }

@@ -56,7 +56,7 @@ public class UserEntity extends BaseEntity {
         this.lastname = lastName;
         this.email = email;
         this.password = password;
-        this.enabled = true;
+        this.enabled = false;
         this.created = LocalDateTime.now();
     }
 

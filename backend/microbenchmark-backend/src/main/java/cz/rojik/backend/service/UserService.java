@@ -12,7 +12,9 @@ public interface UserService extends UserDetailsService {
 	UserDTO createUser(UserRegistrationForm userForm);
 
 	List<UserDTO> getAllEnabled();
-	
+
+	List<UserDTO> getAllNonEnabled();
+
 	UserDTO getByEmail(String email);
 
     UserDTO getUser(Long id);

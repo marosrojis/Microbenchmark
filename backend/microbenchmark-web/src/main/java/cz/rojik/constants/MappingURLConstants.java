@@ -3,6 +3,7 @@ package cz.rojik.constants;
 public class MappingURLConstants {
 
     public static final String API_PREFIX = "/api";
+    public static final String ID_PARAM = "{id}";
     public static final String MAIN_PAGE = "/";
 
     // REST API //
@@ -17,6 +18,7 @@ public class MappingURLConstants {
 
     // USERS
     public static final String USERS = API_PREFIX + "/users";
+    public static final String USERS_NON_ENABLED = "nonEnabled";
 
     // BENCHMARK_STATE
     public static final String BENCHMARK_STATE = API_PREFIX + "/benchmarkState";

@@ -1,6 +1,7 @@
 package cz.rojik.backend.util;
 
 import cz.rojik.backend.dto.user.UserDTO;
+import cz.rojik.backend.entity.RoleType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -28,5 +29,11 @@ public class SecurityHelper {
         UserDTO currentUser = getCurrentUser();
 
         return currentUser == null ? null : currentUser.getUsername();
+    }
+
+    public static boolean isLoggedUserAdmin() {
+        UserDTO currentUser = getCurrentUser();
+
+        return currentUser != null && currentUser.getRoles().stream().anyMatch(r -> r.getType().equals(RoleType.ADMIN.getRoleType()));
     }
 }

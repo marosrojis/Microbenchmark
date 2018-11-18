@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +25,21 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+    @GetMapping(MappingURLConstants.ID_PARAM)
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+        UserDTO users = userService.getUser(id);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers() {
         List<UserDTO> users = userService.getAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping(MappingURLConstants.USERS_NON_ENABLED)
+    public ResponseEntity<List<UserDTO>> getNonEnabledUsers() {
+        List<UserDTO> users = userService.getAllNonEnabled();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
