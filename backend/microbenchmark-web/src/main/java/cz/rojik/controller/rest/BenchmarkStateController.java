@@ -24,7 +24,7 @@ public class BenchmarkStateController {
     private BenchmarkStateService benchmarkStateService;
 
     @GetMapping
-    public ResponseEntity<List<BenchmarkStateDTO>> getAllByState(@RequestParam(value = "running") Optional<Boolean> running) {
+    public ResponseEntity<List<BenchmarkStateDTO>> getBenchmarksState(@RequestParam(value = "running") Optional<Boolean> running) {
         List<BenchmarkStateDTO> benchmarksState = benchmarkStateService.getBenchmarksState(running);
         return new ResponseEntity<>(benchmarksState, HttpStatus.OK);
     }

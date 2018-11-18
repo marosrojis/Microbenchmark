@@ -1,5 +1,10 @@
 package cz.rojik.backend.service.impl;
 
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.messages.Container;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
@@ -17,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +53,8 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @Override
     public List<BenchmarkStateDTO> getBenchmarksState(Optional<Boolean> running) {
         List<BenchmarkStateDTO> result;
+
+        synchronizeContainersWithRunningBenchmarks();
 
         if (running.isPresent()) {
             if (running.get()) {
@@ -130,5 +139,31 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         benchmarks = benchmarkStateRepository.save(benchmarks);
         logger.info("Count of increase benchmarks is " + benchmarks.size());
+    }
+
+    @Transactional
+    @Override
+    public void synchronizeContainersWithRunningBenchmarks() {
+        DockerClient docker;
+        List<Container> containers;
+        try {
+            docker = DefaultDockerClient.fromEnv().build();
+            containers = docker.listContainers();
+        } catch (InterruptedException | DockerException | DockerCertificateException e) {
+            logger.error("Docker is not running"); // TODO: throw exception
+            return;
+        }
+
+        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(Collections.singletonList(BenchmarkStateTypeEnum.BENCHMARK_START));
+        Set<String> containersId = containers.stream().map(Container::id).collect(Collectors.toSet());
+
+        benchmarks.forEach(benchmark ->  {
+            if (!containersId.contains(benchmark.getContainerId())) {
+                logger.info("Docker container {} for project {} is not running.", benchmark.getContainerId(), benchmark.getProjectId());
+                benchmark.setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+                benchmarkStateRepository.save(benchmark);
+            }
+        });
+
     }
 }

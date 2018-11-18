@@ -1,6 +1,7 @@
 package cz.rojik.backend.service;
 
 import cz.rojik.backend.dto.BenchmarkStateDTO;
+import cz.rojik.backend.entity.BenchmarkStateEntity;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface BenchmarkStateService {
     BenchmarkStateDTO updateState(BenchmarkStateDTO state);
 
     void increaseNumberOfConnectionsToAllActive(String projectId);
+
+    void synchronizeContainersWithRunningBenchmarks();
 }
