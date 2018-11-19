@@ -78,9 +78,9 @@ public class BenchmarkController {
         return new ResponseEntity<>(benchmark, HttpStatus.OK);
     }
 
-    @DeleteMapping(MappingURLConstants.BENCHMARK_ID)
+    @DeleteMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity delete(@PathVariable Long id) {
-        benchmarkService.deleteBenchmark(id);
+        benchmarkBackendService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

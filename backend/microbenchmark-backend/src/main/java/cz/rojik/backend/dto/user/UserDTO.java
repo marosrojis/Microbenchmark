@@ -43,22 +43,6 @@ public class UserDTO extends BaseDTO implements UserDetails {
 
 	}
 
-	public UserDTO(UserEntity user) {
-		if (user != null) {
-			this.id = user.getId();
-			this.email = user.getEmail();
-			this.firstname = user.getFirstname();
-			this.lastname = user.getLastname();
-			this.enabled = user.isEnabled();
-			this.created = user.getCreated();
-			this.password = user.getPassword();
-
-			for (RoleEntity role : user.getRoles()) {
-				this.roles.add(new RoleDTO(role));
-			}
-		}
-	}
-
 	public UserDTO(Login user) {
 		this.email = user.getEmail();
 		this.password = user.getPassword();
@@ -166,56 +150,64 @@ public class UserDTO extends BaseDTO implements UserDetails {
 		return roles;
 	}
 
-	public void setRoles(List<RoleDTO> roles) {
+	public UserDTO setRoles(List<RoleDTO> roles) {
 		this.roles = roles;
+		return this;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public UserDTO setEnabled(boolean enabled) {
 		this.enabled = enabled;
+		return this;
 	}
 
 	public LocalDateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(LocalDateTime created) {
+	public UserDTO setCreated(LocalDateTime created) {
 		this.created = created;
+		return this;
 	}
 
-	public void setPassword(String password) {
+	public UserDTO setPassword(String password) {
 		this.password = password;
+		return this;
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public UserDTO setEmail(String email) {
 		this.email = email;
+		return this;
 	}
 
 	public String getLastname() {
 		return lastname;
 	}
 
-	public void setLastname(String lastname) {
+	public UserDTO setLastname(String lastname) {
 		this.lastname = lastname;
+		return this;
 	}
 
 	public String getFirstname() {
 		return firstname;
 	}
 
-	public void setFirstname(String firstname) {
+	public UserDTO setFirstname(String firstname) {
 		this.firstname = firstname;
+		return this;
 	}
 
 	public long getExpires() {
 		return expires;
 	}
 
-	public void setExpires(long expires) {
+	public UserDTO setExpires(long expires) {
 		this.expires = expires;
+		return this;
 	}
 
 }

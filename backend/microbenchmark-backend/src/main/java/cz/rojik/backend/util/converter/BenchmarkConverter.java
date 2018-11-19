@@ -4,6 +4,7 @@ import cz.rojik.backend.dto.MeasureMethodDTO;
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.entity.BenchmarkEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ import java.util.List;
 
 @Component
 public class BenchmarkConverter {
+
+    @Autowired
+    private UserConverter userConverter;
 
     public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
         BenchmarkDTO result = new BenchmarkDTO();
@@ -23,7 +27,7 @@ public class BenchmarkConverter {
                 .setMeasurement(entity.getMeasurement())
                 .setWarmup(entity.getWarmup())
                 .setProjectId(entity.getProjectId())
-                .setUser(new UserDTO(entity.getUser()));
+                .setUser(userConverter.entityToDTO(entity.getUser(), false));
         result.setId(entity.getId());
 
         List<MeasureMethodDTO> methods = new ArrayList<>();

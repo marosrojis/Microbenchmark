@@ -10,7 +10,6 @@ public class MappingURLConstants {
 
     // BENCHMARK
     public static final String BENCHMARK = API_PREFIX + "/benchmark";
-    public static final String BENCHMARK_ID = "{id}";
     public static final String BENCHMARK_CREATE = "create";
     public static final String BENCHMARK_IMPORT_LIBRARIES = "importLibraries";
     public static final String BENCHMARK_COMPILE = "compile/{projectId}";

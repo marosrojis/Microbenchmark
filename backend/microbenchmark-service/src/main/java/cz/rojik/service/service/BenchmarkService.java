@@ -17,5 +17,4 @@ public interface BenchmarkService {
 
     ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws BenchmarkRunException;
 
-    void deleteBenchmark(Long id);
 }

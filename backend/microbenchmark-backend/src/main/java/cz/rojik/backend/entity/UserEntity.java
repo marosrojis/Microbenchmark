@@ -105,52 +105,59 @@ public class UserEntity extends BaseEntity {
         return roles;
     }
 
-    public void setRoles(Set<RoleEntity> roles) {
+    public UserEntity setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
+        return this;
     }
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public UserEntity setEnabled(boolean enabled) {
         this.enabled = enabled;
+        return this;
     }
 
     public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public UserEntity setCreated(LocalDateTime created) {
         this.created = created;
+        return this;
     }
 
-    public void setPassword(String password) {
+    public UserEntity setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public UserEntity setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getLastname() {
         return lastname;
     }
 
-    public void setLastname(String lastname) {
+    public UserEntity setLastname(String lastname) {
         this.lastname = lastname;
+        return this;
     }
 
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public UserEntity setFirstname(String firstname) {
         this.firstname = firstname;
+        return this;
     }
 
     public String getPassword() {
@@ -161,7 +168,8 @@ public class UserEntity extends BaseEntity {
         return results;
     }
 
-    public void setResults(List<BenchmarkEntity> results) {
+    public UserEntity setResults(List<BenchmarkEntity> results) {
         this.results = results;
+        return this;
     }
 }

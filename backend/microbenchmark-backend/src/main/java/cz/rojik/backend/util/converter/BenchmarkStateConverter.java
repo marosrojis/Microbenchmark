@@ -3,10 +3,14 @@ package cz.rojik.backend.util.converter;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BenchmarkStateConverter {
+
+    @Autowired
+    private UserConverter userConverter;
 
     public BenchmarkStateDTO entityToDTO(BenchmarkStateEntity entity) {
         BenchmarkStateDTO result = new BenchmarkStateDTO();
@@ -17,7 +21,7 @@ public class BenchmarkStateConverter {
                 .setProjectId(entity.getProjectId())
                 .setType(entity.getType())
                 .setUpdated(entity.getUpdated())
-                .setUser(new UserDTO(entity.getUser()));
+                .setUser(userConverter.entityToDTO(entity.getUser(), false));
 
         return result;
     }

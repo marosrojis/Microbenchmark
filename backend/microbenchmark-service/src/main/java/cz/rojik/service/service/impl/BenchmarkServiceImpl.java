@@ -127,24 +127,6 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         return result;
     }
 
-    @Transactional
-    @Override
-    public void deleteBenchmark(Long id) {
-        BenchmarkDTO benchmark = benchmarkBackendService.delete(id);
-
-        try {
-            File projectDirectory = new File(Paths.get(ProjectContants.PROJECTS_FOLDER + benchmark.getProjectId()).toUri().getPath());
-            org.apache.commons.io.FileUtils.deleteDirectory(projectDirectory);
-
-            File resultFolder = new File(ProjectContants.PATH_RESULT + benchmark.getProjectId() + ProjectContants.JSON_FILE_FORMAT);
-            if (!resultFolder.delete()) { // TODO: repair delete result file
-                logger.info(String.format("Result file %s.json was not deleted", benchmark.getProjectId()));
-            }
-        } catch (IOException e) {
-            throw new DeleteBenchmarkException(String.format("Directory or result of project %s (benchmark ID is %s) was not deleted.\n%s", benchmark.getProjectId(), id, e.getMessage()));
-        }
-    }
-
     // PRIVATE
 
     private List<String> readSourceFile(String projectId) {

@@ -12,7 +12,7 @@ public class UserRegistrationForm {
 
     @NotNull
     private String lastname;
-    private List<Integer> rolesId;
+    private List<UserDTO> roles;
 
     private String password;
 
@@ -48,12 +48,11 @@ public class UserRegistrationForm {
         this.email = email;
     }
 
-
-    public List<Integer> getRolesId() {
-        return rolesId;
+    public List<UserDTO> getRoles() {
+        return roles;
     }
 
-    public void setRolesId(List<Integer> rolesId) {
-        this.rolesId = rolesId;
+    public void setRoles(List<UserDTO> roles) {
+        this.roles = roles;
     }
 }

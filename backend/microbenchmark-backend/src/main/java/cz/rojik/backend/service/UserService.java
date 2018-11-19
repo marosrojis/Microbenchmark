@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-	UserDTO createUser(UserRegistrationForm userForm);
+	UserDTO create(UserRegistrationForm user);
+
+	UserDTO update(Long userId, UserDTO user);
 
 	List<UserDTO> getAllEnabled();
 
@@ -22,4 +24,6 @@ public interface UserService extends UserDetailsService {
 	List<UserDTO> getAll();
 
 	UserEntity getLoggedUserEntity();
+
+	void delete(Long id);
 }

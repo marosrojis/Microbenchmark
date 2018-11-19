@@ -20,7 +20,7 @@ public enum RoleType implements Serializable {
         return userRole;
     }
 
-    public static String getRoleById(int id) {
+    public static String getRoleById(long id) {
         if (id == 1) return RoleType.USER.getRoleType();
         if (id == 2) return RoleType.ADMIN.getRoleType();
         if (id == 3) return RoleType.DEMO.getRoleType();

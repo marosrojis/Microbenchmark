@@ -8,8 +8,11 @@ import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.repository.UserRepository;
+import cz.rojik.backend.service.BenchmarkService;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.backend.util.SecurityHelper;
+import cz.rojik.backend.util.converter.UserConverter;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.BadRequestException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,20 +40,57 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Autowired
+	private UserConverter userConverter;
+
+	@Autowired
+	private BenchmarkService benchmarkService;
+
     /**
      * Creating user with data from {@link UserRegistrationForm}
-     * @param userForm {@link UserRegistrationForm} with data to create new user
+     * @param user {@link UserRegistrationForm} with data to create new user
      * @return true if the user was successfully created
      */
 	@Transactional
     @Override
-    public UserDTO createUser(UserRegistrationForm userForm) {
-		boolean verifyExistEmail = verifyExistEmail(userForm.getEmail());
+    public UserDTO create(UserRegistrationForm user) {
+		boolean verifyExistEmail = verifyExistEmail(user.getEmail());
 		if (!verifyExistEmail) {
-            UserEntity user = createAndSaveRegisteredUser(userForm);
-            return new UserDTO(user);
+            UserEntity entity = createAndSaveRegisteredUser(user);
+            return userConverter.entityToDTO(entity, true);
 		}
-		throw new UserException(String.format("User with email %s has already existed.", userForm.getEmail()));
+		throw new UserException(String.format("User with email %s has already existed.", user.getEmail()));
+	}
+
+	/**
+	 * Update user with data from {@link UserDTO}
+	 * @param user {@link UserDTO} with data to update new user
+	 * @return true if the user was successfully updated
+	 */
+	@Transactional
+	@Override
+	public UserDTO update(Long userId, UserDTO user) {
+		UserEntity entity = userRepository.findOne(userId);
+
+		entity = userConverter.mapToEntityUpdate(user, entity);
+
+		if (!StringUtils.equals(user.getEmail(), entity.getEmail())) {
+			boolean verifyExistEmail = verifyExistEmail(user.getEmail());
+			if (verifyExistEmail) {
+				throw new UserException(String.format("User with email %s has already existed.", user.getEmail()));
+			}
+			entity.setEmail(user.getEmail());
+		}
+
+		if (user.getRoles() != null && user.getRoles().size() != 0) {
+			entity.setRoles(Collections.emptySet());
+			Set<RoleEntity> roles = new HashSet<>();
+			user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
+			entity.setRoles(roles);
+		}
+
+		entity = userRepository.save(entity);
+		return userConverter.entityToDTO(entity, true);
 	}
 
 	/**
@@ -69,7 +111,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> getAllNonEnabled() {
         List<UserEntity> users = userRepository.findAllNonEnabled();
 
-        List<UserDTO> output = users.stream().map(UserDTO::new).collect(Collectors.toList());
+        List<UserDTO> output = users.stream().map(user -> userConverter.entityToDTO(user, true)).collect(Collectors.toList());
         return output;
     }
 
@@ -84,7 +126,7 @@ public class UserServiceImpl implements UserService {
 		if (entity == null) {
 			throw new UserException(String.format("User with email %s was not found", email));
 		}
-        return new UserDTO(entity);
+        return userConverter.entityToDTO(entity, true);
     }
 
     /**
@@ -99,7 +141,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
 			throw new UserException(String.format("User with id %s was not found", id));
 		}
-        return new UserDTO(user);
+        return userConverter.entityToDTO(user, true);
     }
 
     /**
@@ -110,7 +152,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> getAll() {
         List<UserEntity> users = userRepository.findAllWithRole();
 
-		List<UserDTO> output = users.stream().map(UserDTO::new).collect(Collectors.toList());
+		List<UserDTO> output = users.stream().map(user -> userConverter.entityToDTO(user, true)).collect(Collectors.toList());
 		return output;
     }
 
@@ -124,23 +166,34 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm userForm) {
-        UserEntity user = new UserEntity(userForm.getFirstname(), userForm.getLastname(), userForm.getEmail(), passwordEncoder.encode(userForm.getPassword()));
+	// TODO: promyslet jestli smazat uzivatele pokud jiz pustil nejake testy
+	@Override
+	public void delete(Long id) {
+		UserEntity entity = userRepository.findOne(id);
+		if (entity == null) {
+			throw new UserException(String.format("User with ID %s was not found.", id));
+		}
+
+		userRepository.delete(entity);
+	}
+
+	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm user) {
+        UserEntity entity = new UserEntity(user.getFirstname(), user.getLastname(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
 
 		Set<RoleEntity> roles = new HashSet<>();
 		RoleEntity userRole = roleRepository.findFirstByType(RoleType.DEMO.getRoleType());
 		roles.add(userRole);
 
-        userForm.getRolesId().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role))));
+        user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
 
-        user.setRoles(roles);
+        entity.setRoles(roles);
 
         if (SecurityHelper.isLoggedUserAdmin()) {
-            user.setEnabled(true);
+            entity.setEnabled(true);
         }
 
-		user = userRepository.save(user);
-        return user;
+		entity = userRepository.save(entity);
+        return entity;
     }
 
 	/**
