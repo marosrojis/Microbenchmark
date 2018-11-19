@@ -2,6 +2,7 @@ package cz.rojik.controller.rest;
 
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.dto.user.UserRegistrationForm;
+import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.constants.MappingURLConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 
 @RestController
@@ -27,7 +30,12 @@ public class UsersController {
 
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
-        UserDTO users = userService.getUser(id);
+        UserDTO users;
+        try {
+            users = userService.getUser(id);
+        } catch (UserException e) {
+            throw new NotFoundException(e.getMessage());
+        }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -44,7 +52,7 @@ public class UsersController {
     }
 
     @PostMapping
-    private ResponseEntity<UserDTO> createUser(@RequestBody UserRegistrationForm user) {
+    private ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserRegistrationForm user) {
         UserDTO newUser = userService.createUser(user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }

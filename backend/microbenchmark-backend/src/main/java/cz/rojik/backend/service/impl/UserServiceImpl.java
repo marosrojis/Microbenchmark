@@ -97,8 +97,8 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findOne(id);
 
         if (user == null) {
-            return null;
-        }
+			throw new UserException(String.format("User with id %s was not found", id));
+		}
         return new UserDTO(user);
     }
 

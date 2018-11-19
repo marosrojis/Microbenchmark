@@ -1,11 +1,16 @@
 package cz.rojik.backend.dto.user;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class UserRegistrationForm {
 
+    @NotNull
     private String email;
+
     private String firstname;
+
+    @NotNull
     private String lastname;
     private List<Integer> rolesId;
 
