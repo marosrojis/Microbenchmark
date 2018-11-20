@@ -1,5 +1,7 @@
 package cz.rojik.backend.entity;
 
+import org.hibernate.annotations.SQLDelete;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,7 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
+@SQLDelete(sql = "UPDATE mbmark_measure_method SET archived = true WHERE id = ?")
 @Table(name = "mbmark_measure_method")
 public class MeasureMethodEntity extends BaseEntity {
 

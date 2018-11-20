@@ -5,8 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.Objects;
 
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
@@ -18,10 +18,8 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    @Transient
-    public boolean isNew() {
-        return id == null;
-    }
+    @Column(name = "archived", nullable = false)
+    private Boolean archived = false;
 
     public Long getId() {
         return id;
@@ -31,26 +29,34 @@ public abstract class BaseEntity implements Serializable {
         this.id = id;
     }
 
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BaseEntity that = (BaseEntity) o;
-
-        return id != null ? id.equals(that.id) : that.id == null;
-
+        return Objects.equals(id, that.id) &&
+                Objects.equals(archived, that.archived);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+
+        return Objects.hash(id, archived);
     }
 
     @Override
     public String toString() {
         return "BaseEntity{" +
-                "id=" + id +
+                "id='" + id + '\'' +
+                ", archived=" + archived +
                 '}';
     }
 }

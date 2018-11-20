@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("benchmarkServiceBackend")
@@ -45,12 +46,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public BenchmarkDTO getOne(Long id) {
-        BenchmarkEntity benchmarkEntity = benchmarkRepository.findOne(id);
-        if (benchmarkEntity == null) {
+        Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
+        if (!benchmarkEntity.isPresent()) {
             throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
-        return benchmarkConverter.entityToDTO(benchmarkEntity);
+        return benchmarkConverter.entityToDTO(benchmarkEntity.get());
     }
 
     @Override
@@ -72,8 +73,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         BenchmarkEntity entity = benchmarkConverter.dtoToEntity(result);
 
         if (result.getUser() != null) {
-            UserEntity user = userRepository.findOne(result.getUser().getId());
-            entity.setUser(user);
+            Optional<UserEntity> user = userRepository.findById(result.getUser().getId());
+            entity.setUser(user.get());
         }
 
         entity = benchmarkRepository.saveAndFlush(entity);
@@ -94,36 +95,37 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public BenchmarkDTO delete(Long id) {
-        BenchmarkEntity entity = benchmarkRepository.findOne(id);
-        if (entity == null) {
+        Optional<BenchmarkEntity> entity = benchmarkRepository.findById(id);
+        if (!entity.isPresent()) {
             throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
-        List<MeasureMethodEntity> methods = measureMethodRepository.findAllByResult(entity);
-        measureMethodRepository.delete(methods);
+        List<MeasureMethodEntity> methods = measureMethodRepository.findAllByResult(entity.get());
+        measureMethodRepository.deleteAll(methods);
 
-        BenchmarkStateEntity benchmarkStateEntity = benchmarkStateRepository.findFirstByProjectId(entity.getProjectId());
+        BenchmarkStateEntity benchmarkStateEntity = benchmarkStateRepository.findFirstByProjectId(entity.get().getProjectId());
         benchmarkStateRepository.delete(benchmarkStateEntity);
 
-        benchmarkRepository.delete(entity);
-        return benchmarkConverter.entityToDTO(entity);
+        benchmarkRepository.delete(entity.get());
+        return benchmarkConverter.entityToDTO(entity.get());
     }
 
     @Override
     public BenchmarkDTO assignToUser(Long id, Long userId) {
-        BenchmarkEntity benchmarkEntity = benchmarkRepository.findOne(id);
-        if (benchmarkEntity == null) {
+        Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
+        if (!benchmarkEntity.isPresent()) {
             throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
-        UserEntity userEntity = userRepository.findOne(userId);
-        if (userEntity == null) {
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        if (!userEntity.isPresent()) {
             throw new UserException(String.format("User with ID %s was not found.", userId));
         }
 
-        benchmarkEntity.setUser(userEntity);
-        benchmarkRepository.save(benchmarkEntity);
+        BenchmarkEntity entity = benchmarkEntity.get();
+        entity.setUser(userEntity.get());
+        benchmarkRepository.saveAndFlush(entity);
 
-        return benchmarkConverter.entityToDTO(benchmarkEntity);
+        return benchmarkConverter.entityToDTO(entity);
     }
 }

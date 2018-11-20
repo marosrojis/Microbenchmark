@@ -1,5 +1,7 @@
 package cz.rojik.backend.entity;
 
+import org.hibernate.annotations.SQLDelete;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -8,6 +10,7 @@ import javax.persistence.Table;
  * Licence uživatele
  */
 @Entity
+@SQLDelete(sql = "UPDATE mbmark_role SET archived = true WHERE id = ?")
 @Table(name = "mbmark_role")
 public class RoleEntity extends BaseEntity {
 

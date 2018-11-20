@@ -12,7 +12,7 @@
     <artifactId>microbenchmark-web</artifactId>
 
     <properties>
-        <spring.version>4.3.20.RELEASE</spring.version>
+        <!--<spring.version>4.3.20.RELEASE</spring.version>-->
         <postgresql.version>42.0.0</postgresql.version>
         <hibernate.version>5.2.9.Final</hibernate.version>
         <jackson.version>2.9.7</jackson.version>

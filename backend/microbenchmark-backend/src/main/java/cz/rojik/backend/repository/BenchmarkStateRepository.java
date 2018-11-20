@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BenchmarkStateRepository extends JpaRepository<BenchmarkStateEntity, Long> {
+public interface BenchmarkStateRepository extends BaseRepository<BenchmarkStateEntity> {
 
     @Query("SELECT COUNT(b) FROM BenchmarkStateEntity b WHERE b.type IN :type")
     int countAllByStateType(@Param("type") List<BenchmarkStateTypeEnum> type);

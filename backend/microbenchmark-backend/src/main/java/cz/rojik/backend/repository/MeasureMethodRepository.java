@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MeasureMethodRepository extends JpaRepository<MeasureMethodEntity, Long> {
+public interface MeasureMethodRepository extends BaseRepository<MeasureMethodEntity> {
 
     List<MeasureMethodEntity> findAllByResult(BenchmarkEntity result);
 }

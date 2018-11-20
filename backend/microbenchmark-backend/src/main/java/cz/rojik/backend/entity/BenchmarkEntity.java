@@ -1,5 +1,7 @@
 package cz.rojik.backend.entity;
 
+import org.hibernate.annotations.SQLDelete;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@SQLDelete(sql = "UPDATE mbmark_benchmark SET archived = true WHERE id = ?")
 @Table(
         name = "mbmark_benchmark",
         uniqueConstraints = @UniqueConstraint(columnNames = {"project_id"}),

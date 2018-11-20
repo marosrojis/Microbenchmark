@@ -1,6 +1,7 @@
 package cz.rojik.backend.entity;
 
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@SQLDelete(sql = "UPDATE mbmark_benchmark_state SET archived = true WHERE id = ?")
 @Table(
         name = "mbmark_benchmark_state",
         uniqueConstraints = @UniqueConstraint(columnNames = {"project_id"}),
@@ -29,7 +31,7 @@ public class BenchmarkStateEntity extends BaseEntity {
     private String containerId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 8)
+    @Column(name = "type", nullable = false, length = 25)
     private BenchmarkStateTypeEnum type;
 
     @Column(name = "updated", nullable = false)

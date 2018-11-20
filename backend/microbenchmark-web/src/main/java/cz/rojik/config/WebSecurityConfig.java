@@ -67,11 +67,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers(MappingURLConstants.LOGIN).permitAll()
-				.antMatchers(MappingURLConstants.SOCKET + "/**").permitAll()
-				.antMatchers(MappingURLConstants.TEST + "/**").hasRole(RoleType.USER.getRoleType())
-                .antMatchers()
-                    .hasRole(RoleType.Values.ROLE_USER_VALUE)
+//				.antMatchers(MappingURLConstants.LOGIN).permitAll()
+//				.antMatchers(MappingURLConstants.SOCKET + "/**").permitAll()
+//				.antMatchers(MappingURLConstants.TEST + "/**").hasRole(RoleType.USER.getRoleType())
+//                .antMatchers()
+//                    .hasRole(RoleType.Values.ROLE_USER_VALUE)
+			.antMatchers("/**").permitAll()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                .antMatchers(MappingURLConstants.API_PREFIX + "/**").fullyAuthenticated()
                 .antMatchers(MappingURLConstants.API_PREFIX + "/**").permitAll()

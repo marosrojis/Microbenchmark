@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,8 +71,12 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	@Override
 	public UserDTO update(Long userId, UserDTO user) {
-		UserEntity entity = userRepository.findOne(userId);
+		Optional<UserEntity> userEntity = userRepository.findById(userId);
+		if (!userEntity.isPresent()) {
+			throw new UserException(String.format("User with ID %s was not found.", userId));
+		}
 
+		UserEntity entity = userEntity.get();
 		entity = userConverter.mapToEntityUpdate(user, entity);
 
 		if (!StringUtils.equals(user.getEmail(), entity.getEmail())) {
@@ -136,12 +141,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getUser(Long id) {
-        UserEntity user = userRepository.findOne(id);
+        Optional<UserEntity> user = userRepository.findById(id);
 
-        if (user == null) {
+        if (!user.isPresent()) {
 			throw new UserException(String.format("User with id %s was not found", id));
 		}
-        return userConverter.entityToDTO(user, true);
+        return userConverter.entityToDTO(user.get(), true);
     }
 
     /**
@@ -160,8 +165,8 @@ public class UserServiceImpl implements UserService {
 	public UserEntity getLoggedUserEntity() {
 		UserDTO userDTO = SecurityHelper.getCurrentUser();
 		if (userDTO != null) {
-			UserEntity entity = userRepository.findOne(userDTO.getId());
-			return entity;
+			Optional<UserEntity> entity = userRepository.findById(userDTO.getId());
+			return entity.get();
 		}
 		return null;
 	}
@@ -169,12 +174,12 @@ public class UserServiceImpl implements UserService {
 	// TODO: promyslet jestli smazat uzivatele pokud jiz pustil nejake testy
 	@Override
 	public void delete(Long id) {
-		UserEntity entity = userRepository.findOne(id);
-		if (entity == null) {
+		Optional<UserEntity> entity = userRepository.findById(id);
+		if (!entity.isPresent()) {
 			throw new UserException(String.format("User with ID %s was not found.", id));
 		}
 
-		userRepository.delete(entity);
+		userRepository.delete(entity.get());
 	}
 
 	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm user) {

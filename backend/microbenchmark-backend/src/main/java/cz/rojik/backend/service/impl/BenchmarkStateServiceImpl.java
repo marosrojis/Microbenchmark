@@ -137,7 +137,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             benchmark.setUpdated(LocalDateTime.now());
         });
 
-        benchmarks = benchmarkStateRepository.save(benchmarks);
+        benchmarkStateRepository.saveAll(benchmarks);
         logger.info("Count of increase benchmarks is " + benchmarks.size());
     }
 
