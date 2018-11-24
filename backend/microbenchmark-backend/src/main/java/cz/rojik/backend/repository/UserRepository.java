@@ -14,9 +14,9 @@ public interface UserRepository extends BaseRepository<UserEntity> {
     @Query("SELECT e FROM UserEntity e WHERE e.email = :email AND e.archived = false")
     UserEntity findByEmail(@Param("email") String email);
 
-    @Query("SELECT e FROM UserEntity e JOIN FETCH e.roles RoleEntity WHERE e.archived = false")
+    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles RoleEntity WHERE e.archived = false")
     List<UserEntity> findAllWithRole();
 
-    @Query("SELECT e FROM UserEntity e JOIN FETCH e.roles RoleEntity WHERE e.enabled = false AND e.archived = false")
+    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles RoleEntity WHERE e.enabled = false AND e.archived = false")
     List<UserEntity> findAllNonEnabled();
 }

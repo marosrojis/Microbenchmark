@@ -32,7 +32,7 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public class UserEntity extends BaseEntity {
     @Column
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "mbmark_user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})

@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface BenchmarkRepository extends BaseRepository<BenchmarkEntity> {
 
-    @Query("SELECT b FROM BenchmarkEntity b JOIN FETCH b.measureMethods m LEFT JOIN FETCH b.user u WHERE b.archived = false ORDER BY b.created")
+    @Query("SELECT DISTINCT b FROM BenchmarkEntity b JOIN FETCH b.measureMethods m LEFT JOIN FETCH b.user u WHERE b.archived = false ORDER BY b.created")
     List<BenchmarkEntity> findAllOrOrderByCreated();
 }
