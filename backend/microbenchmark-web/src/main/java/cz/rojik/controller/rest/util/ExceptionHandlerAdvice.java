@@ -19,6 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.ws.rs.NotFoundException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -39,13 +40,6 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
     }
 
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ResponseEntity<ErrorDetails> handleGeneralRuntimeException(Exception exception, WebRequest request) {
-        logger.warn("Exception occured.", exception);
-
-        return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
-    }
-
     @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class })
     public ResponseEntity<ErrorDetails> handleBadRequestException(Exception exception, WebRequest request) {
         return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST, false);
@@ -59,7 +53,7 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Validation Failed",
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Validation Failed",
                 ex.getBindingResult().toString());
         return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
@@ -71,7 +65,7 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
             logger.info("Exception occured.", exception);
         }
 
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(),
                 request.getDescription(false));
 
         logger.info(new ResponseEntity<>(errorDetails, status).getStatusCode().toString());

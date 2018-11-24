@@ -11,7 +11,7 @@ const templateDefault = new Template(
   '',
   2,
   3,
-  'List<Integer> arrayList;\nint[] array;Random random;\nList<String> temp;',
+  'java.util.List<Integer> arrayList;\nint[] array;Random random;\njava.util.List<String> temp;',
   'random = new Random();\narray = new int[1000];\narrayList = new ArrayList<>();\nfor (int i = 0; i < 1000; i++) {\n\tint randomNumber = random.nextInt();\n\tarray[i] = randomNumber;\n\tarrayList.add(new Integer(randomNumber));\n}',
   ['Arrays.sort(array);', 'Collections.sort(arrayList);'],
 );

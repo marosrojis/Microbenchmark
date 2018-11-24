@@ -1,24 +1,34 @@
 package cz.rojik.error;
 
-import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
+import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
+
+import java.time.LocalDateTime;
 
 public class ErrorDetails {
-    private Date timestamp;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime timestamp;
     private String message;
     private String details;
 
-    public ErrorDetails(Date timestamp, String message, String details) {
+    public ErrorDetails(LocalDateTime timestamp, String message, String details) {
         super();
         this.timestamp = timestamp;
         this.message = message;
         this.details = details;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

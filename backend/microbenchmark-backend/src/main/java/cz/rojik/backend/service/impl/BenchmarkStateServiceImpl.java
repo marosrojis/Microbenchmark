@@ -120,7 +120,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             entity.setContainerId(state.getContainerId());
         }
 
-        entity = benchmarkStateRepository.saveAndFlush(entity);
+        entity = benchmarkStateRepository.save(entity);
         return benchmarkStateConverter.entityToDTO(entity);
     }
 
