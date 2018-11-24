@@ -6,6 +6,8 @@ import cz.rojik.backend.dto.user.LoginPostDTO;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.auth.user.UserDetailService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -36,11 +38,18 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException, IOException, ServletException {
+			throws IOException, ServletException {
+		Authentication auth = null;
 
 		final LoginPostDTO login = new ObjectMapper().readValue(request.getInputStream(), LoginPostDTO.class);
 		final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
-		return getAuthenticationManager().authenticate(loginToken);
+		try {
+			auth = getAuthenticationManager().authenticate(loginToken);
+		} catch (AuthenticationException e) {
+			SecurityContextHolder.clearContext();
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+		}
+		return auth;
 	}
 
 	@Override

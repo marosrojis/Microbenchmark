@@ -16,19 +16,19 @@ import java.util.Optional;
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Long> {
     @Override
-    @Query("select e from #{#entityName} e where e.id = :id and e.archived = ''")
+    @Query("select e from #{#entityName} e where e.id = :id and e.archived = false")
     Optional<T> findById(@Param("id") Long id);
 
     @Override
-    @Query("select case when count(e) > 0 then true else false end from #{#entityName} e where e.id = :id and e.archived = ''")
+    @Query("select case when count(e) > 0 then true else false end from #{#entityName} e where e.id = :id and e.archived = false")
     boolean existsById(@Param("id") Long id);
 
     @Override
-    @Query("select e from #{#entityName} e where e.archived = ''")
+    @Query("select e from #{#entityName} e where e.archived = false")
     List<T> findAll();
 
     @Override
-    @Query("select count(e) from #{#entityName} e where e.archived = ''")
+    @Query("select count(e) from #{#entityName} e where e.archived = false")
     long count();
 
 

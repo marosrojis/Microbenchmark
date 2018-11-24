@@ -24,6 +24,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
@@ -67,17 +69,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-//				.antMatchers(MappingURLConstants.LOGIN).permitAll()
-//				.antMatchers(MappingURLConstants.SOCKET + "/**").permitAll()
-//				.antMatchers(MappingURLConstants.TEST + "/**").hasRole(RoleType.USER.getRoleType())
-//                .antMatchers()
-//                    .hasRole(RoleType.Values.ROLE_USER_VALUE)
+				.antMatchers(MappingURLConstants.LOGIN).permitAll()
+				.antMatchers(MappingURLConstants.SOCKET + "/**").permitAll()
+				.antMatchers(MappingURLConstants.TEST + "/**").hasRole(RoleType.USER.getRoleType())
+                .antMatchers()
+                    .hasRole(RoleType.Values.ROLE_USER_VALUE)
 			.antMatchers("/**").permitAll()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                .antMatchers(MappingURLConstants.API_PREFIX + "/**").fullyAuthenticated()
+                .antMatchers(MappingURLConstants.API_PREFIX + "/**").fullyAuthenticated()
                 .antMatchers(MappingURLConstants.API_PREFIX + "/**").permitAll()
                 .and()
-			.exceptionHandling().accessDeniedHandler(new MBenchmarkAccessDeniedHandler())
+			.exceptionHandling()
+				.accessDeniedHandler(new MBenchmarkAccessDeniedHandler())
+				.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
 			.and()
 				// custom JSON based authentication by POST of {"username":"<name>","password":"<password>"} which sets the token header upon authentication
 			.addFilterBefore(new StatelessLoginFilter(MappingURLConstants.LOGIN, tokenAuthenticationService, userDetailService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)

@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,10 +35,15 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleGeneralException(Exception exception, WebRequest request) {
+    public ResponseEntity<ErrorDetails> handleGeneralException(Exception exception, WebRequest request) {
+        return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<ErrorDetails> handleGeneralRuntimeException(Exception exception, WebRequest request) {
         logger.warn("Exception occured.", exception);
 
-        return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);
+        return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
     }
 
     @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class })
