@@ -31,7 +31,7 @@ public class BenchmarkStateEntity extends BaseEntity {
     private String containerId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 16)
+    @Column(name = "type", nullable = false, length = 32)
     private BenchmarkStateTypeEnum type;
 
     @Column(name = "updated", nullable = false)

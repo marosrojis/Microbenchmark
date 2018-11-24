@@ -19,7 +19,7 @@ create table mbmark_benchmark_state (
     container_id varchar(255),
     number_of_connections int4 not null,
     project_id varchar(255) not null,
-    type varchar(16) not null,
+    type varchar(32) not null,
     updated timestamp not null,
     user_id int8,
     primary key (id)
