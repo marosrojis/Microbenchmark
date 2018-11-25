@@ -6,19 +6,14 @@ import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.service.BenchmarkStateService;
-import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.ErrorDTO;
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.service.dto.LibrariesDTO;
-import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
-import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.BenchmarkRunException;
-import cz.rojik.service.exception.DeleteBenchmarkException;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.MavenCompileException;
-import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.BenchmarkService;
 import cz.rojik.service.service.GeneratorService;
 import cz.rojik.service.service.ResultParserService;
@@ -29,12 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -100,43 +90,16 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws BenchmarkRunException {
-        ResultDTO result;
-        ProcessInfoDTO processInfo;
-        try {
-            processInfo = runnerService.runProject(projectId, template, socketHeader);
+        BenchmarkStateDTO state;
 
+        try {
+            state = runnerService.runProject(projectId, template, socketHeader);
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
-            throw new BenchmarkRunException(projectId, e.getMessage(), readSourceFile(projectId));
+            throw new cz.rojik.service.exception.DockerException(e.getMessage());
         }
 
-        if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
-            result = resultParserService.parseResult(projectId);
-
-            BenchmarkStateDTO state = benchmarkStateService.updateState(new BenchmarkStateDTO()
-                    .setProjectId(projectId)
-                    .setType(BenchmarkStateTypeEnum.BENCHMARK_SUCCESS));
-
-            result.setNumberOfConnections(state.getNumberOfConnections());
-        } else {
-            benchmarkStateService.updateState(new BenchmarkStateDTO()
-                    .setProjectId(projectId)
-                    .setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR));
-
-            throw new BenchmarkRunException(projectId, processInfo.getNote(), readSourceFile(projectId));
-        }
+        ResultDTO result = resultParserService.parseResult(projectId);
+        result.setNumberOfConnections(state.getNumberOfConnections());
         return result;
-    }
-
-    // PRIVATE
-
-    private List<String> readSourceFile(String projectId) {
-        List<String> sourceCode;
-        try {
-            sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
-        } catch (IOException e) {
-            logger.error("Cannot open class from project witd ID {0}", projectId);
-            throw new ReadFileException(projectId);
-        }
-        return sourceCode;
     }
 }

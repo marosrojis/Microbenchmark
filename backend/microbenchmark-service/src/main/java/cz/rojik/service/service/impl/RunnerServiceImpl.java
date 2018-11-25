@@ -16,9 +16,11 @@ import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.enums.Operation;
+import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.service.RunnerService;
 import cz.rojik.service.service.WebSocketService;
+import cz.rojik.service.utils.FileUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
@@ -67,7 +69,7 @@ public class RunnerServiceImpl implements RunnerService {
 
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PROJECT_POM));
-        request.setGoals( Arrays.asList("clean", "package", "-Dmaven.test.skip=true"));
+        request.setGoals(Arrays.asList("clean", "package", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setOutputHandler(text -> {
@@ -88,8 +90,10 @@ public class RunnerServiceImpl implements RunnerService {
     }
 
     @Override
-    public ProcessInfoDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws DockerCertificateException, DockerException, InterruptedException {
+    public BenchmarkStateDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader)
+            throws DockerCertificateException, DockerException, InterruptedException, BenchmarkRunException {
         ProcessInfoDTO processInfo = null;
+        BenchmarkStateDTO benchmarkState = null;
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
         final HostConfig hostConfig = HostConfig.builder()
@@ -108,30 +112,29 @@ public class RunnerServiceImpl implements RunnerService {
                 .build();
 
         final ContainerCreation creation = client.createContainer(containerConfig);
-        final String id = creation.id();
+        final String containerId = creation.id();
 
-        benchmarkStateService.updateState(new BenchmarkStateDTO()
-                .setProjectId(projectId)
-                .setContainerId(id)
-                .setType(BenchmarkStateTypeEnum.BENCHMARK_START));
-
-        client.startContainer(id);
+        client.startContainer(containerId);
+        benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_START);
 
         final String[] command = {"java", "-jar", ProjectContants.DOCKER_SHARED_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
         final ExecCreation execCreation = client.execCreate(
-                id, command, DockerClient.ExecCreateParam.attachStdout(),
+                containerId, command, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
         final LogStream output = client.execStart(execCreation.id());
 
         while (output.hasNext()) {
             final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
-//            logger.info(logMessage);
-
+            logger.info(logMessage);
             processInfo = messageLogParser.parseMessage(logMessage, template);
             if (processInfo != null) {
-                if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK) ||
-                        processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
+                if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
+                    benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_SUCCESS);
                     break;
+                } else if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
+                    updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+                    closeContainer(client, containerId);
+                    throw new BenchmarkRunException(projectId, processInfo.getNote(), FileUtils.readSourceFile(projectId));
                 }
                 webSocketService.sendProcessInfo(processInfo, socketHeader);
             }
@@ -146,18 +149,35 @@ public class RunnerServiceImpl implements RunnerService {
 //            e.printStackTrace();
 //        }
 
-        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(id, ProjectContants.DOCKER_RESULT_FILE))) {
+        copyResultFile(client, containerId, projectId);
+        closeContainer(client, containerId);
+        return benchmarkState;
+    }
+
+    private BenchmarkStateDTO updateState(String projectId, String containerId, BenchmarkStateTypeEnum type) {
+        BenchmarkStateDTO state = new BenchmarkStateDTO()
+                .setProjectId(projectId)
+                .setContainerId(containerId)
+                .setType(type);
+
+        state = benchmarkStateService.updateState(state);
+
+        return state;
+    }
+
+    private void copyResultFile(DockerClient client, String containerId, String projectId) throws DockerException, InterruptedException {
+        try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(containerId, ProjectContants.DOCKER_RESULT_FILE))) {
             TarArchiveEntry entry = tarStream.getNextTarEntry();
             File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
             IOUtils.copy(tarStream, new FileOutputStream(newFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-        client.killContainer(id);
-        client.removeContainer(id);
-
-        return processInfo;
+    private void closeContainer(DockerClient client, String containerId) throws DockerException, InterruptedException {
+        client.killContainer(containerId);
+        client.removeContainer(containerId);
     }
 
 }

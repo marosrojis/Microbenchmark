@@ -3,7 +3,7 @@ package cz.rojik.service.exception;
 import java.util.List;
 import java.util.Map;
 
-public class BenchmarkRunException extends Exception {
+public class BenchmarkRunException extends RuntimeException {
 
     private String projectId;
     private String exception;
