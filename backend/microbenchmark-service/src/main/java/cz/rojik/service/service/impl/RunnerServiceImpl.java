@@ -18,6 +18,7 @@ import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.exception.MavenCompileException;
+import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.RunnerService;
 import cz.rojik.service.service.WebSocketService;
 import cz.rojik.service.utils.FileUtils;
@@ -92,19 +93,13 @@ public class RunnerServiceImpl implements RunnerService {
     @Override
     public BenchmarkStateDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader)
             throws DockerCertificateException, DockerException, InterruptedException, BenchmarkRunException {
-        ProcessInfoDTO processInfo = null;
-        BenchmarkStateDTO benchmarkState = null;
+        ProcessInfoDTO processInfo;
+        BenchmarkStateDTO benchmarkState;
+        String error = "";
+
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
-        final HostConfig hostConfig = HostConfig.builder()
-                .binds(HostConfig.Bind.from(System.getProperty("user.dir") + "/" + ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR)
-                        .to(ProjectContants.DOCKER_SHARED_FOLDER)
-                        .readOnly(true)
-                        .build())
-                .build();
-
         final ContainerConfig containerConfig = ContainerConfig.builder()
-                .hostConfig(hostConfig)
                 .image(DOCKER_IMAGE)
                 .attachStdout(true)
                 .attachStdin(true)
@@ -117,7 +112,18 @@ public class RunnerServiceImpl implements RunnerService {
         client.startContainer(containerId);
         benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_START);
 
-        final String[] command = {"java", "-jar", ProjectContants.DOCKER_SHARED_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
+        try {
+            client.copyToContainer(new File(System.getProperty("user.dir") + "/" +
+                    ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER)
+                    .toPath(), containerId, "/" + ProjectContants.DOCKER_BENCHMARK_FOLDER);
+        } catch (IOException e) {
+            updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+            closeContainer(client, containerId);
+            throw new ReadFileException(System.getProperty("user.dir") + "/" +
+                    ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
+        }
+
+        final String[] command = {"java", "-jar", "/" + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
         final ExecCreation execCreation = client.execCreate(
                 containerId, command, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
@@ -125,33 +131,27 @@ public class RunnerServiceImpl implements RunnerService {
 
         while (output.hasNext()) {
             final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
-            logger.info(logMessage);
             processInfo = messageLogParser.parseMessage(logMessage, template);
             if (processInfo != null) {
                 if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
                     benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_SUCCESS);
-                    break;
-                } else if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
-                    updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+                    copyResultFile(client, containerId, projectId);
                     closeContainer(client, containerId);
-                    throw new BenchmarkRunException(projectId, processInfo.getNote(), FileUtils.readSourceFile(projectId));
+
+                    return benchmarkState;
+                } else if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
+                    error = processInfo.getNote();
+                    break;
                 }
                 webSocketService.sendProcessInfo(processInfo, socketHeader);
             }
         }
 
-//        Process p;
-//        try {
-//            p = Runtime.getRuntime().exec("docker cp " + id + ":/benchmark/result/results.json " +
-//                    ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT); // TODO: try copy result file via docker-client library (below commented code)
-//            p.waitFor();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        copyResultFile(client, containerId, projectId);
+        updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
         closeContainer(client, containerId);
-        return benchmarkState;
+
+        logger.error("Benchmark {} ended in error {}.", projectId, error);
+        throw new BenchmarkRunException(projectId, error, FileUtils.readSourceFile(projectId));
     }
 
     private BenchmarkStateDTO updateState(String projectId, String containerId, BenchmarkStateTypeEnum type) {
@@ -171,7 +171,9 @@ public class RunnerServiceImpl implements RunnerService {
             File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
             IOUtils.copy(tarStream, new FileOutputStream(newFile));
         } catch (IOException e) {
-            e.printStackTrace();
+            updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+            closeContainer(client, containerId);
+            throw new ReadFileException(ProjectContants.DOCKER_RESULT_FILE);
         }
     }
 

@@ -14,6 +14,7 @@
         <javac.target>1.8</javac.target>
         <uberjar.name>Microbenchmark</uberjar.name>
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
+        <buildDirectory>${project.basedir}/targetqweqw</buildDirectory>
         <maven.install.skip>true</maven.install.skip>
     </properties>
 
@@ -62,6 +63,7 @@
                         </goals>
                         <configuration>
                             <finalName>${uberjar.name}</finalName>
+                            <outputDirectory>target/benchmark</outputDirectory>
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
