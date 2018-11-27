@@ -27,7 +27,7 @@ public class FileUtils {
             Gson gson = new GsonBuilder().create();
             gson.toJson(template, writer);
         } catch (IOException e) {
-            logger.error("Cannot save template class from project witd ID {0}", projectId);
+            logger.error("Cannot save template class from project witd ID {}", projectId);
             throw new ReadFileException(projectId);
         }
     }
@@ -38,7 +38,7 @@ public class FileUtils {
             Gson gson = new GsonBuilder().create();
             template = gson.fromJson(reader, TemplateDTO.class);
         } catch (IOException e) {
-            logger.error("Cannot open template file from project witd ID {0}", projectId);
+            logger.error("Cannot open template file from project witd ID {}", projectId);
             throw new ReadFileException(projectId);
         }
         return template;
@@ -49,7 +49,7 @@ public class FileUtils {
         try {
             sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
-            logger.error("Cannot open class from project witd ID {0}", projectId);
+            logger.error("Cannot open class from project witd ID {}", projectId);
             throw new ReadFileException(projectId);
         }
         return sourceCode;
