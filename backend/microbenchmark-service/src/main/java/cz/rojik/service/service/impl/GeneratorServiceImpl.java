@@ -138,7 +138,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     private boolean saveFile(String projectID, String content) {
         try {
-            File file = new File(ProjectContants.PROJECTS_FOLDER + projectID + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
+            File file = new File(ProjectContants.PROJECTS_FOLDER + projectID + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
             FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8, false);
         } catch (IOException e) {
             logger.error("Save file failure");
@@ -148,6 +148,11 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     private String copyProjectFolder() {
+        File projectsFolder = new File(ProjectContants.PROJECTS_FOLDER);
+        if (!projectsFolder.exists()) {
+            projectsFolder.mkdirs();
+        }
+
         String generatedID = UUID.randomUUID().toString();
         logger.info("Generated unique project ID = {}", generatedID);
 

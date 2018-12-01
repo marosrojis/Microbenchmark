@@ -69,7 +69,7 @@ public class RunnerServiceImpl implements RunnerService {
         final Pattern p = Pattern.compile(REGEX_ERROR);
 
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PROJECT_POM));
+        request.setPomFile(new File(ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.PROJECT_POM));
         request.setGoals(Arrays.asList("clean", "package", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
@@ -113,17 +113,17 @@ public class RunnerServiceImpl implements RunnerService {
         benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_START);
 
         try {
-            client.copyToContainer(new File(System.getProperty("user.dir") + "/" +
-                    ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER)
-                    .toPath(), containerId, "/" + ProjectContants.DOCKER_BENCHMARK_FOLDER);
+            client.copyToContainer(new File(System.getProperty("user.dir") + File.separatorChar +
+                    ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER)
+                    .toPath(), containerId, File.separatorChar + ProjectContants.DOCKER_BENCHMARK_FOLDER);
         } catch (IOException e) {
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
             closeContainer(client, containerId);
-            throw new ReadFileException(System.getProperty("user.dir") + "/" +
-                    ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
+            throw new ReadFileException(System.getProperty("user.dir") + File.separatorChar +
+                    ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
         }
 
-        final String[] command = {"java", "-jar", "/" + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
+        final String[] command = {"java", "-jar", File.separatorChar + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
         final ExecCreation execCreation = client.execCreate(
                 containerId, command, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
@@ -166,6 +166,11 @@ public class RunnerServiceImpl implements RunnerService {
     }
 
     private void copyResultFile(DockerClient client, String containerId, String projectId) throws DockerException, InterruptedException {
+        File projectsFolder = new File(ProjectContants.PATH_RESULT);
+        if (!projectsFolder.exists()) {
+            projectsFolder.mkdirs();
+        }
+
         try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(containerId, ProjectContants.DOCKER_RESULT_FILE))) {
             TarArchiveEntry entry = tarStream.getNextTarEntry();
             File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);

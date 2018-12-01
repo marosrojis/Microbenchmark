@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,7 +24,7 @@ public class FileUtils {
     private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     public static void saveTemplateToJson(TemplateDTO template, String projectId) {
-        try (Writer writer = new FileWriter(ProjectContants.PROJECTS_FOLDER + projectId + "/" + "template.json")) {
+        try (Writer writer = new FileWriter(ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + "template.json")) {
             Gson gson = new GsonBuilder().create();
             gson.toJson(template, writer);
         } catch (IOException e) {
@@ -34,7 +35,7 @@ public class FileUtils {
 
     public static TemplateDTO getTemplateFromJson(String projectId) {
         TemplateDTO template = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(ProjectContants.PROJECTS_FOLDER + projectId + "/" + "template.json"))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + "template.json"))){
             Gson gson = new GsonBuilder().create();
             template = gson.fromJson(reader, TemplateDTO.class);
         } catch (IOException e) {
@@ -47,7 +48,7 @@ public class FileUtils {
     public static List<String> readSourceFile(String projectId) {
         List<String> sourceCode;
         try {
-            sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + "/" + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
+            sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
             logger.error("Cannot open class from project witd ID {}", projectId);
             throw new ReadFileException(projectId);
