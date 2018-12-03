@@ -8,7 +8,6 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ExecCreation;
-import com.spotify.docker.client.messages.HostConfig;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.service.BenchmarkStateService;
@@ -20,6 +19,7 @@ import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.exception.ReadFileException;
+import cz.rojik.service.properties.PathProperties;
 import cz.rojik.service.service.RunnerService;
 import cz.rojik.service.service.WebSocketService;
 import cz.rojik.service.utils.FileUtils;
@@ -63,6 +63,9 @@ public class RunnerServiceImpl implements RunnerService {
     @Autowired
     private BenchmarkStateService benchmarkStateService;
 
+    @Autowired
+    private PathProperties pathProperties;
+
     @Override
     public Set<String> compileProject(String projectId) {
         Set<String> output = new LinkedHashSet<>();
@@ -70,7 +73,7 @@ public class RunnerServiceImpl implements RunnerService {
         final Pattern p = Pattern.compile(REGEX_ERROR);
 
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.PROJECT_POM));
+        request.setPomFile(new File(pathProperties.getProjects() + projectId + File.separatorChar + ProjectContants.PROJECT_POM));
         request.setGoals(Arrays.asList("clean", "package", "-Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
@@ -113,15 +116,15 @@ public class RunnerServiceImpl implements RunnerService {
         client.startContainer(containerId);
         benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_START);
 
+        String filePath = pathProperties.getProjects() + projectId + File.separatorChar +
+                ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER;
         try {
-            client.copyToContainer(new File(System.getProperty("user.dir") + File.separatorChar +
-                    ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER)
+            client.copyToContainer(new File(filePath)
                     .toPath(), containerId, OtherConstants.LINUX_FILE_SEPARATOR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
         } catch (IOException e) {
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
             closeContainer(client, containerId);
-            throw new ReadFileException(System.getProperty("user.dir") + File.separatorChar +
-                    ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
+            throw new ReadFileException(filePath);
         }
 
         final String[] command = {"java", "-jar", OtherConstants.LINUX_FILE_SEPARATOR + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
@@ -167,14 +170,14 @@ public class RunnerServiceImpl implements RunnerService {
     }
 
     private void copyResultFile(DockerClient client, String containerId, String projectId) throws DockerException, InterruptedException {
-        File projectsFolder = new File(ProjectContants.PATH_RESULT);
+        File projectsFolder = new File(pathProperties.getResults());
         if (!projectsFolder.exists()) {
             projectsFolder.mkdirs();
         }
 
         try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(containerId, ProjectContants.DOCKER_RESULT_FILE))) {
             TarArchiveEntry entry = tarStream.getNextTarEntry();
-            File newFile = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
+            File newFile = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);
             IOUtils.copy(tarStream, new FileOutputStream(newFile));
         } catch (IOException e) {
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);

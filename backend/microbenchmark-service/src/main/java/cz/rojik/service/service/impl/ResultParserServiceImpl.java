@@ -5,8 +5,10 @@ import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.MicrobenchmarkResultDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.exception.ReadFileException;
+import cz.rojik.service.properties.PathProperties;
 import cz.rojik.service.service.ResultParserService;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,6 +19,9 @@ import java.util.List;
 
 @Service
 public class ResultParserServiceImpl implements ResultParserService {
+
+    @Autowired
+    private PathProperties pathProperties;
 
     @Override
     public ResultDTO parseResult(String projectId) {
@@ -67,7 +72,7 @@ public class ResultParserServiceImpl implements ResultParserService {
     }
 
     private String readResultFile(String projectId) {
-        File file = new File(ProjectContants.PATH_RESULT + projectId + ProjectContants.JSON_FILE_FORMAT);
+        File file = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);
         String fileContent = "";
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);

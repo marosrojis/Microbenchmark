@@ -2,8 +2,6 @@ package cz.rojik.service.constants;
 
 public class ProjectContants {
 
-    public static final String PROJECTS_FOLDER          = "projects/";
-
     public static final String PATH_DEFAULT_PROJECT     = "empty_project/";
 
     public static final String PROJECT_POM              = "pom.xml";
@@ -20,9 +18,7 @@ public class ProjectContants {
 
     public static final String DEFAULT_JAVA_FILE        = "default_class.txt";
 
-    public static final String PATH_RESULT              = "result/";
-
-    public static final String RESULT_JSON_FILE         = PATH_RESULT + "results.json";
+    public static final String RESULT_JSON_FILE         = "result/results.json";
 
     public static final String JSON_FILE_FORMAT         = ".json";
 
@@ -32,7 +28,7 @@ public class ProjectContants {
 
     public static final String DOCKER_BENCHMARK_FOLDER  = "benchmark/";
 
-    public static final String DOCKER_RESULT_FILE       = DOCKER_BENCHMARK_FOLDER + "result/results.json";
+    public static final String DOCKER_RESULT_FILE       = DOCKER_BENCHMARK_FOLDER + RESULT_JSON_FILE;
 
 
 }

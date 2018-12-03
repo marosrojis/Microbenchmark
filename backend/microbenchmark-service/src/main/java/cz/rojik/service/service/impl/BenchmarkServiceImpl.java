@@ -48,9 +48,6 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Autowired
     private BenchmarkStateService benchmarkStateService;
 
-    @Autowired
-    private cz.rojik.backend.service.BenchmarkService benchmarkBackendService;
-
     @Override
     public String createProject(TemplateDTO template) throws ImportsToChooseException {
         String projectId = generatorService.generateJavaClass(template);

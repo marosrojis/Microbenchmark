@@ -5,9 +5,11 @@ import cz.rojik.service.dto.ErrorDTO;
 import cz.rojik.service.dto.ErrorInfoDTO;
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.service.exception.ReadFileException;
+import cz.rojik.service.properties.PathProperties;
 import cz.rojik.service.service.ErrorsParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,6 +27,9 @@ import java.util.regex.Pattern;
 public class ErrorsParserServiceImpl implements ErrorsParserService {
 
     private static Logger logger = LoggerFactory.getLogger(ErrorsParserServiceImpl.class);
+
+    @Autowired
+    private PathProperties pathProperties;
 
     private static final String ERROR_HELP = "[ERROR] -> [Help 1]";
     private static final String ERROR_COMPILATION = "[ERROR] COMPILATION ERROR : ";
@@ -59,7 +64,8 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
                 error = errors.get(i);
                 errorInfo.getErrors().add(error);
                 i++;
-            } while (i < errors.size() && (error.getRow() == errors.get(i).getRow() || errors.get(i).getRow() - error.getRow() == 1));
+            }
+            while (i < errors.size() && (error.getRow() == errors.get(i).getRow() || errors.get(i).getRow() - error.getRow() == 1));
 
             errorInfoList.add(errorInfo);
         }
@@ -84,8 +90,7 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
             if (mParseError.find()) {
                 row = Integer.parseInt(mParseError.group(1));
                 errorList.add(new ErrorDTO(mParseError.group(2), row));
-            }
-            else if (mWithoutAbsolutePath.find()){
+            } else if (mWithoutAbsolutePath.find()) {
                 errorList.add(new ErrorDTO(mWithoutAbsolutePath.group(1), row));
             }
         }
@@ -96,7 +101,7 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
     private List<String> insertSourceCodeToError(String projectId, List<ErrorDTO> errors) {
         List<String> sourceCode;
         try {
-            sourceCode = Files.readAllLines(Paths.get(ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
+            sourceCode = Files.readAllLines(Paths.get(pathProperties.getProjects() + projectId + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
             logger.error("Cannot open class from project witd ID {0}", projectId);
             throw new ReadFileException(projectId);

@@ -6,6 +6,7 @@ import cz.rojik.service.dto.LibrariesDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.ReadFileException;
+import cz.rojik.service.properties.PathProperties;
 import cz.rojik.service.service.GeneratorService;
 import cz.rojik.service.utils.StringUtils;
 import cz.rojik.service.utils.pojo.ImportsResult;
@@ -30,6 +31,9 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Autowired
     private ImporterService importerService;
+
+    @Autowired
+    private PathProperties pathProperties;
 
     @Override
     public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
@@ -138,7 +142,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     private boolean saveFile(String projectID, String content) {
         try {
-            File file = new File(ProjectContants.PROJECTS_FOLDER + projectID + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
+            File file = new File(pathProperties.getProjects() + projectID + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
             FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8, false);
         } catch (IOException e) {
             logger.error("Save file failure");
@@ -148,7 +152,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     private String copyProjectFolder() {
-        File projectsFolder = new File(ProjectContants.PROJECTS_FOLDER);
+        File projectsFolder = new File(pathProperties.getProjects());
         if (!projectsFolder.exists()) {
             projectsFolder.mkdirs();
         }
@@ -158,7 +162,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File srcDir = new File(classLoader.getResource(ProjectContants.PATH_DEFAULT_PROJECT).getFile());
-        File destDir = new File(ProjectContants.PROJECTS_FOLDER + generatedID);
+        File destDir = new File(pathProperties.getProjects() + generatedID);
 
         try {
             logger.info("Copy default project folder to new folder {}", generatedID);
