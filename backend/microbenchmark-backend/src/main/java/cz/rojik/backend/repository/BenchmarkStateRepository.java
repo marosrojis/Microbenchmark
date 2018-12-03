@@ -15,9 +15,11 @@ public interface BenchmarkStateRepository extends BaseRepository<BenchmarkStateE
     @Query("SELECT COUNT(b) FROM BenchmarkStateEntity b WHERE b.type IN :type")
     int countAllByStateType(@Param("type") List<BenchmarkStateTypeEnum> type);
 
+    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u ORDER BY b.updated")
     List<BenchmarkStateEntity> findAllByOrderByUpdated();
 
-    List<BenchmarkStateEntity> findAllByTypeIsInOrderByUpdated(List<BenchmarkStateTypeEnum> type);
+    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u WHERE b.type IN :type ORDER BY b.updated")
+    List<BenchmarkStateEntity> findAllByTypeIsInOrderByUpdated(@Param("type") List<BenchmarkStateTypeEnum> type);
 
     List<BenchmarkStateEntity> findAllByProjectIdIsNotAndTypeIn(String projectId, List<BenchmarkStateTypeEnum> type);
 
