@@ -12,6 +12,7 @@ import com.spotify.docker.client.messages.HostConfig;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.service.BenchmarkStateService;
+import cz.rojik.service.constants.OtherConstants;
 import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.TemplateDTO;
@@ -115,7 +116,7 @@ public class RunnerServiceImpl implements RunnerService {
         try {
             client.copyToContainer(new File(System.getProperty("user.dir") + File.separatorChar +
                     ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER)
-                    .toPath(), containerId, File.separatorChar + ProjectContants.DOCKER_BENCHMARK_FOLDER);
+                    .toPath(), containerId, OtherConstants.LINUX_FILE_SEPARATOR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
         } catch (IOException e) {
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
             closeContainer(client, containerId);
@@ -123,7 +124,7 @@ public class RunnerServiceImpl implements RunnerService {
                     ProjectContants.PROJECTS_FOLDER + projectId + File.separatorChar + ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
         }
 
-        final String[] command = {"java", "-jar", File.separatorChar + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
+        final String[] command = {"java", "-jar", OtherConstants.LINUX_FILE_SEPARATOR + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};
         final ExecCreation execCreation = client.execCreate(
                 containerId, command, DockerClient.ExecCreateParam.attachStdout(),
                 DockerClient.ExecCreateParam.attachStderr());
