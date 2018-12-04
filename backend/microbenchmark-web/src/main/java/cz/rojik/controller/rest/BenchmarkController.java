@@ -42,6 +42,7 @@ public class BenchmarkController {
 
     @PostMapping(MappingURLConstants.BENCHMARK_CREATE)
     public ResponseEntity<?> create(@RequestBody TemplateDTO template) {
+        System.out.println("jupiii vytvarim benchmark!!!!");
         String projectId = "";
 
         try {

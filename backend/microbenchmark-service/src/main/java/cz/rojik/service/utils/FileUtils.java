@@ -6,9 +6,12 @@ import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.properties.PathProperties;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -17,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -66,5 +70,18 @@ public class FileUtils {
             throw new ReadFileException(projectId);
         }
         return sourceCode;
+    }
+
+    public static String readFileFromResource(String file) {
+            Resource resource = new ClassPathResource(file);
+            String fileContent = null;
+            try {
+                fileContent = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ReadFileException(file);
+            }
+
+            return fileContent;
     }
 }

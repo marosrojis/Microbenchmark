@@ -3,13 +3,23 @@ package cz.rojik.service.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.utils.pojo.ImportsResult;
 import cz.rojik.service.service.ImporterService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -21,9 +31,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class ImporterServiceImpl implements ImporterService {
+
+    private static Logger logger = LoggerFactory.getLogger(ImporterServiceImpl.class);
+
 
     private static final String LIBRARIES_FILE = "importer_files/libraries.json";
     private static final String IGNORE_CLASS_FILE = "importer_files/ignore_class.txt";
@@ -63,15 +77,6 @@ public class ImporterServiceImpl implements ImporterService {
                         }
                         else {
                             selectImports.put(className, packages);
-//                            TODO - delete
-//                            System.out.println("Select which package you want to use with class: " + className);
-//                            for (int i = 1; i <= packages.size(); i++) {
-//                                System.out.println(i + ") " + packages.get(i - 1));
-//                            }
-//                            Scanner sc = new Scanner(System.in);
-//                            int choice = sc.nextInt();
-//                            String library = new StringBuilder().append(packages.get(choice - 1)).append(".").append(className).toString();
-//                            libraries.add(library);
                         }
                     }
                 }
@@ -89,36 +94,21 @@ public class ImporterServiceImpl implements ImporterService {
     private Map<String, List<String>> readJavaLibraries() {
         Gson gson = new Gson();
         Type type = new TypeToken<HashMap<String, List<String>>>(){}.getType();
-        HashMap<String, List<String>> libraries = gson.fromJson(readLibrariesFile(), type);
+        HashMap<String, List<String>> libraries = gson.fromJson(cz.rojik.service.utils.FileUtils.readFileFromResource(LIBRARIES_FILE), type);
 
         return libraries;
     }
 
-    private String readLibrariesFile() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(LIBRARIES_FILE).getFile());
-
-        String fileContent = "";
-        try {
-            fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return fileContent;
-    }
-
     private Set<String> readIgnoreClasses() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(IGNORE_CLASS_FILE).getFile());
-
-        List<String> fileContent = new ArrayList<>();
+        Resource resource = new ClassPathResource(IGNORE_CLASS_FILE);
+        Set<String> ignoreClasses = null;
         try {
-            fileContent = FileUtils.readLines(file, StandardCharsets.UTF_8);
+            ignoreClasses = new BufferedReader(new InputStreamReader(resource.getInputStream()))
+                    .lines().collect(Collectors.toSet());
+
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ReadFileException(IGNORE_CLASS_FILE);
         }
-        Set<String> ignoreClasses = new HashSet<>(fileContent);
         return ignoreClasses;
     }
 }
