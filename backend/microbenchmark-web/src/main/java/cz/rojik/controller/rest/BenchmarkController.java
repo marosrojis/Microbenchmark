@@ -2,6 +2,8 @@ package cz.rojik.controller.rest;
 
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.constants.MappingURLConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,8 @@ import java.util.List;
 @RequestMapping(MappingURLConstants.BENCHMARK)
 public class BenchmarkController {
 
+    private static Logger logger = LoggerFactory.getLogger(BenchmarkController.class);
+
     @Autowired
     private BenchmarkService benchmarkService;
 
@@ -42,13 +46,13 @@ public class BenchmarkController {
 
     @PostMapping(MappingURLConstants.BENCHMARK_CREATE)
     public ResponseEntity<?> create(@RequestBody TemplateDTO template) {
-        System.out.println("jupiii vytvarim benchmark!!!!");
         String projectId = "";
 
         try {
             projectId = benchmarkService.createProject(template);
         } catch (ImportsToChooseException exception) {
             LibrariesToChooseDTO libraries = new LibrariesToChooseDTO(exception.getProjectId(), exception.getImportsToChoose());
+            logger.debug("Return response CONFLICT - select libraries to import {} in project {}", libraries.getImports(), libraries.getProjectId());
             return new ResponseEntity<>(libraries, HttpStatus.CONFLICT);
         }
 
@@ -67,7 +71,8 @@ public class BenchmarkController {
         try {
             benchmarkService.compile(projectId);
         } catch (MavenCompileException exception) {
-            return new ResponseEntity<>(exception.getErrors(), HttpStatus.CONFLICT);
+            logger.debug("Return response BAD_REQUEST - compiler errors {} in project {}: {}", exception.getErrors(), projectId, exception.getMessage());
+            return new ResponseEntity<>(exception.getErrors(), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(new ProjectDTO(projectId), HttpStatus.OK);

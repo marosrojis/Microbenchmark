@@ -12,6 +12,7 @@ import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.repository.BenchmarkStateRepository;
 import cz.rojik.backend.service.BenchmarkStateService;
 import cz.rojik.backend.service.UserService;
+import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.backend.util.converter.BenchmarkStateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
     @Override
     public List<BenchmarkStateDTO> getAll() {
+        logger.trace("Get all benchmark states for user {}", SecurityHelper.getCurrentUser());
         List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByOrderByUpdated();
         List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
 
@@ -58,20 +60,24 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         if (running.isPresent()) {
             if (running.get()) {
+                logger.trace("Get all running benchmark states for user {}", SecurityHelper.getCurrentUser());
                 result = getAllByState(BenchmarkStateTypeEnum.runningStates());
             }
             else {
+                logger.trace("Get all non running benchmark states for user {}", SecurityHelper.getCurrentUser());
                 result = getAllByState(BenchmarkStateTypeEnum.stopStates());
             }
         }
         else {
             result = getAll();
         }
+        logger.trace("Return selected benchmark states for user {}", SecurityHelper.getCurrentUser());
         return result;
     }
 
     @Override
     public List<BenchmarkStateDTO> getAllByState(List<BenchmarkStateTypeEnum> stateType) {
+        logger.trace("Get all benchmark states by specific types: {}\n for user {}", stateType, SecurityHelper.getCurrentUser());
         List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(stateType);
         List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
 
@@ -84,7 +90,6 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         if (state == null) {
             throw new BadRequestException("The given benchmark state is null");
         }
-
         BenchmarkStateEntity entity = benchmarkStateConverter.dtoToEntity(state);
 
         UserEntity loggedUser = userService.getLoggedUserEntity();
@@ -95,6 +100,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         int numberOfConnections = benchmarkStateRepository.countAllByStateType(BenchmarkStateTypeEnum.runningStates());
         entity.setNumberOfConnections(++numberOfConnections);
 
+        logger.debug("Save benchmark state {} to DB", entity);
         entity = benchmarkStateRepository.save(entity);
 
         increaseNumberOfConnectionsToAllActive(entity.getProjectId());
@@ -120,6 +126,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             entity.setContainerId(state.getContainerId());
         }
 
+        logger.debug("Update benchmark state {} to DB", entity);
         entity = benchmarkStateRepository.save(entity);
         return benchmarkStateConverter.entityToDTO(entity);
     }
@@ -138,17 +145,19 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         });
 
         benchmarkStateRepository.saveAll(benchmarks);
-        logger.info("Count of increase benchmarks is " + benchmarks.size());
+        logger.debug("Count of increase benchmarks is " + benchmarks.size());
     }
 
     @Transactional
     @Override
     public void synchronizeContainersWithRunningBenchmarks() {
+        logger.trace("Synchronize running benchmark states with running docker containers.");
         DockerClient docker;
         List<Container> containers;
         try {
             docker = DefaultDockerClient.fromEnv().build();
             containers = docker.listContainers();
+            logger.debug("Running docker containers: {}", containers);
         } catch (InterruptedException | DockerException | DockerCertificateException e) {
             logger.error("Docker is not running"); // TODO: throw exception
             return;
@@ -164,6 +173,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
                 benchmarkStateRepository.save(benchmark);
             }
         });
+        logger.trace("Synchronize running benchmark states is completed.");
 
     }
 }

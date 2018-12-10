@@ -15,6 +15,8 @@ import cz.rojik.backend.repository.BenchmarkRepository;
 import cz.rojik.backend.repository.UserRepository;
 import cz.rojik.backend.service.BenchmarkService;
 import cz.rojik.backend.util.converter.BenchmarkConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 
 @Service("benchmarkServiceBackend")
 public class BenchmarkServiceImpl implements BenchmarkService {
+
+    private static Logger logger = LoggerFactory.getLogger(BenchmarkServiceImpl.class);
 
     @Autowired
     private BenchmarkConverter benchmarkConverter;
@@ -65,6 +69,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     @Transactional
     public BenchmarkDTO saveResult(BenchmarkDTO result) {
+        logger.debug("Save benchmark result {}", result);
 
         if (StringUtils.isEmpty(result.getName())) {
             result.setName(result.getCreated().format(DateTimeFormatter.ofPattern(ConfigConstants.LOCAL_DATE_TIME_PATTERN)));
@@ -86,6 +91,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     .setOrder(method.getOrder())
                     .setResult(entity);
             methodEntity = measureMethodRepository.save(methodEntity);
+            logger.trace("Save measured method {} for project {}", methodEntity, result.getProjectId());
             measureMethodEntityList.add(methodEntity);
         }
 
@@ -95,6 +101,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public BenchmarkDTO delete(Long id) {
+        logger.trace("Delete benchmark {}", id);
         Optional<BenchmarkEntity> entity = benchmarkRepository.findById(id);
         if (!entity.isPresent()) {
             throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
@@ -107,11 +114,13 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         benchmarkStateRepository.delete(benchmarkStateEntity);
 
         benchmarkRepository.delete(entity.get());
+        logger.debug("Deleting benchmark {} is completed.", entity);
         return benchmarkConverter.entityToDTO(entity.get());
     }
 
     @Override
     public BenchmarkDTO assignToUser(Long id, Long userId) {
+        logger.debug("Assign benchmark {} to user {}", id, userId);
         Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
         if (!benchmarkEntity.isPresent()) {
             throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
@@ -124,6 +133,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
         BenchmarkEntity entity = benchmarkEntity.get();
         entity.setUser(userEntity.get());
+        logger.trace("Save benchmark {}", entity);
         benchmarkRepository.saveAndFlush(entity);
 
         return benchmarkConverter.entityToDTO(entity);

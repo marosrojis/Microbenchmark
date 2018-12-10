@@ -8,6 +8,8 @@ import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.properties.PathProperties;
 import cz.rojik.service.service.ResultParserService;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +22,14 @@ import java.util.List;
 @Service
 public class ResultParserServiceImpl implements ResultParserService {
 
+    private static Logger logger = LoggerFactory.getLogger(ResultParserServiceImpl.class);
+
     @Autowired
     private PathProperties pathProperties;
 
     @Override
     public ResultDTO parseResult(String projectId) {
+        logger.trace("Parse result of benchmark {}", projectId);
         JsonParser jParser = new JsonParser();
 
         List<MicrobenchmarkResultDTO> mbResults = new ArrayList<>();
@@ -36,7 +41,9 @@ public class ResultParserServiceImpl implements ResultParserService {
         for (JsonElement object : jsonResults) {
             mbResults.add(parseBenchmarkResult(object));
         }
+        logger.debug("Parsed result of project {} is {}", projectId, mbResults);
 
+        logger.trace("Finding the fastest benchmark time for project {}", projectId);
         int minIndex = 0;
         double minScore = mbResults.get(0).getScore();
         for (int i = 1; i < mbResults.size(); i++) {
@@ -46,6 +53,8 @@ public class ResultParserServiceImpl implements ResultParserService {
                 minIndex = i;
             }
         }
+        logger.debug("The fastest test method for project {} is {}", projectId, mbResults.get(minIndex));
+
         ResultDTO result = new ResultDTO()
                 .setResults(mbResults)
                 .setBestScoreIndex(minIndex);
@@ -57,6 +66,8 @@ public class ResultParserServiceImpl implements ResultParserService {
     private MicrobenchmarkResultDTO parseBenchmarkResult(JsonElement element) {
         JsonObject object = (JsonObject) element;
         String name = object.get("benchmark").getAsString();
+        logger.trace("Get values of test method {}", name);
+
         int warmupIterations = object.get("warmupIterations").getAsInt();
         int measurementIterations = object.get("measurementIterations").getAsInt();
 
@@ -72,15 +83,17 @@ public class ResultParserServiceImpl implements ResultParserService {
     }
 
     private String readResultFile(String projectId) {
+        logger.trace("Read result file for project {}", projectId);
         File file = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);
         String fileContent = "";
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new ReadFileException(projectId);
         }
 
+        logger.trace("Result file of project {} is {}", projectId, fileContent);
         return fileContent;
     }
 }

@@ -41,16 +41,19 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
 
     @Override
     public List<ErrorDTO> getSyntaxErrors(Set<String> errors) {
+        logger.trace("Parse errors from maven project: {}", errors);
         errors = removeCertainErrors(errors);
         errors = removeErrorsHelp(errors);
         errors = removeMavenErrors(errors);
         List<ErrorDTO> errorList = getErrorsInfo(errors);
 
+        logger.debug("Parse errors is completed.\n{}", errorList);
         return errorList;
     }
 
     @Override
     public ErrorInfoWithSourceCodeDTO processErrorList(List<ErrorDTO> errors, String projectId) {
+        logger.trace("Processing error list {} to project {}", errors, projectId);
         List<String> sourceCode = insertSourceCodeToError(projectId, errors);
 
         List<ErrorInfoDTO> errorInfoList = new ArrayList<>();

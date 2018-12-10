@@ -12,8 +12,8 @@ import { User } from '../model/user.model';
 import { LoggedUser } from '../model/loggedUser.model';
 import { AuthService } from '../auth/auth.service';
 
-const REST_URL = 'http://localhost:8080/api';
-const WEBSOCKET_URL = 'ws://localhost:8080/socket/websocket';
+const REST_URL = 'http://147.228.63.36:8080/api';
+const WEBSOCKET_URL = 'ws://147.228.63.36:8080/socket/websocket';
 
 @Injectable()
 export class DataStorageService implements OnInit {

@@ -13,8 +13,6 @@ import java.time.format.DateTimeFormatter;
 
 public class ProcessInfoDTO {
 
-    private static Logger logger = LoggerFactory.getLogger(ProcessInfoDTO.class);
-
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime time;
@@ -49,8 +47,6 @@ public class ProcessInfoDTO {
         this.operation = operation;
         this.number = number;
         this.note = note;
-
-        logger.info(this.toString());
     }
 
     @Override

@@ -26,6 +26,7 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
 
     @Override
     public ProcessInfoDTO parseMessage(String message, TemplateDTO template) {
+        logger.trace("Parse message {} from running docker container", message);
         ProcessInfoDTO info = null;
         final Pattern pMeasurement = Pattern.compile(MEASUREMENT_REGEX);
         final Pattern pWarmup = Pattern.compile(WARMUP_REGEX);
@@ -55,7 +56,7 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
 
     // PRIVATE
 
-    private int getNumberFromRegex(Matcher matcher) {
+    private int getNumberFromRegex(Matcher matcher) {w
         if (matcher.find()) {
             return Integer.parseInt(matcher.group(1));
         }

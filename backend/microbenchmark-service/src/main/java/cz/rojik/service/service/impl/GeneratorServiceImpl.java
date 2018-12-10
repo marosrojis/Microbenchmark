@@ -41,6 +41,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
+        logger.trace("Generate java class with template {}", template);
         String projectID = copyProjectFolder();
 
         ImportsResult imports = getAllImports(template);
@@ -48,7 +49,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         cz.rojik.service.utils.FileUtils.saveTemplateToJson(template, projectID);
 
         if (imports.getLibrariesToChoose().size() != 0) {
-            logger.info("Code contains libraries that can not be imported automatically.");
+            logger.debug("Code contains libraries that can not be imported automatically." + projectID + "\n" + imports.getLibrariesToChoose());
             throw new ImportsToChooseException(projectID, imports.getLibrariesToChoose());
         }
 
@@ -56,11 +57,14 @@ public class GeneratorServiceImpl implements GeneratorService {
         String newContent = generateContent(template, fileContent);
         saveFile(projectID, newContent);
 
+        logger.trace("Generate java class was successful for project {}", projectID);
+
         return projectID;
     }
 
     @Override
     public String importLibraries(LibrariesDTO libraries) {
+        logger.trace("Import libraries {} to project {}", libraries.getLibraries(), libraries.getProjectId());
         String projectId = libraries.getProjectId();
 
         TemplateDTO template = cz.rojik.service.utils.FileUtils.getTemplateFromJson(projectId);
@@ -68,7 +72,9 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         StringBuilder sb = new StringBuilder(template.getLibraries());
         sb.append(generatedImports);
-        template.setLibraries(sb.toString());
+        String librariesFinal = sb.toString();
+        logger.trace("Generated libraries for project {} are {}", projectId, librariesFinal);
+        template.setLibraries(librariesFinal);
 
         cz.rojik.service.utils.FileUtils.saveTemplateToJson(template, projectId);
         String fileContent = cz.rojik.service.utils.FileUtils.readFileFromResource(ProjectContants.DEFAULT_JAVA_FILE);
@@ -81,6 +87,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     // PRIVATE
 
     private String generateContent(TemplateDTO template, String content) {
+        logger.trace("Generate content of file from template {}", template);
         content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
         content = replaceTemplateMark(content, TemplateConstants.WARMUP, template.getWarmup() + "");
         content = replaceTemplateMark(content, TemplateConstants.MEASUREMENT, template.getMeasurement() + "");
@@ -90,15 +97,18 @@ public class GeneratorServiceImpl implements GeneratorService {
         content = replaceTemplateMark(content, TemplateConstants.RESULT_JSON_FILE, ProjectContants.RESULT_JSON_FILE);
         content = replaceTestMethods(content, template.getTestMethods());
 
+        logger.trace("Generated file {}", content);
         return content;
     }
 
     private String replaceTemplateMark(String content, String templateMark, String text) {
+        logger.trace("Replace template mark {} with content {}", templateMark, text);
         content = content.replaceAll(StringUtils.insertBracket(templateMark), text);
         return content;
     }
 
     private String replaceTestMethods(String content, List<String> testMethods) {
+        logger.trace("Replace test methods {}", testMethods);
         StringBuilder sb = new StringBuilder();
         int i = 1;
         for (String method : testMethods) {
@@ -118,19 +128,24 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     private ImportsResult getAllImports(TemplateDTO template) {
+        logger.trace("Find all libraries to import {}", template);
         ImportsResult imports = new ImportsResult();
 
         imports = importerService.getLibrariesToImport(imports, template.getDeclare());
+        logger.trace("Libraries for import (declare section) {}", template);
         imports = importerService.getLibrariesToImport(imports, template.getInit());
+        logger.trace("Libraries for import (init section) {}", template);
 
         for (String method : template.getTestMethods()) {
             imports = importerService.getLibrariesToImport(imports, method);
         }
+        logger.trace("Libraries for import (test methods section) {}", template);
 
         return imports;
     }
 
     private boolean saveFile(String projectID, String content) {
+        logger.trace("Save file with content {} for project {}", content, projectID);
         try {
             File file = new File(pathProperties.getProjects() + projectID + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE);
             FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8, false);
@@ -138,6 +153,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             logger.error("Save file failure");
             return false;
         }
+        logger.trace("Saving file {} was successful", projectID);
         return true;
     }
 
@@ -164,7 +180,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         File finalFile = new File(destDir.getPath() + File.separatorChar + "pom.xml");
 
         try {
-            logger.info("Copy default project folder to new folder {}", generatedID);
+            logger.debug("Copy default project folder to new folder {}", generatedID);
             FileUtils.writeStringToFile(finalFile, fileContent, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new WriteFileException(finalFile.getAbsolutePath());
@@ -174,6 +190,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     private String generateImports(Set<String> libraries) {
+        logger.trace("Generate imports of libraries {}", libraries);
         StringBuilder sb = new StringBuilder();
         libraries.forEach(value -> sb.append("import ")
                 .append(value.replaceAll("\\s+", ""))

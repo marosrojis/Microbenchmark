@@ -5,6 +5,8 @@ import cz.rojik.backend.dto.user.UserRegistrationForm;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.constants.MappingURLConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,18 +29,21 @@ import java.util.List;
 @RequestMapping(MappingURLConstants.USERS)
 public class UsersController {
 
+    private static Logger logger = LoggerFactory.getLogger(UsersController.class);
+
     @Autowired
     private UserService userService;
 
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
-        UserDTO users;
+        UserDTO user;
         try {
-            users = userService.getUser(id);
+            user = userService.getUser(id);
         } catch (UserException e) {
+            logger.error("User not found exception: {}", e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping

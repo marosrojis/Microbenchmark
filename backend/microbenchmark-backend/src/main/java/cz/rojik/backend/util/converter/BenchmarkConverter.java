@@ -4,6 +4,8 @@ import cz.rojik.backend.dto.MeasureMethodDTO;
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.entity.BenchmarkEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +15,13 @@ import java.util.List;
 @Component
 public class BenchmarkConverter {
 
+    private static Logger logger = LoggerFactory.getLogger(BenchmarkConverter.class);
+
     @Autowired
     private UserConverter userConverter;
 
     public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
+        logger.trace("Convert Benchmark entity to DTO object");
         BenchmarkDTO result = new BenchmarkDTO();
 
         result.setContent(entity.getContent())
@@ -35,10 +40,13 @@ public class BenchmarkConverter {
 
         result.setMeasureMethods(methods);
 
+        logger.trace("Converted DTO: ", entity.getMeasureMethods());
+
         return result;
     }
 
     public BenchmarkEntity dtoToEntity(BenchmarkDTO dto) {
+        logger.trace("Convert DTO to Entity");
         BenchmarkEntity entity = new BenchmarkEntity();
 
         entity.setContent(dto.getContent())

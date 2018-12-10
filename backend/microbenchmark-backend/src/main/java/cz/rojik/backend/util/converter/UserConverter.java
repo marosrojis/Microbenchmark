@@ -6,14 +6,20 @@ import cz.rojik.backend.entity.RoleEntity;
 import cz.rojik.backend.entity.UserEntity;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserConverter {
+    private static Logger logger = LoggerFactory.getLogger(UserConverter.class);
+
 
     public UserDTO entityToDTO(UserEntity entity, boolean setRoles) {
+        logger.trace("Convert User entity to DTO object");
+
         UserDTO user = new UserDTO();
         if (entity != null) {
             user.setEmail(entity.getEmail())
@@ -34,6 +40,7 @@ public class UserConverter {
     }
 
     public UserEntity dtoToEntity(UserDTO user) {
+        logger.trace("Create entiy from develop user {}", user);
         UserEntity entity = new UserEntity();
         entity.setId(user.getId());
 

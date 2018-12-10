@@ -38,6 +38,7 @@ public class FileUtils {
     }
 
     public static void saveTemplateToJson(TemplateDTO template, String projectId) {
+        logger.trace("Save template {} for project {}", template, projectId);
         try (Writer writer = new FileWriter(pathProperties.getProjects() + projectId + File.separatorChar + "template.json")) {
             Gson gson = new GsonBuilder().create();
             gson.toJson(template, writer);
@@ -45,22 +46,26 @@ public class FileUtils {
             logger.error("Cannot save template class from project with ID {}", projectId);
             throw new ReadFileException(projectId);
         }
+        logger.trace("Saving template {} to file {} is completed.", template, projectId);
     }
 
     public static TemplateDTO getTemplateFromJson(String projectId) {
+        logger.trace("Read template from file {}", projectId);
         TemplateDTO template = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(pathProperties.getProjects() +
-                projectId + File.separatorChar + "template.json"))){
+                projectId + File.separatorChar + "template.json"))) {
             Gson gson = new GsonBuilder().create();
             template = gson.fromJson(reader, TemplateDTO.class);
         } catch (IOException e) {
             logger.error("Cannot open template file from project with ID {}", projectId);
             throw new ReadFileException(projectId);
         }
+        logger.debug("Reading template from file {} is finished {}", projectId, template);
         return template;
     }
 
     public static List<String> readSourceFile(String projectId) {
+        logger.trace("Read source java file for project {}", projectId);
         List<String> sourceCode;
         try {
             sourceCode = Files.readAllLines(Paths.get(pathProperties.getProjects() + projectId +
@@ -73,15 +78,16 @@ public class FileUtils {
     }
 
     public static String readFileFromResource(String file) {
-            Resource resource = new ClassPathResource(file);
-            String fileContent = null;
-            try {
-                fileContent = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new ReadFileException(file);
-            }
+        logger.trace("Read file {} from resources folder.", file);
+        Resource resource = new ClassPathResource(file);
+        String fileContent = null;
+        try {
+            fileContent = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ReadFileException(file);
+        }
 
-            return fileContent;
+        return fileContent;
     }
 }

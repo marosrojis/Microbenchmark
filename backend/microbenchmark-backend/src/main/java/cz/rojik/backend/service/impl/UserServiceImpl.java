@@ -13,6 +13,8 @@ import cz.rojik.backend.service.UserService;
 import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.backend.util.converter.UserConverter;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -55,6 +59,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
     @Override
     public UserDTO create(UserRegistrationForm user) {
+		logger.trace("Create new user {}", user);
 		boolean verifyExistEmail = verifyExistEmail(user.getEmail());
 		if (!verifyExistEmail) {
             UserEntity entity = createAndSaveRegisteredUser(user);
@@ -71,6 +76,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	@Override
 	public UserDTO update(Long userId, UserDTO user) {
+		logger.trace("Update existed user {} in DB with data {}", userId, user);
 		Optional<UserEntity> userEntity = userRepository.findById(userId);
 		if (!userEntity.isPresent()) {
 			throw new UserException(String.format("User with ID %s was not found.", userId));
@@ -95,6 +101,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		entity = userRepository.save(entity);
+		logger.debug("User with email was successfully updated: {}", userId, entity);
 		return userConverter.entityToDTO(entity, true);
 	}
 
@@ -114,6 +121,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDTO> getAllNonEnabled() {
+    	logger.trace("Get all non enabled users from DB (requested user {})", SecurityHelper.getCurrentUser());
         List<UserEntity> users = userRepository.findAllNonEnabled();
 
         List<UserDTO> output = users.stream().map(user -> userConverter.entityToDTO(user, true)).collect(Collectors.toList());
@@ -127,6 +135,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getByEmail(String email) {
+    	logger.trace("Get user by email {}", email);
 		UserEntity entity = userRepository.findByEmail(email);
 		if (entity == null) {
 			throw new UserException(String.format("User with email %s was not found", email));
@@ -141,6 +150,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getUser(Long id) {
+    	logger.trace("Get user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
         Optional<UserEntity> user = userRepository.findById(id);
 
         if (!user.isPresent()) {
@@ -155,6 +165,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDTO> getAll() {
+    	logger.trace("Get all users (requested user: {})", SecurityHelper.getCurrentUser());
         List<UserEntity> users = userRepository.findAllWithRole();
 
 		List<UserDTO> output = users.stream().map(user -> userConverter.entityToDTO(user, true)).collect(Collectors.toList());
@@ -163,6 +174,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity getLoggedUserEntity() {
+    	logger.trace("Get logged user entity");
 		UserDTO userDTO = SecurityHelper.getCurrentUser();
 		if (userDTO != null) {
 			Optional<UserEntity> entity = userRepository.findById(userDTO.getId());
@@ -174,15 +186,18 @@ public class UserServiceImpl implements UserService {
 	// TODO: promyslet jestli smazat uzivatele pokud jiz pustil nejake testy
 	@Override
 	public void delete(Long id) {
+    	logger.debug("Delete user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
 		Optional<UserEntity> entity = userRepository.findById(id);
 		if (!entity.isPresent()) {
 			throw new UserException(String.format("User with ID %s was not found.", id));
 		}
 
 		userRepository.delete(entity.get());
+		logger.debug("User with ID {} was successfully deleted", id);
 	}
 
 	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm user) {
+    	logger.trace("Create and save new user {}", user);
         UserEntity entity = new UserEntity(user.getFirstname(), user.getLastname(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
 
 		Set<RoleEntity> roles = new HashSet<>();
@@ -198,6 +213,7 @@ public class UserServiceImpl implements UserService {
         }
 
 		entity = userRepository.save(entity);
+        logger.debug("User {} was successfully saved", entity);
         return entity;
     }
 
@@ -207,6 +223,7 @@ public class UserServiceImpl implements UserService {
 	 * @return true if email has existed
 	 */
 	private boolean verifyExistEmail(String email) {
+		logger.trace("Verify if email {} is exists", email);
 		UserEntity entity = userRepository.findByEmail(email);
 		return !(entity == null);
 	}
@@ -220,6 +237,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly=true)
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+    	logger.trace("Get user by username {}", username);
 		String email = username;
 		UserDTO user = getByEmail(email);
 

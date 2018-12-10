@@ -62,6 +62,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public boolean compile(String projectId) {
+        logger.trace("Compile project {}", projectId);
         benchmarkStateService.createState(new BenchmarkStateDTO()
                 .setProjectId(projectId)
                 .setType(BenchmarkStateTypeEnum.COMPILE_START));
@@ -69,7 +70,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         Set<String> errors = runnerService.compileProject(projectId);
 
         if (errors.size() != 0) {
-            logger.error("Compilation is failed!! ({} errors)", errors.size());
+            logger.error("Compilation is failed!!\n {}", errors);
             benchmarkStateService.updateState(new BenchmarkStateDTO()
                     .setProjectId(projectId)
                     .setType(BenchmarkStateTypeEnum.COMPILE_ERROR));
@@ -77,7 +78,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
             List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
             ErrorInfoWithSourceCodeDTO errorInfoList = errorsParserService.processErrorList(errorList, projectId);
-
+            logger.error("Throw exception with errors {} to project {}", errorInfoList, projectId);
             throw new MavenCompileException(errorInfoList);
         }
         logger.info("Compilation is successful.");
@@ -87,11 +88,13 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws BenchmarkRunException {
+        logger.debug("Run benchmark for project {} with template {}", projectId, template);
         BenchmarkStateDTO state;
 
         try {
             state = runnerService.runProject(projectId, template, socketHeader);
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
+            logger.error(e.getMessage());
             throw new cz.rojik.service.exception.DockerException(e.getMessage());
         }
 

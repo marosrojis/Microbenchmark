@@ -54,6 +54,7 @@ public class ImporterServiceImpl implements ImporterService {
 
     @Override
     public ImportsResult getLibrariesToImport(ImportsResult imports, String input) {
+        logger.trace("Start finding all classes in project to import in file {}", input);
         String[] inputs = input.split("[ =<>();\n\t]");
         Set<String> values = new HashSet<>(Arrays.asList(inputs));
         Set<String> libraries = new HashSet<>();
@@ -84,7 +85,10 @@ public class ImporterServiceImpl implements ImporterService {
         }
 
         imports.getLibraries().addAll(libraries);
+        logger.debug("All classes to automatic import {}", libraries);
+
         imports.getLibrariesToChoose().putAll(selectImports);
+        logger.debug("All classes to choose which to import {}", selectImports);
 
         return imports;
     }
@@ -92,6 +96,7 @@ public class ImporterServiceImpl implements ImporterService {
     // PRIVATE
 
     private Map<String, List<String>> readJavaLibraries() {
+        logger.trace("Read file with all java classes and packages.");
         Gson gson = new Gson();
         Type type = new TypeToken<HashMap<String, List<String>>>(){}.getType();
         HashMap<String, List<String>> libraries = gson.fromJson(cz.rojik.service.utils.FileUtils.readFileFromResource(LIBRARIES_FILE), type);
@@ -100,6 +105,7 @@ public class ImporterServiceImpl implements ImporterService {
     }
 
     private Set<String> readIgnoreClasses() {
+        logger.trace("Read file with classes to ignore import");
         Resource resource = new ClassPathResource(IGNORE_CLASS_FILE);
         Set<String> ignoreClasses = null;
         try {
@@ -107,6 +113,7 @@ public class ImporterServiceImpl implements ImporterService {
                     .lines().collect(Collectors.toSet());
 
         } catch (IOException e) {
+            logger.error(e.getMessage());
             throw new ReadFileException(IGNORE_CLASS_FILE);
         }
         return ignoreClasses;
