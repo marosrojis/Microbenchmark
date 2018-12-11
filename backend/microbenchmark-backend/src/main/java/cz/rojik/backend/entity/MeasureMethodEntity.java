@@ -57,7 +57,6 @@ public class MeasureMethodEntity extends BaseEntity {
         return "MeasureMethodEntity{" +
                 "order=" + order +
                 ", method='" + method + '\'' +
-                ", result=" + result +
                 '}';
     }
 

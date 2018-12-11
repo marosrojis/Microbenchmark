@@ -89,7 +89,7 @@ public class ResultParserServiceImpl implements ResultParserService {
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             throw new ReadFileException(projectId);
         }
 

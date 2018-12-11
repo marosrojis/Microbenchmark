@@ -90,6 +90,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         if (state == null) {
             throw new BadRequestException("The given benchmark state is null");
         }
+        logger.trace("Create benchmark state in DB: {}", state);
         BenchmarkStateEntity entity = benchmarkStateConverter.dtoToEntity(state);
 
         UserEntity loggedUser = userService.getLoggedUserEntity();
@@ -119,6 +120,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         if (entity == null) {
             throw new NotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
         }
+        logger.trace("Update benchmark state in DB: {}", state);
 
         entity.setType(state.getType());
         entity.setUpdated(state.getUpdated());
@@ -134,6 +136,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @Transactional
     @Override
     public void increaseNumberOfConnectionsToAllActive(String projectId) {
+        logger.trace("Increate number of connections to all active benchmark state. Start compile project is {}", projectId);
         if (projectId == null) {
             throw new BadRequestException("The given project ID is null");
         }

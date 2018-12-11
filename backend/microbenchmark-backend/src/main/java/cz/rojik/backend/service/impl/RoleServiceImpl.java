@@ -5,6 +5,8 @@ import cz.rojik.backend.entity.RoleEntity;
 import cz.rojik.backend.entity.RoleType;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.service.RoleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class RoleServiceImpl implements RoleService {
+
+	private static Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
 
 	@Autowired
     private RoleRepository roleRepository;
@@ -24,6 +28,7 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public RoleDTO getByType(String type) {
+		logger.trace("Get role by type {}", type);
 		return new RoleDTO(roleRepository.findFirstByType(type));
 	}
 
@@ -34,6 +39,7 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public RoleDTO getByType(RoleType roleType) {
+		logger.trace("Get role by type {}", roleType);
 		return new RoleDTO(roleRepository.findFirstByType(roleType.name()));
 	}
 
@@ -43,6 +49,7 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public List<RoleDTO> findAll() {
+		logger.trace("Find all roles");
 		List<RoleEntity> roles = roleRepository.findAll();
 
 		List<RoleDTO> output = new ArrayList<>();

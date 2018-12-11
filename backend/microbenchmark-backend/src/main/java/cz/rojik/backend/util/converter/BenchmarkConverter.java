@@ -21,7 +21,7 @@ public class BenchmarkConverter {
     private UserConverter userConverter;
 
     public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
-        logger.trace("Convert Benchmark entity to DTO object");
+        logger.trace("Convert Benchmark entity to DTO object: {}", entity);
         BenchmarkDTO result = new BenchmarkDTO();
 
         result.setContent(entity.getContent())
@@ -40,13 +40,13 @@ public class BenchmarkConverter {
 
         result.setMeasureMethods(methods);
 
-        logger.trace("Converted DTO: ", entity.getMeasureMethods());
+        logger.trace("Converted Benchmark measure methods DTO: {}", methods);
 
         return result;
     }
 
     public BenchmarkEntity dtoToEntity(BenchmarkDTO dto) {
-        logger.trace("Convert DTO to Entity");
+        logger.trace("Convert DTO to Entity: {}", dto);
         BenchmarkEntity entity = new BenchmarkEntity();
 
         entity.setContent(dto.getContent())

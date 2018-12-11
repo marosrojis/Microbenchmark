@@ -114,9 +114,10 @@ public class RunnerServiceImpl implements RunnerService {
         final ContainerCreation creation = client.createContainer(containerConfig);
         final String containerId = creation.id();
 
-        logger.debug("Start container with ID {} for project {}", containerId, projectId);
+        logger.info("Start container with ID {} for project {}", containerId, projectId);
         client.startContainer(containerId);
         benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_START);
+        logger.debug("Update benchmark state for project {}: {}", projectId, benchmarkState);
 
         String filePath = pathProperties.getProjects() + projectId + File.separatorChar +
                 ProjectContants.TARGET_FOLDER_JAR + ProjectContants.DOCKER_BENCHMARK_FOLDER;
@@ -126,7 +127,7 @@ public class RunnerServiceImpl implements RunnerService {
             client.copyToContainer(new File(filePath)
                     .toPath(), containerId, OtherConstants.LINUX_FILE_SEPARATOR + ProjectContants.DOCKER_BENCHMARK_FOLDER);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
             closeContainer(client, containerId);
             throw new ReadFileException(filePath);
@@ -147,9 +148,11 @@ public class RunnerServiceImpl implements RunnerService {
                 logger.debug("Benchmark process info from docker container {} for project {}", containerId, projectId);
                 if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
                     benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_SUCCESS);
+                    logger.debug("Update benchmark state for project {}: {}", projectId, benchmarkState);
                     copyResultFile(client, containerId, projectId);
                     closeContainer(client, containerId);
 
+                    logger.info("Successful end for benchmark for project {}", projectId);
                     return benchmarkState;
                 } else if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
                     logger.error("Error in running benchmark: {}", processInfo.getNote());
@@ -193,7 +196,7 @@ public class RunnerServiceImpl implements RunnerService {
             File newFile = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);
             IOUtils.copy(tarStream, new FileOutputStream(newFile));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
             closeContainer(client, containerId);
             throw new ReadFileException(ProjectContants.DOCKER_RESULT_FILE);

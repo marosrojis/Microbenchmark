@@ -113,7 +113,7 @@ public class ImporterServiceImpl implements ImporterService {
                     .lines().collect(Collectors.toSet());
 
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             throw new ReadFileException(IGNORE_CLASS_FILE);
         }
         return ignoreClasses;

@@ -94,7 +94,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         try {
             state = runnerService.runProject(projectId, template, socketHeader);
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             throw new cz.rojik.service.exception.DockerException(e.getMessage());
         }
 

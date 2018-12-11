@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserConverter {
+
     private static Logger logger = LoggerFactory.getLogger(UserConverter.class);
 
-
     public UserDTO entityToDTO(UserEntity entity, boolean setRoles) {
-        logger.trace("Convert User entity to DTO object");
+        logger.trace("Convert User entity to DTO object (setRoles = {}): {} ", setRoles, entity);
 
         UserDTO user = new UserDTO();
         if (entity != null) {
@@ -55,6 +55,7 @@ public class UserConverter {
     }
 
     public UserEntity mapToEntityUpdate(UserDTO newState, UserEntity previousState) {
+        logger.trace("Map user dto to entity update, newState = {},\n previousState = {}", newState, previousState);
         if (!StringUtils.equals(newState.getFirstname(), previousState.getFirstname())) {
             previousState.setFirstname(newState.getFirstname());
         }

@@ -10,9 +10,10 @@
             <appender-ref ref="CONSOLE"/>
         </root>
         <logger name="org.hibernate.SQL" level="ERROR" />
-        <logger name="org.hibernate.type" level="TRACE" />
+        <logger name="org.hibernate.type" level="DEBUG" />
         <logger name="com.fasterxml" level="DEBUG" />
-        <logger name="cz.rojik" level="DEBUG" />
+        <logger name="o.h.type" level="DEBUG" />
+        <logger name="cz.rojik" level="TRACE" />
     </springProfile>
 
     <springProfile name="prod">
@@ -38,9 +39,10 @@
             <appender-ref ref="ROLLING-FILE"/>
         </root>
         <logger name="org.hibernate.SQL" level="ERROR" />
-        <logger name="org.hibernate.type" level="TRACE" />
+        <logger name="org.hibernate.type" level="DEBUG" />
         <logger name="com.fasterxml" level="DEBUG" />
-        <logger name="cz.rojik" level="DEBUG" />
+        <logger name="o.h.type" level="DEBUG" />
+        <logger name="cz.rojik" level="TRACE" />
     </springProfile>
 
 </configuration>

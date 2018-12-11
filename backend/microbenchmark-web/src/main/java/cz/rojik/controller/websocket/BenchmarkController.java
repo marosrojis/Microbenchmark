@@ -57,7 +57,7 @@ public class BenchmarkController {
         try {
             benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
         } catch (BenchmarkRunException e) {
-            logger.error(e.getException());
+            logger.error(e.getException(), e);
             BenchmarkRunErrorDTO error =  new BenchmarkRunErrorDTO(e.getException(), e.getFile());
             return gson.toJson(error);
         }
