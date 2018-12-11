@@ -60,7 +60,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <button class="btn btn-success" type="submit">{{ isNeedChooseImports ? 'Continue benchmark' : 'Run
+            <button class="btn btn-success" type="submit" [disabled]='disabled'>{{ isNeedChooseImports ? 'Continue benchmark' : 'Run
               benchmark' }}</button>
           </div>
         </div>

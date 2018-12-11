@@ -13,13 +13,13 @@ const templateDefault = new Template(
   3,
   'java.util.List<Integer> arrayList;\nint[] array;Random random;\njava.util.List<String> temp;',
   'random = new Random();\narray = new int[1000];\narrayList = new ArrayList<>();\nfor (int i = 0; i < 1000; i++) {\n\tint randomNumber = random.nextInt();\n\tarray[i] = randomNumber;\n\tarrayList.add(new Integer(randomNumber));\n}',
-  ['Arrays.sort(array);', 'Collections.sort(arrayList);'],
+  ['Arrays.sort(array);', 'Collections.sort(arrayList);']
 );
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   @ViewChild('f')
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
 
   messages: string[] = [];
   showConversation = false;
-  disabled: boolean;
+  disabled = false;
 
   isNeedChooseImports = false;
   libraries: LibrariesToChoose;
@@ -47,16 +47,17 @@ export class AppComponent implements OnInit {
         declare: templateDefault.declare,
         init: templateDefault.init,
         testMethod1: templateDefault.testMethods[0],
-        testMethod2: templateDefault.testMethods[1],
+        testMethod2: templateDefault.testMethods[1]
       });
     }, 1000);
 
     this.dataStorage.showMessageProject.subscribe((data: Project) => {
       this.showMessage('Operation: ' + data.operation + ', project id: ' + data.id);
+      this.disabled = true;
     });
     this.dataStorage.showMessageProcessInfo.subscribe((data: ProcessInfo) => {
       this.showMessage(
-        'Time: ' + data.time + ', operation: ' + data.operation + ', number: ' + data.number + ', note: ' + data.note,
+        'Time: ' + data.time + ', operation: ' + data.operation + ', number: ' + data.number + ', note: ' + data.note
       );
     });
     this.dataStorage.showMessage.subscribe((data: string) => {
@@ -76,7 +77,7 @@ export class AppComponent implements OnInit {
       const librariesForm = value.imports.split('\n');
       const result = {
         projectId: this.libraries.projectId,
-        libraries: librariesForm,
+        libraries: librariesForm
       };
 
       this.dataStorage.importLibraries(result);
@@ -86,7 +87,7 @@ export class AppComponent implements OnInit {
 
       const template = new Template(value.name, value.warmup, value.measurement, value.declare, value.init, [
         value.testMethod1,
-        value.testMethod2,
+        value.testMethod2
       ]);
 
       this.dataStorage.createBenchmark(template);

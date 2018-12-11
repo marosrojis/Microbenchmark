@@ -48,7 +48,7 @@ export class DataStorageService implements OnInit {
           const result = new LibrariesToChoose(error.error.projectId, error.error.imports);
           this.librariesToChoose.next(result);
         }
-      },
+      }
     );
   }
 
@@ -64,7 +64,7 @@ export class DataStorageService implements OnInit {
       (error: HttpErrorResponse) => {
         console.error(error);
         this.showMessage.next(error.error);
-      },
+      }
     );
   }
 
@@ -81,7 +81,7 @@ export class DataStorageService implements OnInit {
       (error: HttpErrorResponse) => {
         console.error(error);
         this.showMessage.next(JSON.stringify(error.error));
-      },
+      }
     );
   }
 
@@ -113,7 +113,7 @@ export class DataStorageService implements OnInit {
       },
       function(error) {
         alert('STOMP error ' + error + ', headers = ' + error.headers);
-      },
+      }
     );
   }
 
@@ -126,7 +126,7 @@ export class DataStorageService implements OnInit {
       },
       (error: HttpErrorResponse) => {
         console.error(error);
-      },
+      }
     );
   }
 
