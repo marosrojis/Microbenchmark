@@ -1,28 +1,15 @@
 package cz.rojik.service.service.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import cz.rojik.backend.service.PropertiesService;
 import cz.rojik.service.constants.OtherConstants;
-import cz.rojik.service.exception.ReadFileException;
+import cz.rojik.service.service.CachingDataService;
 import cz.rojik.service.utils.pojo.ImportsResult;
 import cz.rojik.service.service.ImporterService;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,30 +18,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class ImporterServiceImpl implements ImporterService {
 
     private static Logger logger = LoggerFactory.getLogger(ImporterServiceImpl.class);
 
-
-    private static final String LIBRARIES_FILE = "importer_files/libraries.json";
-    private static final String IGNORE_CLASS_FILE = "importer_files/ignore_class.txt";
-
     private final Pattern JAVA_PACKAGE_CLASS_REGEX = Pattern.compile(OtherConstants.JAVA_PACKAGE_CLASS_REGEX);
 
-    private Map<String, List<String>> javaLibraries;
-    private Set<String> ignoreClasses;
-
-    public ImporterServiceImpl() {
-        javaLibraries = readJavaLibraries();
-        ignoreClasses = readIgnoreClasses();
-    }
+    @Autowired
+    private CachingDataService cachingDataService;
 
     @Override
     public ImportsResult getLibrariesToImport(ImportsResult imports, String input) {
         logger.trace("Start finding all classes in project to import in file {}", input);
+
+        Map<String, List<String>> javaLibraries = cachingDataService.getJavaLibraries();
+        Set<String> ignoreClasses = cachingDataService.getIgnoreClasses();
+
         String[] inputs = input.split("[ =<>();\n\t]");
         Set<String> values = new HashSet<>(Arrays.asList(inputs));
         Set<String> libraries = new HashSet<>();
@@ -93,29 +74,4 @@ public class ImporterServiceImpl implements ImporterService {
         return imports;
     }
 
-    // PRIVATE
-
-    private Map<String, List<String>> readJavaLibraries() {
-        logger.trace("Read file with all java classes and packages.");
-        Gson gson = new Gson();
-        Type type = new TypeToken<HashMap<String, List<String>>>(){}.getType();
-        HashMap<String, List<String>> libraries = gson.fromJson(cz.rojik.service.utils.FileUtils.readFileFromResource(LIBRARIES_FILE), type);
-
-        return libraries;
-    }
-
-    private Set<String> readIgnoreClasses() {
-        logger.trace("Read file with classes to ignore import");
-        Resource resource = new ClassPathResource(IGNORE_CLASS_FILE);
-        Set<String> ignoreClasses = null;
-        try {
-            ignoreClasses = new BufferedReader(new InputStreamReader(resource.getInputStream()))
-                    .lines().collect(Collectors.toSet());
-
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new ReadFileException(IGNORE_CLASS_FILE);
-        }
-        return ignoreClasses;
-    }
 }

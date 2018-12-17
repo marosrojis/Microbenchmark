@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @Configuration
 @EnableAutoConfiguration
-@EnableCaching
 @ComponentScan(basePackages = ConfigConstants.COMPONENT_SCAN_BASE_PACKAGE)
 @EnableJpaRepositories(basePackages = ConfigConstants.REPOSITORIES_PACKAGE)
 @EntityScan(basePackages = ConfigConstants.ENTITIES_PACKAGE)
