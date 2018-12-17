@@ -22,6 +22,9 @@ public class MappingURLConstants {
     // BENCHMARK_STATE
     public static final String BENCHMARK_STATE = API_PREFIX + "/benchmarkState";
 
+    // IMPORT LIBRARIES
+    public static final String LIBRARY_LIBRARIES = API_PREFIX + "/library";
+
     // LOGIN
     public static final String LOGIN = API_PREFIX + "/login";
 

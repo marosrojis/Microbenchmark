@@ -1,6 +1,7 @@
 package cz.rojik.service.service.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import cz.rojik.backend.dto.PropertiesDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
@@ -45,7 +46,7 @@ public class CachingDataServiceImpl implements CachingDataService {
     public Map<String, List<String>> getJavaLibraries() {
         logger.trace("Read file with all java classes and packages.");
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().create();
         Type type = new TypeToken<HashMap<String, List<String>>>(){}.getType();
         HashMap<String, List<String>> libraries;
         PropertiesDTO properties;
@@ -53,12 +54,13 @@ public class CachingDataServiceImpl implements CachingDataService {
         try {
             properties = propertiesService.getProperties(OtherConstants.LIBRARIES_CACHE);
         } catch (EntityNotFoundException e) {
-            logger.debug("Property '{}' was not found in database", OtherConstants.LIBRARIES_CACHE, e);
+            logger.debug("Property '{}' was not found in database", OtherConstants.LIBRARIES_CACHE);
 
             libraries = gson.fromJson(cz.rojik.service.utils.FileUtils.readFileFromResource(LIBRARIES_FILE), type);
             return libraries;
         }
 
+        logger.debug("Read libraries properties from database.");
         libraries = gson.fromJson(properties.getValue(), type);
         return libraries;
 
@@ -75,7 +77,7 @@ public class CachingDataServiceImpl implements CachingDataService {
         try {
             properties = propertiesService.getProperties(OtherConstants.IGNORE_CLASSES_CACHE);
         } catch (EntityNotFoundException e) {
-            logger.debug("Property '{}' was not found in database", OtherConstants.IGNORE_CLASSES_CACHE, e);
+            logger.debug("Property '{}' was not found in database", OtherConstants.IGNORE_CLASSES_CACHE);
             logger.debug("Get ignore classes from file.");
 
             ignoreClasses = readIgnoreClasses();
@@ -90,11 +92,13 @@ public class CachingDataServiceImpl implements CachingDataService {
     @CacheEvict(value = OtherConstants.LIBRARIES_CACHE, allEntries = true)
     @Override
     public void evictLibrariesCacheValues() {
+        logger.debug("Clear cache '{}'", OtherConstants.LIBRARIES_CACHE);
     }
 
     @CacheEvict(value = OtherConstants.IGNORE_CLASSES_CACHE, allEntries = true)
     @Override
     public void evictIgnoreClassesCacheValues() {
+        logger.debug("Clear cache '{}'", OtherConstants.IGNORE_CLASSES_CACHE);
     }
 
     // PRIVATE

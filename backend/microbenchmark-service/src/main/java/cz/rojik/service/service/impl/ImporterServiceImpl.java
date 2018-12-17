@@ -1,7 +1,11 @@
 package cz.rojik.service.service.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import cz.rojik.backend.dto.PropertiesDTO;
 import cz.rojik.backend.service.PropertiesService;
 import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
 import cz.rojik.service.utils.pojo.ImportsResult;
 import cz.rojik.service.service.ImporterService;
@@ -10,14 +14,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 
 @Service
 public class ImporterServiceImpl implements ImporterService {
@@ -25,9 +36,13 @@ public class ImporterServiceImpl implements ImporterService {
     private static Logger logger = LoggerFactory.getLogger(ImporterServiceImpl.class);
 
     private final Pattern JAVA_PACKAGE_CLASS_REGEX = Pattern.compile(OtherConstants.JAVA_PACKAGE_CLASS_REGEX);
+    private static final int REMOVE_CLASS = 6;
 
     @Autowired
     private CachingDataService cachingDataService;
+
+    @Autowired
+    private PropertiesService propertiesService;
 
     @Override
     public ImportsResult getLibrariesToImport(ImportsResult imports, String input) {
@@ -48,16 +63,14 @@ public class ImporterServiceImpl implements ImporterService {
                 // e.g. java.util.List, static class like Math (m.group(0) from Math.abs() => Math)
                 if (!Character.isUpperCase(value.charAt(0)) && value.contains(".") && !ignoreClasses.contains(m.group(0))) {
                     libraries.add(m.group(0));
-                }
-                else { // input contains only potential class name
+                } else { // input contains only potential class name
                     String className = m.group(2);
                     if (!ignoreClasses.contains(className) && javaLibraries.containsKey(className)) {
                         List<String> packages = javaLibraries.get(className);
                         if (packages.size() == 1) {
                             String library = new StringBuilder().append(packages.get(0)).append(".").append(className).toString();
                             libraries.add(library);
-                        }
-                        else {
+                        } else {
                             selectImports.put(className, packages);
                         }
                     }
@@ -74,4 +87,64 @@ public class ImporterServiceImpl implements ImporterService {
         return imports;
     }
 
+    @Override
+    public PropertiesDTO processFolderWithJar(String folder) {
+        Map<String, List<String>> classes = readFolderWithJar(folder);
+
+        Gson gson = new GsonBuilder().create();
+        String result = gson.toJson(classes);
+
+        PropertiesDTO properties = propertiesService.updateProperties(new PropertiesDTO()
+                .setKey(OtherConstants.LIBRARIES_CACHE)
+                .setValue(result)
+        );
+
+        cachingDataService.evictLibrariesCacheValues();
+
+        return properties;
+    }
+
+    private Map<String, List<String>> readFolderWithJar(String folder) {
+        JarFile jarFile;
+        Map<String, List<String>> classes = new HashMap<>();
+
+        File directory = new File(folder);
+        if (!directory.exists()) {
+            logger.error("Read folder {} with JAR files is fail.", folder);
+            throw new ReadFileException(folder);
+        }
+
+        logger.debug("Read all files from folder {}", folder);
+        File[] fList = directory.listFiles();
+        for (File file : fList) {
+            try {
+                jarFile = new JarFile(file);
+            } catch (IOException e) {
+                logger.error("Read JAR file {} is fail.", file.getAbsoluteFile());
+                throw new ReadFileException(folder, e);
+            }
+
+            Enumeration<? extends JarEntry> enumeration = jarFile.entries();
+            while (enumeration.hasMoreElements()) {
+                ZipEntry zipEntry = enumeration.nextElement();
+
+                if (zipEntry.getName().contains(".class") && !zipEntry.getName().contains("$")) {
+                    String fileName = zipEntry.getName().substring(0, zipEntry.getName().length() - REMOVE_CLASS);
+                    String path = fileName.substring(0, fileName.lastIndexOf("/"));
+                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+                    path = path.replaceAll("/", ".");
+
+                    if (classes.containsKey(fileName)) {
+                        classes.get(fileName).add(path);
+                    } else {
+                        List<String> tmp = new ArrayList<>();
+                        tmp.add(path);
+                        classes.put(fileName, tmp);
+                    }
+                }
+            }
+
+        }
+        return classes;
+    }
 }
