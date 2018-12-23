@@ -4,11 +4,13 @@ import cz.rojik.backend.dto.MeasureMethodDTO;
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.entity.BenchmarkEntity;
+import cz.rojik.backend.properties.PathProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,12 @@ public class BenchmarkConverter {
     private static Logger logger = LoggerFactory.getLogger(BenchmarkConverter.class);
 
     @Autowired
+    private PathProperties pathProperties;
+
+    @Autowired
     private UserConverter userConverter;
+
+    private static final String JAR_FILE_NAME = "Microbenchmark.jar";
 
     public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
         logger.trace("Convert Benchmark entity to DTO object: {}", entity);
@@ -39,6 +46,21 @@ public class BenchmarkConverter {
         entity.getMeasureMethods().forEach(method -> methods.add(new MeasureMethodDTO(method)));
 
         result.setMeasureMethods(methods);
+
+        StringBuilder sb = new StringBuilder()
+                .append(entity.getProjectId())
+                .append(File.separator)
+                .append("target")
+                .append(File.separator)
+                .append("benchmark")
+                .append(File.separator)
+                .append(JAR_FILE_NAME);
+        String jarPath = sb.toString();
+
+        File jar = new File(pathProperties.getProjects() + jarPath);
+        if (jar.isFile() && jar.exists()) {
+            result.setJarUrl(pathProperties.getLinkProjects() + File.separator + jarPath);
+        }
 
         logger.trace("Converted Benchmark measure methods DTO: {}", methods);
 

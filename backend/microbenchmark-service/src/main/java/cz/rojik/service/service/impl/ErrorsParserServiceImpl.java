@@ -5,7 +5,7 @@ import cz.rojik.service.dto.ErrorDTO;
 import cz.rojik.service.dto.ErrorInfoDTO;
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 import cz.rojik.service.exception.ReadFileException;
-import cz.rojik.service.properties.PathProperties;
+import cz.rojik.backend.properties.PathProperties;
 import cz.rojik.service.service.ErrorsParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

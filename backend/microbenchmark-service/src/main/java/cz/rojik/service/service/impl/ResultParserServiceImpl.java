@@ -5,7 +5,7 @@ import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.MicrobenchmarkResultDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.exception.ReadFileException;
-import cz.rojik.service.properties.PathProperties;
+import cz.rojik.backend.properties.PathProperties;
 import cz.rojik.service.service.ResultParserService;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;

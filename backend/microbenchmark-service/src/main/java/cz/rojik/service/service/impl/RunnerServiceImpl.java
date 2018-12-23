@@ -19,7 +19,7 @@ import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.exception.ReadFileException;
-import cz.rojik.service.properties.PathProperties;
+import cz.rojik.backend.properties.PathProperties;
 import cz.rojik.service.service.RunnerService;
 import cz.rojik.service.service.WebSocketService;
 import cz.rojik.service.utils.FileUtils;

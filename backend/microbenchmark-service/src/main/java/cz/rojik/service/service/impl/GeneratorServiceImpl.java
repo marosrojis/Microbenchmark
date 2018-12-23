@@ -7,7 +7,7 @@ import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.exception.WriteFileException;
-import cz.rojik.service.properties.PathProperties;
+import cz.rojik.backend.properties.PathProperties;
 import cz.rojik.service.service.GeneratorService;
 import cz.rojik.service.utils.StringUtils;
 import cz.rojik.service.utils.pojo.ImportsResult;

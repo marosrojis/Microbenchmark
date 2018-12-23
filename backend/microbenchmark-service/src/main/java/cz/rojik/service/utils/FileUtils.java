@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.ReadFileException;
-import cz.rojik.service.properties.PathProperties;
+import cz.rojik.backend.properties.PathProperties;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

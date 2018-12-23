@@ -1,4 +1,4 @@
-package cz.rojik.service.properties;
+package cz.rojik.backend.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +13,8 @@ public class PathProperties {
     private String projects;
 
     private String results;
+
+    private String linkProjects;
 
     public String getProjects() {
         return projects;
@@ -30,4 +32,11 @@ public class PathProperties {
         this.results = results;
     }
 
+    public String getLinkProjects() {
+        return linkProjects;
+    }
+
+    public void setLinkProjects(String linkProjects) {
+        this.linkProjects = linkProjects;
+    }
 }
