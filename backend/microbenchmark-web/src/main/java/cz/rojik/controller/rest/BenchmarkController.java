@@ -38,6 +38,12 @@ public class BenchmarkController {
     @Autowired
     private cz.rojik.backend.service.BenchmarkService benchmarkBackendService;
 
+    @GetMapping(MappingURLConstants.ID_PARAM)
+    public ResponseEntity<BenchmarkDTO> getOne(@PathVariable Long id) {
+        BenchmarkDTO benchmark = benchmarkBackendService.getOne(id);
+        return new ResponseEntity<>(benchmark, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<BenchmarkDTO>> getAll() {
         List<BenchmarkDTO> benchmarks = benchmarkBackendService.getAll();
