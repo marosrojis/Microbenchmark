@@ -44,7 +44,7 @@ public class FileUtils {
             gson.toJson(template, writer);
         } catch (IOException e) {
             logger.error("Cannot save template class from project with ID {}", projectId);
-            throw new ReadFileException(projectId);
+            throw new ReadFileException(projectId, e);
         }
         logger.trace("Saving template {} to file {} is completed.", template, projectId);
     }
@@ -58,7 +58,7 @@ public class FileUtils {
             template = gson.fromJson(reader, TemplateDTO.class);
         } catch (IOException e) {
             logger.error("Cannot open template file from project with ID {}", projectId);
-            throw new ReadFileException(projectId);
+            throw new ReadFileException(projectId, e);
         }
         logger.debug("Reading template from file {} is finished {}", projectId, template);
         return template;
@@ -72,7 +72,7 @@ public class FileUtils {
                     File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
             logger.error("Cannot open class from project with ID {}", projectId);
-            throw new ReadFileException(projectId);
+            throw new ReadFileException(projectId, e);
         }
         return sourceCode;
     }
@@ -85,7 +85,7 @@ public class FileUtils {
             fileContent = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new ReadFileException(file);
+            throw new ReadFileException(file, e);
         }
 
         return fileContent;

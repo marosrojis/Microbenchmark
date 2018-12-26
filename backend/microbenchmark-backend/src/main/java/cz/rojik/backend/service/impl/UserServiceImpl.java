@@ -5,6 +5,7 @@ import cz.rojik.backend.dto.user.UserRegistrationForm;
 import cz.rojik.backend.entity.RoleEntity;
 import cz.rojik.backend.entity.RoleType;
 import cz.rojik.backend.entity.UserEntity;
+import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.repository.UserRepository;
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
 		logger.trace("Update existed user {} in DB with data {}", userId, user);
 		Optional<UserEntity> userEntity = userRepository.findById(userId);
 		if (!userEntity.isPresent()) {
-			throw new UserException(String.format("User with ID %s was not found.", userId));
+			throw new EntityNotFoundException(String.format("User with ID %s was not found.", userId));
 		}
 
 		UserEntity entity = userEntity.get();
@@ -138,7 +139,7 @@ public class UserServiceImpl implements UserService {
     	logger.trace("Get user by email {}", email);
 		UserEntity entity = userRepository.findByEmail(email);
 		if (entity == null) {
-			throw new UserException(String.format("User with email %s was not found", email));
+			throw new EntityNotFoundException(String.format("User with email %s was not found", email));
 		}
         return userConverter.entityToDTO(entity, true);
     }
@@ -154,7 +155,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findById(id);
 
         if (!user.isPresent()) {
-			throw new UserException(String.format("User with id %s was not found", id));
+			throw new EntityNotFoundException(String.format("User with id %s was not found", id));
 		}
         return userConverter.entityToDTO(user.get(), true);
     }
@@ -189,7 +190,7 @@ public class UserServiceImpl implements UserService {
     	logger.debug("Delete user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
 		Optional<UserEntity> entity = userRepository.findById(id);
 		if (!entity.isPresent()) {
-			throw new UserException(String.format("User with ID %s was not found.", id));
+			throw new EntityNotFoundException(String.format("User with ID %s was not found.", id));
 		}
 
 		userRepository.delete(entity.get());

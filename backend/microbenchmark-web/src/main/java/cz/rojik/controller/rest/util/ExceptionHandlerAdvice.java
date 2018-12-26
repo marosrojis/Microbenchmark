@@ -1,6 +1,6 @@
 package cz.rojik.controller.rest.util;
 
-import cz.rojik.backend.exception.BenchmarkNotFoundException;
+import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.exception.InvalidBearerTokenException;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.error.ErrorDetails;
@@ -46,7 +46,7 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST, false);
     }
 
-    @ExceptionHandler(value = { BenchmarkNotFoundException.class, NotFoundException.class })
+    @ExceptionHandler(value = { EntityNotFoundException.class, NotFoundException.class })
     public ResponseEntity<ErrorDetails> handleNotFoundException(Exception exception, WebRequest request) {
         return handleExceptionInternal(exception, request, HttpStatus.NOT_FOUND, false);
     }

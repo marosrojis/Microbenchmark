@@ -7,7 +7,7 @@ import cz.rojik.backend.entity.BenchmarkStateEntity;
 import cz.rojik.backend.entity.MeasureMethodEntity;
 import cz.rojik.backend.entity.BenchmarkEntity;
 import cz.rojik.backend.entity.UserEntity;
-import cz.rojik.backend.exception.BenchmarkNotFoundException;
+import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.repository.BenchmarkStateRepository;
 import cz.rojik.backend.repository.MeasureMethodRepository;
@@ -52,7 +52,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     public BenchmarkDTO getOne(Long id) {
         Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
         if (!benchmarkEntity.isPresent()) {
-            throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
+            throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
         return benchmarkConverter.entityToDTO(benchmarkEntity.get());
@@ -104,7 +104,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         logger.trace("Delete benchmark {}", id);
         Optional<BenchmarkEntity> entity = benchmarkRepository.findById(id);
         if (!entity.isPresent()) {
-            throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
+            throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
         List<MeasureMethodEntity> methods = measureMethodRepository.findAllByResult(entity.get());
@@ -123,7 +123,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         logger.debug("Assign benchmark {} to user {}", id, userId);
         Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
         if (!benchmarkEntity.isPresent()) {
-            throw new BenchmarkNotFoundException(String.format("Benchmark with ID %s was not found.", id));
+            throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
         Optional<UserEntity> userEntity = userRepository.findById(userId);
