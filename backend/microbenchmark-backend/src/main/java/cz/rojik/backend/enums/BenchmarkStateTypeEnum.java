@@ -41,6 +41,13 @@ public enum BenchmarkStateTypeEnum implements Serializable {
         return states;
     }
 
+    public static List<BenchmarkStateTypeEnum> runningBenchmarks() {
+        List<BenchmarkStateTypeEnum> states = new ArrayList<>();
+        states.add(BenchmarkStateTypeEnum.BENCHMARK_START);
+        states.add(BenchmarkStateTypeEnum.BENCHMARK_RUNNING);
+        return states;
+    }
+
     public static List<BenchmarkStateTypeEnum> stopStates() {
         List<BenchmarkStateTypeEnum> states = new ArrayList<>();
         states.add(BenchmarkStateTypeEnum.COMPILE_ERROR);

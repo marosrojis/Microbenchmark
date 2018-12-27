@@ -161,7 +161,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             return;
         }
 
-        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(Collections.singletonList(BenchmarkStateTypeEnum.BENCHMARK_START));
+        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(BenchmarkStateTypeEnum.runningBenchmarks());
         Set<String> containersId = containers.stream().map(Container::id).collect(Collectors.toSet());
 
         benchmarks.forEach(benchmark ->  {
