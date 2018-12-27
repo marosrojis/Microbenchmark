@@ -33,7 +33,7 @@ export class DataStorageService implements OnInit {
   createBenchmark(template: Template) {
     this.createWebSocketConnection();
 
-    this.http.post(REST_URL + '/benchmark/create', template).subscribe(
+    this.http.post(REST_URL + '/project/create', template).subscribe(
       (project: Project) => {
         project.operation = Operation.END_CREATE_PROJECT;
         this.showMessageProject.next(project);
@@ -53,7 +53,7 @@ export class DataStorageService implements OnInit {
   }
 
   importLibraries(libraries) {
-    this.http.post(REST_URL + '/benchmark/importLibraries', libraries).subscribe(
+    this.http.post(REST_URL + '/project/importLibraries', libraries).subscribe(
       (project: Project) => {
         project.operation = Operation.END_IMPORT_LIBRARIES;
         this.showMessageProject.next(project);
@@ -69,7 +69,7 @@ export class DataStorageService implements OnInit {
   }
 
   compileProject(projectId: string) {
-    this.http.post(REST_URL + '/benchmark/compile/' + projectId, null).subscribe(
+    this.http.post(REST_URL + '/project/compile/' + projectId, null).subscribe(
       (project: Project) => {
         project.operation = Operation.END_COMPILE;
         this.showMessageProject.next(project);

@@ -2,7 +2,6 @@ package cz.rojik.service.service.impl;
 
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
-import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.service.BenchmarkStateService;
@@ -14,7 +13,7 @@ import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.exception.ImportsToChooseException;
 import cz.rojik.service.exception.MavenCompileException;
-import cz.rojik.service.service.BenchmarkService;
+import cz.rojik.service.service.ProjectService;
 import cz.rojik.service.service.GeneratorService;
 import cz.rojik.service.service.ResultParserService;
 import cz.rojik.service.service.ErrorsParserService;
@@ -29,9 +28,9 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class BenchmarkServiceImpl implements BenchmarkService {
+public class ProjectServiceImpl implements ProjectService {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     @Autowired
     private GeneratorService generatorService;

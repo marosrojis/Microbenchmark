@@ -7,7 +7,7 @@ import cz.rojik.service.exception.ImportsToChooseException;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import cz.rojik.service.dto.TemplateDTO;
 
-public interface BenchmarkService {
+public interface ProjectService {
 
     String createProject(TemplateDTO template) throws ImportsToChooseException;
 

@@ -10,10 +10,13 @@ public class MappingURLConstants {
 
     // BENCHMARK
     public static final String BENCHMARK = API_PREFIX + "/benchmark";
-    public static final String BENCHMARK_CREATE = "create";
-    public static final String BENCHMARK_IMPORT_LIBRARIES = "importLibraries";
-    public static final String BENCHMARK_COMPILE = "compile/{projectId}";
     public static final String BENCHMARK_ASSIGN_TO_USER = "{id}/user/{userId}";
+
+    // PROJECT
+    public static final String PROJECT = API_PREFIX + "/project";
+    public static final String PROJECT_CREATE = "create";
+    public static final String PROJECT_IMPORT_LIBRARIES = "importLibraries";
+    public static final String PROJECT_COMPILE = "compile/{projectId}";
 
     // USERS
     public static final String USERS = API_PREFIX + "/users";

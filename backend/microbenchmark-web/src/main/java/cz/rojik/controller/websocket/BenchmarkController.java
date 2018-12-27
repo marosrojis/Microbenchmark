@@ -10,6 +10,7 @@ import cz.rojik.service.dto.BenchmarkRunErrorDTO;
 import cz.rojik.service.dto.ResultDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.BenchmarkRunException;
+import cz.rojik.service.service.ProjectService;
 import cz.rojik.service.utils.FileUtils;
 import cz.rojik.util.serialization.LocalDateTimeGsonSerializer;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class BenchmarkController {
     private static Logger logger = LoggerFactory.getLogger(BenchmarkController.class);
 
     @Autowired
-    private cz.rojik.service.service.BenchmarkService benchmarkService;
+    private ProjectService benchmarkService;
 
     @Autowired
     private TransformService transformService;
