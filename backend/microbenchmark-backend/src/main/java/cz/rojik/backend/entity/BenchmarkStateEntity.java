@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 @Entity
@@ -40,20 +41,15 @@ public class BenchmarkStateEntity extends BaseEntity {
     @Column(name = "number_of_connections", nullable = false)
     private int numberOfConnections;
 
+    @Column(name = "completed", nullable = false)
+    private int completed;
+
+    @Column(name = "timeToEnd")
+    private LocalTime timeToEnd;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
-    @Override
-    public String toString() {
-        return "BechmarkStateEntity{" +
-                "projectId='" + projectId + '\'' +
-                ", containerId='" + containerId + '\'' +
-                ", type=" + type +
-                ", updated=" + updated +
-                ", numberOfConnections=" + numberOfConnections +
-                '}';
-    }
 
     public String getProjectId() {
         return projectId;
@@ -109,22 +105,56 @@ public class BenchmarkStateEntity extends BaseEntity {
         return this;
     }
 
+    public int getCompleted() {
+        return completed;
+    }
+
+    public BenchmarkStateEntity setCompleted(int completed) {
+        this.completed = completed;
+        return this;
+    }
+
+    public LocalTime getTimeToEnd() {
+        return timeToEnd;
+    }
+
+    public BenchmarkStateEntity setTimeToEnd(LocalTime timeToEnd) {
+        this.timeToEnd = timeToEnd;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "BenchmarkStateEntity{" +
+                "projectId='" + projectId + '\'' +
+                ", containerId='" + containerId + '\'' +
+                ", type=" + type +
+                ", updated=" + updated +
+                ", numberOfConnections=" + numberOfConnections +
+                ", completed=" + completed +
+                ", timeToEnd=" + timeToEnd +
+                ", user=" + user +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        BenchmarkStateEntity that = (BenchmarkStateEntity) o;
-        return numberOfConnections == that.numberOfConnections &&
-                Objects.equals(projectId, that.projectId) &&
-                Objects.equals(containerId, that.containerId) &&
-                type == that.type &&
-                Objects.equals(updated, that.updated);
+        BenchmarkStateEntity entity = (BenchmarkStateEntity) o;
+        return numberOfConnections == entity.numberOfConnections &&
+                completed == entity.completed &&
+                Objects.equals(projectId, entity.projectId) &&
+                Objects.equals(containerId, entity.containerId) &&
+                type == entity.type &&
+                Objects.equals(updated, entity.updated) &&
+                Objects.equals(timeToEnd, entity.timeToEnd);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), projectId, containerId, type, updated, numberOfConnections);
+        return Objects.hash(super.hashCode(), projectId, containerId, type, updated, numberOfConnections, completed, timeToEnd);
     }
 }

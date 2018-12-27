@@ -36,7 +36,7 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(value = { Exception.class, RuntimeException.class })
     public ResponseEntity<ErrorDetails> handleGeneralException(Exception exception, WebRequest request) {
         return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
     }

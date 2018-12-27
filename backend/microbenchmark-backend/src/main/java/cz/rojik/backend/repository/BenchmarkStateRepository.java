@@ -12,13 +12,13 @@ import java.util.List;
 @Repository
 public interface BenchmarkStateRepository extends BaseRepository<BenchmarkStateEntity> {
 
-    @Query("SELECT COUNT(b) FROM BenchmarkStateEntity b WHERE b.type IN :type")
+    @Query("SELECT COUNT(b) FROM BenchmarkStateEntity b WHERE b.type IN :type AND b.archived = false")
     int countAllByStateType(@Param("type") List<BenchmarkStateTypeEnum> type);
 
-    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u ORDER BY b.updated")
+    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u WHERE b.archived = false ORDER BY b.updated")
     List<BenchmarkStateEntity> findAllByOrderByUpdated();
 
-    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u WHERE b.type IN :type ORDER BY b.updated")
+    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u WHERE b.type IN :type AND b.archived = false ORDER BY b.updated")
     List<BenchmarkStateEntity> findAllByTypeIsInOrderByUpdated(@Param("type") List<BenchmarkStateTypeEnum> type);
 
     List<BenchmarkStateEntity> findAllByProjectIdIsNotAndTypeIn(String projectId, List<BenchmarkStateTypeEnum> type);

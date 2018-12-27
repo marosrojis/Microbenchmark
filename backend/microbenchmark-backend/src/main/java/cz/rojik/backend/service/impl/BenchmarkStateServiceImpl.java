@@ -9,6 +9,7 @@ import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.entity.UserEntity;
+import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.repository.BenchmarkStateRepository;
 import cz.rojik.backend.service.BenchmarkStateService;
 import cz.rojik.backend.service.UserService;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -118,17 +118,12 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         BenchmarkStateEntity entity = benchmarkStateRepository.findFirstByProjectId(state.getProjectId());
         if (entity == null) {
-            throw new NotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
+            throw new EntityNotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
         }
         logger.trace("Update benchmark state in DB: {}", state);
 
-        entity.setType(state.getType());
-        entity.setUpdated(state.getUpdated());
-        if (state.getContainerId() != null) {
-            entity.setContainerId(state.getContainerId());
-        }
+        entity = benchmarkStateConverter.dtoToEntity(state, entity);
 
-        logger.debug("Update benchmark state {} to DB", entity);
         entity = benchmarkStateRepository.save(entity);
         return benchmarkStateConverter.entityToDTO(entity);
     }

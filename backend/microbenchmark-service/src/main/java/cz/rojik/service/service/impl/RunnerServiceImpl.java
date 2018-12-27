@@ -41,7 +41,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -53,6 +57,7 @@ public class RunnerServiceImpl implements RunnerService {
 
     private static final String REGEX_ERROR = "\\[ERROR\\].*";
     private static final String DOCKER_IMAGE = "docker-microbenchmark";
+    private static final int TOTAL_PART = 4;
 
     @Autowired
     private MessageLogParserServiceImpl messageLogParser;
@@ -100,6 +105,8 @@ public class RunnerServiceImpl implements RunnerService {
         ProcessInfoDTO processInfo;
         BenchmarkStateDTO benchmarkState;
         String error = "";
+        int currentIteration = 0;
+        int totalIterations = template.getTestMethods().size() * (template.getMeasurement() + template.getWarmup());
 
         final DockerClient client = DefaultDockerClient.fromEnv().build();
 
@@ -145,7 +152,7 @@ public class RunnerServiceImpl implements RunnerService {
             final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
             processInfo = messageLogParser.parseMessage(logMessage, template);
             if (processInfo != null) {
-                logger.debug("Benchmark process info from docker container {} for project {}", containerId, projectId);
+                logger.debug("Benchmark process info from docker container {} for project {} (iteration {})", containerId, projectId, currentIteration);
                 if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {
                     benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_SUCCESS);
                     logger.debug("Update benchmark state for project {}: {}", projectId, benchmarkState);
@@ -159,7 +166,12 @@ public class RunnerServiceImpl implements RunnerService {
                     error = processInfo.getNote();
                     break;
                 }
+
+                benchmarkState = updateRunningState(totalIterations, currentIteration, benchmarkState);
                 webSocketService.sendProcessInfo(processInfo, socketHeader);
+                if (!processInfo.getOperation().equals(Operation.RESULT)) {
+                    currentIteration++;
+                }
             }
         }
 
@@ -168,18 +180,6 @@ public class RunnerServiceImpl implements RunnerService {
 
         logger.error("Benchmark {} ended in error {}.", projectId, error);
         throw new BenchmarkRunException(projectId, error, FileUtils.readSourceFile(projectId));
-    }
-
-    private BenchmarkStateDTO updateState(String projectId, String containerId, BenchmarkStateTypeEnum type) {
-        logger.trace("Update benchmark state {} for project {} and container ID", type, projectId, containerId);
-        BenchmarkStateDTO state = new BenchmarkStateDTO()
-                .setProjectId(projectId)
-                .setContainerId(containerId)
-                .setType(type);
-
-        state = benchmarkStateService.updateState(state);
-
-        return state;
     }
 
     private void copyResultFile(DockerClient client, String containerId, String projectId) throws DockerException, InterruptedException {
@@ -201,6 +201,51 @@ public class RunnerServiceImpl implements RunnerService {
             closeContainer(client, containerId);
             throw new ReadFileException(ProjectContants.DOCKER_RESULT_FILE);
         }
+    }
+
+    private BenchmarkStateDTO updateState(String projectId, String containerId, BenchmarkStateTypeEnum type) {
+        logger.trace("Update benchmark state {} for project {} and container ID", type, projectId, containerId);
+        BenchmarkStateDTO state = new BenchmarkStateDTO()
+                .setProjectId(projectId)
+                .setContainerId(containerId)
+                .setTimeToEnd(null)
+                .setType(type);
+
+        if (type.equals(BenchmarkStateTypeEnum.BENCHMARK_START)) {
+            state.setCompleted(0);
+        }
+        else {
+            state.setCompleted(100);
+        }
+
+        state = benchmarkStateService.updateState(state);
+
+        return state;
+    }
+
+    private BenchmarkStateDTO updateRunningState(int totalIterations, int currentIteration, BenchmarkStateDTO state) {
+        int part = (int)Math.ceil((double)totalIterations / TOTAL_PART);
+        if (currentIteration % part != 0 || currentIteration == 0) {
+            return state;
+        }
+        logger.trace("Update benchmark state {} for project {} and container ID", BenchmarkStateTypeEnum.BENCHMARK_RUNNING, state.getProjectId(), state.getContainerId());
+
+        int percent = 100 * currentIteration / totalIterations;
+
+        Duration duration = Duration.between(state.getUpdated(), LocalDateTime.now());
+        long timeOfOneIteration = duration.getSeconds() / part;
+        long restOfTime = timeOfOneIteration *(totalIterations - currentIteration);
+
+        LocalTime timeToEnd = LocalTime.ofSecondOfDay(restOfTime);
+        logger.trace("Rest of time of benchmark {} is {}", state.getProjectId(), timeToEnd);
+
+        state.setType(BenchmarkStateTypeEnum.BENCHMARK_RUNNING)
+                .setCompleted(percent)
+                .setUpdated(LocalDateTime.now())
+                .setTimeToEnd(timeToEnd);
+
+        state = benchmarkStateService.updateState(state);
+        return state;
     }
 
     private void closeContainer(DockerClient client, String containerId) throws DockerException, InterruptedException {
