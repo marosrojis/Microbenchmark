@@ -7,4 +7,6 @@ public interface TransformService {
 
     BenchmarkDTO createResult(String projectId, TemplateDTO template, cz.rojik.service.dto.ResultDTO benchmarkResult);
 
+    BenchmarkDTO createErrorResult(String projectId, TemplateDTO template, String error);
+
 }

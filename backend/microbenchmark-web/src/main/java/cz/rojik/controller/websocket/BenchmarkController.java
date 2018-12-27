@@ -53,18 +53,23 @@ public class BenchmarkController {
         logger.trace("Read template for project {}", projectId);
         TemplateDTO template = FileUtils.getTemplateFromJson(projectId);
 
-        ResultDTO benchmarkResult = null;
+        ResultDTO benchmarkResult;
         try {
             benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
         } catch (BenchmarkRunException e) {
             logger.error(e.getException(), e);
+
+            logger.trace("Create error result {} of benchmark to DB for project {}", e.getException(), projectId);
+            BenchmarkDTO resultToSave = transformService.createErrorResult(projectId, template, e.getException());
+            benchmarkServiceBackend.saveResult(resultToSave);
+
             BenchmarkRunErrorDTO error =  new BenchmarkRunErrorDTO(e.getException(), e.getFile());
             return gson.toJson(error);
         }
 
         logger.trace("Create result {} of benchmark to DB for project {}", benchmarkResult, projectId);
         BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
-        resultToSave = benchmarkServiceBackend.saveResult(resultToSave);
+        benchmarkServiceBackend.saveResult(resultToSave);
 
         return gson.toJson(benchmarkResult);
     }

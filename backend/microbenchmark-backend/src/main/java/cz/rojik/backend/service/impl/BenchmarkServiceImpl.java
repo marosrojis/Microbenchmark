@@ -14,6 +14,7 @@ import cz.rojik.backend.repository.MeasureMethodRepository;
 import cz.rojik.backend.repository.BenchmarkRepository;
 import cz.rojik.backend.repository.UserRepository;
 import cz.rojik.backend.service.BenchmarkService;
+import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.backend.util.converter.BenchmarkConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +60,22 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     }
 
     @Override
-    public List<BenchmarkDTO> getAll() {
-        List<BenchmarkEntity> entities = benchmarkRepository.findAllOrOrderByCreated();
+    public List<BenchmarkDTO> getAll(Optional<Boolean> success) {
+        List<BenchmarkEntity> entities;
+        if (success.isPresent()) {
+            if (success.get()) {
+                logger.trace("Get all successful benchmark from DB for user {}", SecurityHelper.getCurrentUser());
+                entities = benchmarkRepository.findAllSuccessOrderByCreated(true);
+            }
+            else {
+                logger.trace("Get all error benchmark from DB for user {}", SecurityHelper.getCurrentUser());
+                entities = benchmarkRepository.findAllSuccessOrderByCreated(false);
+            }
+        }
+        else {
+            logger.trace("Get all benchmark from DB for user {}", SecurityHelper.getCurrentUser());
+            entities = benchmarkRepository.findAllOrderByCreated();
+        }
         List<BenchmarkDTO> result = entities.stream().map(entity -> benchmarkConverter.entityToDTO(entity)).collect(Collectors.toList());
 
         return result;

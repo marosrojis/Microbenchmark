@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import cz.rojik.service.dto.LibrariesDTO;
 import cz.rojik.service.dto.LibrariesToChooseDTO;
@@ -24,6 +25,7 @@ import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.service.BenchmarkService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController("restBenchmarkController")
 @CrossOrigin(origins = "*")
@@ -45,8 +47,8 @@ public class BenchmarkController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BenchmarkDTO>> getAll() {
-        List<BenchmarkDTO> benchmarks = benchmarkBackendService.getAll();
+    public ResponseEntity<List<BenchmarkDTO>> getAll(@RequestParam(value = "success") Optional<Boolean> success) {
+        List<BenchmarkDTO> benchmarks = benchmarkBackendService.getAll(success);
         return new ResponseEntity<>(benchmarks, HttpStatus.OK);
     }
 

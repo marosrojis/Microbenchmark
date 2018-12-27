@@ -184,7 +184,6 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	// TODO: promyslet jestli smazat uzivatele pokud jiz pustil nejake testy
 	@Override
 	public void delete(Long id) {
     	logger.debug("Delete user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());

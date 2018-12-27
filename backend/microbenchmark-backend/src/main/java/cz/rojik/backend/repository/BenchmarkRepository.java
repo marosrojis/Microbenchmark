@@ -16,5 +16,8 @@ public interface BenchmarkRepository extends BaseRepository<BenchmarkEntity> {
     Optional<BenchmarkEntity> findById(@Param("id") Long id);
 
     @Query("SELECT DISTINCT b FROM BenchmarkEntity b JOIN FETCH b.measureMethods m LEFT JOIN FETCH b.user u WHERE b.archived = false ORDER BY b.created")
-    List<BenchmarkEntity> findAllOrOrderByCreated();
+    List<BenchmarkEntity> findAllOrderByCreated();
+
+    @Query("SELECT DISTINCT b FROM BenchmarkEntity b JOIN FETCH b.measureMethods m LEFT JOIN FETCH b.user u WHERE b.archived = false AND b.success = :success ORDER BY b.created")
+    List<BenchmarkEntity> findAllSuccessOrderByCreated(@Param("success") boolean success);
 }

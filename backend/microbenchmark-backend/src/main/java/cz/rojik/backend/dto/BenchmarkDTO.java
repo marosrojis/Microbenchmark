@@ -20,6 +20,7 @@ public class BenchmarkDTO extends BaseDTO {
     private String init;
     private String declare;
     private String jarUrl;
+    private boolean success;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -42,6 +43,7 @@ public class BenchmarkDTO extends BaseDTO {
                 ", user=" + user +
                 ", measureMethods=" + measureMethods +
                 ", jarUrl=" + jarUrl +
+                ", success=" + success +
                 '}';
     }
 
@@ -144,6 +146,15 @@ public class BenchmarkDTO extends BaseDTO {
         return this;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public BenchmarkDTO setSuccess(boolean success) {
+        this.success = success;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -159,11 +170,12 @@ public class BenchmarkDTO extends BaseDTO {
                 Objects.equals(init, that.init) &&
                 Objects.equals(declare, that.declare) &&
                 Objects.equals(jarUrl, that.jarUrl) &&
+                Objects.equals(success, that.success) &&
                 Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), projectId, name, created, content, warmup, measurement, init, declare, user, measureMethods, jarUrl);
+        return Objects.hash(super.hashCode(), projectId, name, created, content, warmup, measurement, init, declare, user, measureMethods, jarUrl, success);
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class TransformServiceImpl implements TransformService {
 
@@ -27,7 +29,21 @@ public class TransformServiceImpl implements TransformService {
         result.setProjectId(projectId)
                 .setCreated(benchmarkResult.getTime())
                 .setContent(gson.toJson(benchmarkResult))
-                .setUser(SecurityHelper.getCurrentUser());
+                .setUser(SecurityHelper.getCurrentUser())
+                .setSuccess(true);
+
+        return result;
+    }
+
+    @Override
+    public BenchmarkDTO createErrorResult(String projectId, TemplateDTO template, String error) {
+        BenchmarkDTO result = benchmarkConverter.templateToResult(template);
+
+        result.setProjectId(projectId)
+                .setCreated(LocalDateTime.now())
+                .setContent(error)
+                .setUser(SecurityHelper.getCurrentUser())
+                .setSuccess(false);
 
         return result;
     }

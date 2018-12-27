@@ -130,7 +130,7 @@ public class RunnerServiceImpl implements RunnerService {
             logger.error(e.getMessage(), e);
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
             closeContainer(client, containerId);
-            throw new ReadFileException(filePath);
+            throw new ReadFileException(filePath, e);
         }
 
         final String[] command = {"java", "-jar", OtherConstants.LINUX_FILE_SEPARATOR + ProjectContants.DOCKER_BENCHMARK_FOLDER + ProjectContants.GENERATED_PROJECT_JAR};

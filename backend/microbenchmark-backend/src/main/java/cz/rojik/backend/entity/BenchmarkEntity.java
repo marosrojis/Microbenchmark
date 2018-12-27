@@ -55,6 +55,9 @@ public class BenchmarkEntity extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "result")
     private List<MeasureMethodEntity> measureMethods;
 
+    @Column(name = "success", nullable = false)
+    private boolean success;
+
     @Override
     public String toString() {
         return "ResultEntity{" +
@@ -67,6 +70,7 @@ public class BenchmarkEntity extends BaseEntity {
                 ", init='" + init + '\'' +
                 ", declare='" + declare + '\'' +
                 ", measureMethods=" + measureMethods +
+                ", success=" + success +
                 '}';
     }
 
@@ -160,6 +164,15 @@ public class BenchmarkEntity extends BaseEntity {
         return this;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public BenchmarkEntity setSuccess(boolean success) {
+        this.success = success;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -175,12 +188,13 @@ public class BenchmarkEntity extends BaseEntity {
                 Objects.equals(init, that.init) &&
                 Objects.equals(declare, that.declare) &&
                 Objects.equals(user, that.user) &&
+                Objects.equals(success, that.success) &&
                 Objects.equals(measureMethods, that.measureMethods);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), projectId, name, created, content, warmup, measurement, init, declare, user, measureMethods);
+        return Objects.hash(super.hashCode(), projectId, name, created, content, warmup, measurement, init, declare, user, measureMethods, success);
     }
 }

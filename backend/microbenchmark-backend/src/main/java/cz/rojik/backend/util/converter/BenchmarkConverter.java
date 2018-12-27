@@ -39,7 +39,8 @@ public class BenchmarkConverter {
                 .setMeasurement(entity.getMeasurement())
                 .setWarmup(entity.getWarmup())
                 .setProjectId(entity.getProjectId())
-                .setUser(userConverter.entityToDTO(entity.getUser(), false));
+                .setUser(userConverter.entityToDTO(entity.getUser(), false))
+                .setSuccess(entity.isSuccess());
         result.setId(entity.getId());
 
         List<MeasureMethodDTO> methods = new ArrayList<>();
@@ -78,7 +79,8 @@ public class BenchmarkConverter {
                 .setInit(dto.getInit())
                 .setMeasurement(dto.getMeasurement())
                 .setWarmup(dto.getWarmup())
-                .setProjectId(dto.getProjectId());
+                .setProjectId(dto.getProjectId())
+                .setSuccess(dto.isSuccess());
 
         return entity;
     }
