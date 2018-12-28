@@ -125,7 +125,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         List<MeasureMethodEntity> methods = measureMethodRepository.findAllByResult(entity.get());
         measureMethodRepository.deleteAll(methods);
 
-        BenchmarkStateEntity benchmarkStateEntity = benchmarkStateRepository.findFirstByProjectId(entity.get().getProjectId());
+        BenchmarkStateEntity benchmarkStateEntity = benchmarkStateRepository.findFirstByProjectIdAndArchivedIsFalse(entity.get().getProjectId());
         benchmarkStateRepository.delete(benchmarkStateEntity);
 
         benchmarkRepository.delete(entity.get());

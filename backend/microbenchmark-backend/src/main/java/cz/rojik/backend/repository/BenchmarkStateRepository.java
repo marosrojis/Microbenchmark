@@ -3,6 +3,7 @@ package cz.rojik.backend.repository;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,11 @@ public interface BenchmarkStateRepository extends BaseRepository<BenchmarkStateE
     @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u WHERE b.type IN :type AND b.archived = false ORDER BY b.updated")
     List<BenchmarkStateEntity> findAllByTypeIsInOrderByUpdated(@Param("type") List<BenchmarkStateTypeEnum> type);
 
-    List<BenchmarkStateEntity> findAllByProjectIdIsNotAndTypeIn(String projectId, List<BenchmarkStateTypeEnum> type);
+    List<BenchmarkStateEntity> findAllByProjectIdIsNotAndTypeInAndArchivedIsFalse(String projectId, List<BenchmarkStateTypeEnum> type);
 
-    BenchmarkStateEntity findFirstByProjectId(String projectId);
+    BenchmarkStateEntity findFirstByProjectIdAndArchivedIsFalse(String projectId);
+
+    @Modifying
+    @Query("DELETE FROM BenchmarkStateEntity")
+    void deleteAll();
 }

@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.BadRequestException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,6 +42,14 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
     @Autowired
     private UserService userService;
+
+    @Transactional
+    @PostConstruct
+    public void clearTableBenchmarkState() {
+        logger.trace("Clear table BenchmarkState after start application.");
+        benchmarkStateRepository.deleteAll();
+        logger.trace("Clear table BenchmarkState was successful.");
+    }
 
     @Override
     public List<BenchmarkStateDTO> getAll() {
@@ -116,7 +124,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             throw new BadRequestException("The given benchmark state is null");
         }
 
-        BenchmarkStateEntity entity = benchmarkStateRepository.findFirstByProjectId(state.getProjectId());
+        BenchmarkStateEntity entity = benchmarkStateRepository.findFirstByProjectIdAndArchivedIsFalse(state.getProjectId());
         if (entity == null) {
             throw new EntityNotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
         }
@@ -136,7 +144,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             throw new BadRequestException("The given project ID is null");
         }
 
-        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByProjectIdIsNotAndTypeIn(projectId, BenchmarkStateTypeEnum.runningStates());
+        List<BenchmarkStateEntity> benchmarks = benchmarkStateRepository.findAllByProjectIdIsNotAndTypeInAndArchivedIsFalse(projectId, BenchmarkStateTypeEnum.runningStates());
         benchmarks.forEach(benchmark -> {
             benchmark.setNumberOfConnections(benchmark.getNumberOfConnections() + 1);
             benchmark.setUpdated(LocalDateTime.now());

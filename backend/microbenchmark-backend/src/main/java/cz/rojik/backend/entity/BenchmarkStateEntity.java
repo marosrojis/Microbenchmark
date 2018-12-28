@@ -133,7 +133,6 @@ public class BenchmarkStateEntity extends BaseEntity {
                 ", numberOfConnections=" + numberOfConnections +
                 ", completed=" + completed +
                 ", timeToEnd=" + timeToEnd +
-                ", user=" + user +
                 '}';
     }
 
