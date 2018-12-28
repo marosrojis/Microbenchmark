@@ -36,4 +36,10 @@ public class SecurityHelper {
 
         return currentUser != null && currentUser.getRoles().stream().anyMatch(r -> r.getType().equals(RoleType.ADMIN.getRoleType()));
     }
+
+    public static boolean hasLoggedUserId(Long id) {
+        UserDTO currentUser = getCurrentUser();
+
+        return currentUser != null && currentUser.getId().equals(id);
+    }
 }

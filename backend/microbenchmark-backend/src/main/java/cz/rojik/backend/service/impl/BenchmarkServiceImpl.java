@@ -13,6 +13,7 @@ import cz.rojik.backend.repository.BenchmarkStateRepository;
 import cz.rojik.backend.repository.MeasureMethodRepository;
 import cz.rojik.backend.repository.BenchmarkRepository;
 import cz.rojik.backend.repository.UserRepository;
+import cz.rojik.backend.repository.specification.BenchmarkSpecificationBuilder;
 import cz.rojik.backend.service.BenchmarkService;
 import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.backend.util.converter.BenchmarkConverter;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,7 +53,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public BenchmarkDTO getOne(Long id) {
-        Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
+        Optional<BenchmarkEntity> benchmarkEntity = findBenchmarkById(id);
         if (!benchmarkEntity.isPresent()) {
             throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
@@ -60,22 +62,13 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     }
 
     @Override
-    public List<BenchmarkDTO> getAll(Optional<Boolean> success) {
-        List<BenchmarkEntity> entities;
-        if (success.isPresent()) {
-            if (success.get()) {
-                logger.trace("Get all successful benchmark from DB for user {}", SecurityHelper.getCurrentUser());
-                entities = benchmarkRepository.findAllSuccessOrderByCreated(true);
-            }
-            else {
-                logger.trace("Get all error benchmark from DB for user {}", SecurityHelper.getCurrentUser());
-                entities = benchmarkRepository.findAllSuccessOrderByCreated(false);
-            }
+    public List<BenchmarkDTO> getAll(Optional<Boolean> success, Optional<Long> user) {
+        if (!SecurityHelper.isLoggedUserAdmin() &&
+                user.isPresent() && !SecurityHelper.hasLoggedUserId(user.get())) {
+            throw new EntityNotFoundException("User with ID " + user.get() + " was not found.");
         }
-        else {
-            logger.trace("Get all benchmark from DB for user {}", SecurityHelper.getCurrentUser());
-            entities = benchmarkRepository.findAllOrderByCreated();
-        }
+
+        List<BenchmarkEntity> entities = benchmarkRepository.findAll(BenchmarkSpecificationBuilder.matchQuery(success, user));
         List<BenchmarkDTO> result = entities.stream().map(entity -> benchmarkConverter.entityToDTO(entity)).collect(Collectors.toList());
 
         return result;
@@ -117,7 +110,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     public BenchmarkDTO delete(Long id) {
         logger.trace("Delete benchmark {}", id);
-        Optional<BenchmarkEntity> entity = benchmarkRepository.findById(id);
+        Optional<BenchmarkEntity> entity = findBenchmarkById(id);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
@@ -157,5 +150,16 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         benchmarkRepository.saveAndFlush(entity);
 
         return benchmarkConverter.entityToDTO(entity);
+    }
+
+    private Optional<BenchmarkEntity> findBenchmarkById(Long id) {
+        Optional<BenchmarkEntity> benchmarkEntity;
+        if (SecurityHelper.isLoggedUserAdmin()) {
+            benchmarkEntity = benchmarkRepository.findById(id);
+        }
+        else {
+            benchmarkEntity = benchmarkRepository.findByIdAndUserId(id, SecurityHelper.getCurrentUserId());
+        }
+        return benchmarkEntity;
     }
 }

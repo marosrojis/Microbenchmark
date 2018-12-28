@@ -37,12 +37,7 @@ public class UsersController {
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         UserDTO user;
-        try {
-            user = userService.getUser(id);
-        } catch (UserException e) {
-            logger.error("User not found exception: {}", e.getMessage());
-            throw new NotFoundException(e.getMessage());
-        }
+        user = userService.getUser(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

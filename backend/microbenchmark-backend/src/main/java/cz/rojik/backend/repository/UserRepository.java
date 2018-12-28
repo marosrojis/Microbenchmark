@@ -7,16 +7,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends BaseRepository<UserEntity> {
 
+    @Override
+    @Query("SELECT u FROM UserEntity u JOIN FETCH u.roles r WHERE u.id = :id AND u.archived = false")
+    Optional<UserEntity> findById(@Param("id") Long id);
+
     @Query("SELECT e FROM UserEntity e WHERE e.email = :email AND e.archived = false")
     UserEntity findByEmail(@Param("email") String email);
 
-    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles RoleEntity WHERE e.archived = false")
+    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles r WHERE e.archived = false")
     List<UserEntity> findAllWithRole();
 
-    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles RoleEntity WHERE e.enabled = false AND e.archived = false")
+    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles r WHERE e.enabled = false AND e.archived = false")
     List<UserEntity> findAllNonEnabled();
 }

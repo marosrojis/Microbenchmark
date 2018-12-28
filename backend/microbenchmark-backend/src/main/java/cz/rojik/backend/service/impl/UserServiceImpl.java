@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDTO update(Long userId, UserDTO user) {
 		logger.trace("Update existed user {} in DB with data {}", userId, user);
-		Optional<UserEntity> userEntity = userRepository.findById(userId);
+		Optional<UserEntity> userEntity = findById(userId);
 		if (!userEntity.isPresent()) {
 			throw new EntityNotFoundException(String.format("User with ID %s was not found.", userId));
 		}
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(Long id) {
     	logger.trace("Get user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
-        Optional<UserEntity> user = userRepository.findById(id);
+        Optional<UserEntity> user = findById(id);
 
         if (!user.isPresent()) {
 			throw new EntityNotFoundException(String.format("User with id %s was not found", id));
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
     	logger.trace("Get logged user entity");
 		UserDTO userDTO = SecurityHelper.getCurrentUser();
 		if (userDTO != null) {
-			Optional<UserEntity> entity = userRepository.findById(userDTO.getId());
+			Optional<UserEntity> entity = findById(userDTO.getId());
 			return entity.get();
 		}
 		return null;
@@ -246,5 +246,13 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return user;
+	}
+
+	private Optional<UserEntity> findById(Long id) {
+    	if (!SecurityHelper.isLoggedUserAdmin() && !id.equals(SecurityHelper.getCurrentUserId())) {
+			throw new EntityNotFoundException(String.format("User with ID %s was not found.", id));
+		}
+    	Optional<UserEntity> entity = userRepository.findById(id);
+    	return entity;
 	}
 }

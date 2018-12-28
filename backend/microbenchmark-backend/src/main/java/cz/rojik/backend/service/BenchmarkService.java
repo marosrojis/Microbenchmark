@@ -9,7 +9,7 @@ public interface BenchmarkService {
 
     BenchmarkDTO getOne(Long id);
 
-    List<BenchmarkDTO> getAll(Optional<Boolean> success);
+    List<BenchmarkDTO> getAll(Optional<Boolean> success, Optional<Long> user);
 
     BenchmarkDTO saveResult(BenchmarkDTO result);
 

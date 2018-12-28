@@ -37,8 +37,9 @@ public class BenchmarkController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BenchmarkDTO>> getAll(@RequestParam(value = "success") Optional<Boolean> success) {
-        List<BenchmarkDTO> benchmarks = benchmarkService.getAll(success);
+    public ResponseEntity<List<BenchmarkDTO>> getAll(@RequestParam(value = "success") Optional<Boolean> success,
+                                                     @RequestParam(value = "user") Optional<Long> user) {
+        List<BenchmarkDTO> benchmarks = benchmarkService.getAll(success, user);
         return new ResponseEntity<>(benchmarks, HttpStatus.OK);
     }
 
