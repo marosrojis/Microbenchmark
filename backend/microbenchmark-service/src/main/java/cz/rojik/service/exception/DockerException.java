@@ -9,4 +9,9 @@ public class DockerException extends RuntimeException {
     public DockerException(String message) {
         super(message);
     }
+
+    public DockerException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+
 }

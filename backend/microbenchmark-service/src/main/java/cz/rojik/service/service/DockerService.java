@@ -9,9 +9,10 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 
 import java.util.Set;
 
-public interface RunnerService {
+public interface DockerService {
 
-    Set<String> compileProject(String projectId);
+    BenchmarkStateDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader)
+            throws DockerCertificateException, DockerException, InterruptedException, BenchmarkRunException;
 
-    BenchmarkStateDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws DockerCertificateException, DockerException, InterruptedException, BenchmarkRunException;
+    void killContainer(String containerId) throws cz.rojik.service.exception.DockerException;
 }

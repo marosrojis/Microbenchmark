@@ -11,7 +11,8 @@ public enum BenchmarkStateTypeEnum implements Serializable {
     BENCHMARK_START(Values.BENCHMARK_START),
     BENCHMARK_RUNNING(Values.BENCHMARK_RUNNING),
     BENCHMARK_SUCCESS(Values.BENCHMARK_SUCCESS),
-    BENCHMARK_ERROR(Values.BENCHMARK_ERROR);
+    BENCHMARK_ERROR(Values.BENCHMARK_ERROR),
+    BENCHMARK_KILL(Values.BENCHMARK_KILL);
 
     String benchmarkState;
 
@@ -21,16 +22,6 @@ public enum BenchmarkStateTypeEnum implements Serializable {
 
     public String getBenchmarkStateType() {
         return benchmarkState;
-    }
-
-    public static String getStateById(int id) {
-        if (id == 1) return BenchmarkStateTypeEnum.COMPILE_START.getBenchmarkStateType();
-        if (id == 2) return BenchmarkStateTypeEnum.COMPILE_ERROR.getBenchmarkStateType();
-        if (id == 3) return BenchmarkStateTypeEnum.BENCHMARK_START.getBenchmarkStateType();
-        if (id == 4) return BenchmarkStateTypeEnum.BENCHMARK_RUNNING.getBenchmarkStateType();
-        if (id == 5) return BenchmarkStateTypeEnum.BENCHMARK_SUCCESS.getBenchmarkStateType();
-        if (id == 6) return BenchmarkStateTypeEnum.BENCHMARK_ERROR.getBenchmarkStateType();
-        return null;
     }
 
     public static List<BenchmarkStateTypeEnum> runningStates() {
@@ -53,6 +44,7 @@ public enum BenchmarkStateTypeEnum implements Serializable {
         states.add(BenchmarkStateTypeEnum.COMPILE_ERROR);
         states.add(BenchmarkStateTypeEnum.BENCHMARK_SUCCESS);
         states.add(BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+        states.add(BenchmarkStateTypeEnum.BENCHMARK_KILL);
         return states;
     }
 
@@ -70,6 +62,7 @@ public enum BenchmarkStateTypeEnum implements Serializable {
         public static final String BENCHMARK_RUNNING = "BENCHMARK_RUNNING";
         public static final String BENCHMARK_SUCCESS = "BENCHMARK_SUCCESS";
         public static final String BENCHMARK_ERROR = "BENCHMARK_ERROR";
+        public static final String BENCHMARK_KILL = "BENCHMARK_KILL";
     }
 
 }

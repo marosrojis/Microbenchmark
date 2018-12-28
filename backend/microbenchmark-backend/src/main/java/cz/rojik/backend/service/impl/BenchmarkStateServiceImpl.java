@@ -47,8 +47,20 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @PostConstruct
     public void clearTableBenchmarkState() {
         logger.trace("Clear table BenchmarkState after start application.");
-        benchmarkStateRepository.deleteAll();
+//        benchmarkStateRepository.deleteAll();
         logger.trace("Clear table BenchmarkState was successful.");
+    }
+
+    @Override
+    public BenchmarkStateDTO getByProjectId(String projectId) {
+        logger.trace("Get benchmark state by project ID for user {}", projectId, SecurityHelper.getCurrentUser());
+        Optional<BenchmarkStateEntity> entity = benchmarkStateRepository.findByProjectId(projectId);
+        if (!entity.isPresent()) {
+            throw new EntityNotFoundException("Benchmark state was not found by project ID " + projectId);
+        }
+
+        BenchmarkStateDTO result = benchmarkStateConverter.entityToDTO(entity.get());
+        return result;
     }
 
     @Override
@@ -124,16 +136,17 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             throw new BadRequestException("The given benchmark state is null");
         }
 
-        BenchmarkStateEntity entity = benchmarkStateRepository.findFirstByProjectIdAndArchivedIsFalse(state.getProjectId());
-        if (entity == null) {
+        Optional<BenchmarkStateEntity> entity = benchmarkStateRepository.findByProjectId(state.getProjectId());
+        if (!entity.isPresent()) {
             throw new EntityNotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
         }
         logger.trace("Update benchmark state in DB: {}", state);
 
-        entity = benchmarkStateConverter.dtoToEntity(state, entity);
+        BenchmarkStateEntity benchmarkStateEntity = entity.get();
+        benchmarkStateEntity = benchmarkStateConverter.dtoToEntity(state, benchmarkStateEntity);
 
-        entity = benchmarkStateRepository.save(entity);
-        return benchmarkStateConverter.entityToDTO(entity);
+        benchmarkStateEntity = benchmarkStateRepository.save(benchmarkStateEntity);
+        return benchmarkStateConverter.entityToDTO(benchmarkStateEntity);
     }
 
     @Transactional
@@ -165,7 +178,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             containers = docker.listContainers();
             logger.debug("Running docker containers: {}", containers);
         } catch (InterruptedException | DockerException | DockerCertificateException e) {
-            logger.error("Docker is not running"); // TODO: throw exception
+            logger.error("Docker is not running", e); // TODO: throw exception
             return;
         }
 

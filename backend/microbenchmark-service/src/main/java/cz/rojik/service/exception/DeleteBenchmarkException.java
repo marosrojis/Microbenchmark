@@ -9,4 +9,8 @@ public class DeleteBenchmarkException extends RuntimeException {
     public DeleteBenchmarkException(String message) {
         super(message);
     }
+
+    public DeleteBenchmarkException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
 }

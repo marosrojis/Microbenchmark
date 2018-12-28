@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BenchmarkStateRepository extends BaseRepository<BenchmarkStateEntity> {
@@ -24,7 +25,8 @@ public interface BenchmarkStateRepository extends BaseRepository<BenchmarkStateE
 
     List<BenchmarkStateEntity> findAllByProjectIdIsNotAndTypeInAndArchivedIsFalse(String projectId, List<BenchmarkStateTypeEnum> type);
 
-    BenchmarkStateEntity findFirstByProjectIdAndArchivedIsFalse(String projectId);
+    @Query("SELECT b FROM BenchmarkStateEntity b LEFT JOIN FETCH b.user u WHERE b.projectId = :projectId AND b.archived = false")
+    Optional<BenchmarkStateEntity> findByProjectId(@Param("projectId") String projectId);
 
     @Modifying
     @Query("DELETE FROM BenchmarkStateEntity")

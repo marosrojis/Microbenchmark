@@ -3,10 +3,13 @@ package cz.rojik.service.service.impl;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
+import com.spotify.docker.client.exceptions.ContainerNotFoundException;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.exceptions.DockerRequestException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
+import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.ExecCreation;
 import cz.rojik.backend.dto.BenchmarkStateDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
@@ -17,20 +20,14 @@ import cz.rojik.service.dto.ProcessInfoDTO;
 import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.enums.Operation;
 import cz.rojik.service.exception.BenchmarkRunException;
-import cz.rojik.service.exception.MavenCompileException;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.backend.properties.PathProperties;
-import cz.rojik.service.service.RunnerService;
+import cz.rojik.service.service.DockerService;
 import cz.rojik.service.service.WebSocketService;
 import cz.rojik.service.utils.FileUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,18 +41,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 @Service
-public class RunnerServiceImpl implements RunnerService {
+public class DockerServiceImpl implements DockerService {
 
-    private static Logger logger = LoggerFactory.getLogger(RunnerServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(DockerServiceImpl.class);
 
-    private static final String REGEX_ERROR = "\\[ERROR\\].*";
     private static final String DOCKER_IMAGE = "docker-microbenchmark";
     private static final int TOTAL_PART = 4;
 
@@ -72,39 +63,12 @@ public class RunnerServiceImpl implements RunnerService {
     private PathProperties pathProperties;
 
     @Override
-    public Set<String> compileProject(String projectId) {
-        Set<String> output = new LinkedHashSet<>();
-        final Pattern p = Pattern.compile(REGEX_ERROR);
-
-        InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(pathProperties.getProjects() + projectId + File.separatorChar + ProjectContants.PROJECT_POM));
-        request.setGoals(Arrays.asList("clean", "package", "-Dmaven.test.skip=true"));
-
-        Invoker invoker = new DefaultInvoker();
-        invoker.setOutputHandler(text -> {
-            if (p.matcher(text).matches()) {
-                output.add(text);
-            }
-        });
-        try {
-            logger.info("Start compiling project {}", projectId);
-            invoker.execute(request);
-        } catch (MavenInvocationException e) {
-            logger.error("Maven invocation exception: {}", e.getMessage());
-            throw new MavenCompileException();
-        }
-
-        logger.debug("Compiling project {} is completed", projectId);
-        return output;
-    }
-
-    @Override
     public BenchmarkStateDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader)
             throws DockerCertificateException, DockerException, InterruptedException, BenchmarkRunException {
         logger.trace("Starting configuration of docker container for project {}", projectId);
         ProcessInfoDTO processInfo;
         BenchmarkStateDTO benchmarkState;
-        String error = "";
+        String error = "Problem with docker container.";
         int currentIteration = 0;
         int totalIterations = template.getTestMethods().size() * (template.getMeasurement() + template.getWarmup());
 
@@ -136,7 +100,7 @@ public class RunnerServiceImpl implements RunnerService {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
-            closeContainer(client, containerId);
+            killContainer(containerId);
             throw new ReadFileException(filePath, e);
         }
 
@@ -157,13 +121,16 @@ public class RunnerServiceImpl implements RunnerService {
                     benchmarkState = updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_SUCCESS);
                     logger.debug("Update benchmark state for project {}: {}", projectId, benchmarkState);
                     copyResultFile(client, containerId, projectId);
-                    closeContainer(client, containerId);
+                    killContainer(containerId);
 
                     logger.info("Successful end for benchmark for project {}", projectId);
                     return benchmarkState;
                 } else if (processInfo.getOperation().equals(Operation.ERROR_BENCHMARK)) {
                     logger.error("Error in running benchmark: {}", processInfo.getNote());
                     error = processInfo.getNote();
+
+                    updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
+                    killContainer(containerId);
                     break;
                 }
 
@@ -175,11 +142,31 @@ public class RunnerServiceImpl implements RunnerService {
             }
         }
 
-        updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
-        closeContainer(client, containerId);
-
         logger.error("Benchmark {} ended in error {}.", projectId, error);
         throw new BenchmarkRunException(projectId, error, FileUtils.readSourceFile(projectId));
+    }
+
+    @Override
+    public void killContainer(String containerId) throws cz.rojik.service.exception.DockerException {
+        logger.debug("Kill running docker container {} and remove it.", containerId);
+        final DockerClient client;
+        try {
+            client = DefaultDockerClient.fromEnv().build();
+            ContainerInfo containerInfo = client.inspectContainer(containerId);
+            if (!containerInfo.state().running()) {
+                logger.trace("Container {} is not running.", containerId);
+                return;
+            }
+            client.killContainer(containerId);
+            client.removeContainer(containerId);
+        } catch (ContainerNotFoundException | DockerRequestException e) {
+            logger.debug(e.getMessage(), containerId);
+            return;
+        } catch (DockerCertificateException | InterruptedException | DockerException e) {
+            logger.error("Docker problem.", e);
+            throw new cz.rojik.service.exception.DockerException(e.getMessage(), e);
+        }
+        logger.debug("Killing running docker container {} was successful", containerId);
     }
 
     private void copyResultFile(DockerClient client, String containerId, String projectId) throws DockerException, InterruptedException {
@@ -198,7 +185,7 @@ public class RunnerServiceImpl implements RunnerService {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);
-            closeContainer(client, containerId);
+            killContainer(containerId);
             throw new ReadFileException(ProjectContants.DOCKER_RESULT_FILE);
         }
     }
@@ -246,12 +233,6 @@ public class RunnerServiceImpl implements RunnerService {
 
         state = benchmarkStateService.updateState(state);
         return state;
-    }
-
-    private void closeContainer(DockerClient client, String containerId) throws DockerException, InterruptedException {
-        logger.debug("Close running docker container {} and remove it.", containerId);
-        client.killContainer(containerId);
-        client.removeContainer(containerId);
     }
 
 }

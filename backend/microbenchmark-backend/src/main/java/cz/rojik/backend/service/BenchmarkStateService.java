@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public interface BenchmarkStateService {
 
+    BenchmarkStateDTO getByProjectId(String projectId);
+
     List<BenchmarkStateDTO> getAll();
 
     List<BenchmarkStateDTO> getBenchmarksState(Optional<Boolean> running);

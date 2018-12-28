@@ -33,8 +33,10 @@ public class BenchmarkStateConverter {
                 .setType(entity.getType())
                 .setUpdated(entity.getUpdated())
                 .setCompleted(entity.getCompleted())
-                .setTimeToEnd(entity.getTimeToEnd())
-                .setUser(userConverter.entityToDTO(entity.getUser(), false));
+                .setTimeToEnd(entity.getTimeToEnd());
+        if (entity.getUser() != null) {
+            result.setUser(userConverter.entityToDTO(entity.getUser(), false));
+        }
 
         return result;
     }

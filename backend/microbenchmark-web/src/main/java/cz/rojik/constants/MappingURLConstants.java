@@ -17,6 +17,7 @@ public class MappingURLConstants {
     public static final String PROJECT_CREATE = "create";
     public static final String PROJECT_IMPORT_LIBRARIES = "importLibraries";
     public static final String PROJECT_COMPILE = "compile/{projectId}";
+    public static final String PROJECT_KILL = "kill/{projectId}";
 
     // USERS
     public static final String USERS = API_PREFIX + "/users";

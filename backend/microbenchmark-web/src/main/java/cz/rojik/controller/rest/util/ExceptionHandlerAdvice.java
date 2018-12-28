@@ -5,6 +5,7 @@ import cz.rojik.backend.exception.InvalidBearerTokenException;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.error.ErrorDetails;
 import cz.rojik.service.exception.DockerException;
+import cz.rojik.service.exception.KillContainerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
     }
 
-    @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class, DockerException.class})
+    @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class, DockerException.class, KillContainerException.class})
     public ResponseEntity<ErrorDetails> handleBadRequestException(Exception exception, WebRequest request) {
         return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST, false);
     }

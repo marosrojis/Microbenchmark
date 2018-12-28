@@ -63,4 +63,11 @@ public class ProjectController {
 
         return new ResponseEntity<>(new ProjectDTO(projectId), HttpStatus.OK);
     }
+
+    @PostMapping(MappingURLConstants.PROJECT_KILL)
+    public ResponseEntity kill(@PathVariable String projectId) {
+        projectService.kill(projectId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
