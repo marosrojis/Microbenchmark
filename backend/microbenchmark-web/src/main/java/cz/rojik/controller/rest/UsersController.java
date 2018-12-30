@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -42,14 +44,8 @@ public class UsersController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers() {
-        List<UserDTO> users = userService.getAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
-    @GetMapping(MappingURLConstants.USERS_NON_ENABLED)
-    public ResponseEntity<List<UserDTO>> getNonEnabledUsers() {
-        List<UserDTO> users = userService.getAllNonEnabled();
+    public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(value = "enabled") Optional<Boolean> enabled) {
+        List<UserDTO> users = userService.getAll(enabled);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

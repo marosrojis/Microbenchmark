@@ -8,6 +8,7 @@ import cz.rojik.constants.MappingURLConstants;
 import cz.rojik.backend.entity.RoleType;
 import cz.rojik.error.MBenchmarkAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -70,12 +71,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers(MappingURLConstants.LOGIN).permitAll()
-				.antMatchers(MappingURLConstants.SOCKET + "/**").permitAll()
-				.antMatchers(MappingURLConstants.TEST + "/**").hasRole(RoleType.USER.getRoleType())
-                .antMatchers()
-                    .hasRole(RoleType.Values.ROLE_USER_VALUE)
-			.antMatchers("/**").permitAll()
-			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				.antMatchers(MappingURLConstants.SOCKET + "/**").not().hasRole(RoleType.DEMO.getRoleType())
+
+				// BENCHMARK
+				.mvcMatchers(HttpMethod.GET, MappingURLConstants.BENCHMARK).hasAnyRole(RoleType.USER.getRoleType(), RoleType.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.GET, MappingURLConstants.BENCHMARK + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleType.USER.getRoleType(), RoleType.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.DELETE, MappingURLConstants.BENCHMARK + "/" + MappingURLConstants.ID_PARAM).hasRole(RoleType.USER.getRoleType())
+				.mvcMatchers(HttpMethod.POST, MappingURLConstants.BENCHMARK + "/" + MappingURLConstants.BENCHMARK_ASSIGN_TO_USER).hasRole(RoleType.ADMIN.getRoleType())
+
+				// BENCHMARK_STATE
+				.mvcMatchers(MappingURLConstants.BENCHMARK_STATE).hasRole(RoleType.ADMIN.getRoleType())
+
+				// LIBRARY
+				.mvcMatchers(MappingURLConstants.LIBRARY_LIBRARIES).hasRole(RoleType.ADMIN.getRoleType())
+
+				// PROJECT
+				.mvcMatchers(HttpMethod.POST, MappingURLConstants.PROJECT + "/" + MappingURLConstants.PROJECT_CREATE).not().hasRole(RoleType.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.POST, MappingURLConstants.PROJECT + "/" + MappingURLConstants.PROJECT_IMPORT_LIBRARIES).not().hasRole(RoleType.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.POST, MappingURLConstants.PROJECT + "/" + MappingURLConstants.PROJECT_COMPILE).not().hasRole(RoleType.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.POST, MappingURLConstants.PROJECT + "/" + MappingURLConstants.PROJECT_KILL).hasRole(RoleType.ADMIN.getRoleType())
+
+				// USERS
+				.mvcMatchers(HttpMethod.GET, MappingURLConstants.USERS).hasRole(RoleType.ADMIN.getRoleType())
+				.mvcMatchers(HttpMethod.GET, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleType.USER.getRoleType(), RoleType.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.PUT, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleType.ADMIN.getRoleType())
+				.mvcMatchers(HttpMethod.DELETE, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleType.ADMIN.getRoleType())
+
+
+				.antMatchers("/**").permitAll()
+				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(MappingURLConstants.API_PREFIX + "/**").fullyAuthenticated()
                 .antMatchers(MappingURLConstants.API_PREFIX + "/**").permitAll()
                 .and()

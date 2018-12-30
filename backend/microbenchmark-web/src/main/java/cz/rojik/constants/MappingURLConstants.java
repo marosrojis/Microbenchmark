@@ -21,7 +21,6 @@ public class MappingURLConstants {
 
     // USERS
     public static final String USERS = API_PREFIX + "/users";
-    public static final String USERS_NON_ENABLED = "nonEnabled";
 
     // BENCHMARK_STATE
     public static final String BENCHMARK_STATE = API_PREFIX + "/benchmarkState";

@@ -6,6 +6,7 @@ import cz.rojik.backend.entity.UserEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
 
@@ -13,15 +14,11 @@ public interface UserService extends UserDetailsService {
 
 	UserDTO update(Long userId, UserDTO user);
 
-	List<UserDTO> getAllEnabled();
-
-	List<UserDTO> getAllNonEnabled();
-
 	UserDTO getByEmail(String email);
 
     UserDTO getUser(Long id);
 
-	List<UserDTO> getAll();
+	List<UserDTO> getAll(Optional<Boolean> enabled);
 
 	UserEntity getLoggedUserEntity();
 

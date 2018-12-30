@@ -22,6 +22,6 @@ public interface UserRepository extends BaseRepository<UserEntity> {
     @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles r WHERE e.archived = false")
     List<UserEntity> findAllWithRole();
 
-    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles r WHERE e.enabled = false AND e.archived = false")
-    List<UserEntity> findAllNonEnabled();
+    @Query("SELECT DISTINCT e FROM UserEntity e JOIN FETCH e.roles r WHERE e.enabled = :enabled AND e.archived = false")
+    List<UserEntity> findAllEnabled(@Param("enabled") boolean enabled);
 }

@@ -106,29 +106,6 @@ public class UserServiceImpl implements UserService {
 		return userConverter.entityToDTO(entity, true);
 	}
 
-	/**
-	 * Method that returns list of {@link UserEntity} that are enabled
-	 * @return a list of {@link UserEntity} that are enabled
-	 */
-    @Override
-    public List<UserDTO> getAllEnabled() {
-//        return userRepository.getAllEnabled();
-        return null;
-    }
-
-    /**
-     * Method that returns list of {@link UserEntity} that are not enabled
-     * @return a list of {@link UserEntity} that are enabled
-     */
-    @Override
-    public List<UserDTO> getAllNonEnabled() {
-    	logger.trace("Get all non enabled users from DB (requested user {})", SecurityHelper.getCurrentUser());
-        List<UserEntity> users = userRepository.findAllNonEnabled();
-
-        List<UserDTO> output = users.stream().map(user -> userConverter.entityToDTO(user, true)).collect(Collectors.toList());
-        return output;
-    }
-
     /**
      * Method that returns user by its email address
      * @param email the email address to find from
@@ -165,9 +142,16 @@ public class UserServiceImpl implements UserService {
      * @return list of {@link UserDTO} from user with admin role
      */
     @Override
-    public List<UserDTO> getAll() {
+    public List<UserDTO> getAll(Optional<Boolean> enabled) {
     	logger.trace("Get all users (requested user: {})", SecurityHelper.getCurrentUser());
-        List<UserEntity> users = userRepository.findAllWithRole();
+        List<UserEntity> users;
+
+        if (enabled.isPresent()) {
+        	users = userRepository.findAllEnabled(enabled.get());
+		}
+		else {
+			users = userRepository.findAllWithRole();
+		}
 
 		List<UserDTO> output = users.stream().map(user -> userConverter.entityToDTO(user, true)).collect(Collectors.toList());
 		return output;
@@ -201,11 +185,7 @@ public class UserServiceImpl implements UserService {
         UserEntity entity = new UserEntity(user.getFirstname(), user.getLastname(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
 
 		Set<RoleEntity> roles = new HashSet<>();
-		RoleEntity userRole = roleRepository.findFirstByType(RoleType.DEMO.getRoleType());
-		roles.add(userRole);
-
         user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
-
         entity.setRoles(roles);
 
         if (SecurityHelper.isLoggedUserAdmin()) {
