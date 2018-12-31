@@ -23,8 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.BadRequestException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -98,6 +96,12 @@ public class UserServiceImpl implements UserService {
 			entity.setRoles(Collections.emptySet());
 			Set<RoleEntity> roles = new HashSet<>();
 			user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
+			boolean isRolesValidate = validateRoles(roles);
+			if (!isRolesValidate) {
+				logger.error("User's roles is not validate: " + roles);
+				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user.");
+			}
+			
 			entity.setRoles(roles);
 		}
 
@@ -186,6 +190,12 @@ public class UserServiceImpl implements UserService {
 
 		Set<RoleEntity> roles = new HashSet<>();
         user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
+		boolean isRolesValidate = validateRoles(roles);
+		if (!isRolesValidate) {
+			logger.error("User's roles is not validate: " + roles);
+			throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user.");
+		}
+
         entity.setRoles(roles);
 
         if (SecurityHelper.isLoggedUserAdmin()) {
@@ -234,5 +244,11 @@ public class UserServiceImpl implements UserService {
 		}
     	Optional<UserEntity> entity = userRepository.findById(id);
     	return entity;
+	}
+
+	private boolean validateRoles(Set<RoleEntity> roles) {
+    	logger.trace("Validate roles {}", roles);
+		List<RoleEntity> roleTypes = roles.stream().filter(r -> r.getType().equals(RoleType.USER.getRoleType()) || r.getType().equals(RoleType.DEMO.getRoleType())).collect(Collectors.toList());
+		return roleTypes.size() != 2;
 	}
 }
