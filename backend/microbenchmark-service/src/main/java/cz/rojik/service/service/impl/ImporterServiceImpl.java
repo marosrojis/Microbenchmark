@@ -88,7 +88,7 @@ public class ImporterServiceImpl implements ImporterService {
     }
 
     @Override
-    public PropertiesDTO processFolderWithJar(String folder) {
+    public PropertiesDTO processFolderWithJars(String folder) {
         Map<String, List<String>> classes = readFolderWithJar(folder);
 
         Gson gson = new GsonBuilder().create();

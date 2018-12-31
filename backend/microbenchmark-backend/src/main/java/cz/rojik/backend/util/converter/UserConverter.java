@@ -63,7 +63,7 @@ public class UserConverter {
             previousState.setLastname(newState.getLastname());
         }
         if (newState.isEnabled() != previousState.isEnabled()) {
-            previousState.setEnabled(previousState.isEnabled());
+            previousState.setEnabled(newState.isEnabled());
         }
 
         return previousState;

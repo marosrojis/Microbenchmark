@@ -3,9 +3,6 @@ package cz.rojik.backend.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Endpoint configuration for services that use Client Settings service.
- */
 @Configuration
 @ConfigurationProperties(prefix = "path")
 public class PathProperties {

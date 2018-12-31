@@ -8,5 +8,5 @@ public interface ImporterService {
 
     ImportsResult getLibrariesToImport(ImportsResult imports, String input);
 
-    PropertiesDTO processFolderWithJar(String folder) throws ReadFileException;
+    PropertiesDTO processFolderWithJars(String folder) throws ReadFileException;
 }

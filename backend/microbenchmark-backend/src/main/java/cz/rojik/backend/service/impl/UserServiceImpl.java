@@ -10,6 +10,7 @@ import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.repository.UserRepository;
 import cz.rojik.backend.service.BenchmarkService;
+import cz.rojik.backend.service.EmailService;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.backend.util.converter.UserConverter;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
 	private UserConverter userConverter;
 
 	@Autowired
-	private BenchmarkService benchmarkService;
+	private EmailService emailService;
 
     /**
      * Creating user with data from {@link UserRegistrationForm}
@@ -82,6 +83,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		UserEntity entity = userEntity.get();
+		boolean isEnabled = entity.isEnabled();
 		entity = userConverter.mapToEntityUpdate(user, entity);
 
 		if (!StringUtils.equals(user.getEmail(), entity.getEmail())) {
@@ -101,12 +103,17 @@ public class UserServiceImpl implements UserService {
 				logger.error("User's roles is not validate: " + roles);
 				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user.");
 			}
-			
+
 			entity.setRoles(roles);
 		}
 
 		entity = userRepository.save(entity);
 		logger.debug("User with email was successfully updated: {}", userId, entity);
+
+		if (!isEnabled && entity.isEnabled()) {
+			emailService.sendAfterUpdateUser(entity.getEmail());
+		}
+
 		return userConverter.entityToDTO(entity, true);
 	}
 
@@ -204,6 +211,9 @@ public class UserServiceImpl implements UserService {
 
 		entity = userRepository.save(entity);
         logger.debug("User {} was successfully saved", entity);
+
+        emailService.sendAfterRegistrationUser(entity.getEmail(), entity.isEnabled());
+
         return entity;
     }
 
