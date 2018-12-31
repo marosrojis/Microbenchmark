@@ -1,26 +1,35 @@
 package cz.rojik.service.dto;
 
-import java.util.ArrayList;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class TemplateDTO {
 
     private String name;
     private String libraries;
-    private int warmup;
-    private int measurement;
+
+    @NotNull
+    @Min(1)
+    private Integer warmup;
+
+    @NotNull
+    @Min(1)
+    private Integer measurement;
     private String declare;
     private String init;
+
+    @NotNull
+    @NotEmpty
     private List<String> testMethods;
 
     public TemplateDTO() {
         this.name = "";
         this.libraries = "";
-        this.warmup = 1;
-        this.measurement = 1;
         this.declare = "";
         this.init = "";
-        this.testMethods = new ArrayList<>();
     }
 
     public int getWarmup() {

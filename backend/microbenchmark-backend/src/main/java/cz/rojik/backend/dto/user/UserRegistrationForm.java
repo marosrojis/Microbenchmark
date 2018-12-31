@@ -1,19 +1,31 @@
 package cz.rojik.backend.dto.user;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class UserRegistrationForm {
 
     @NotNull
+    @NotBlank
     private String email;
 
+    @NotNull
+    @NotBlank
     private String firstname;
 
     @NotNull
+    @NotBlank
     private String lastname;
+
+    @NotNull
+    @NotEmpty
     private List<UserDTO> roles;
 
+    @NotNull
+    @NotBlank
     private String password;
 
     public String getPassword() {

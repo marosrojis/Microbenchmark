@@ -56,7 +56,7 @@ public class UsersController {
     }
 
     @PutMapping(MappingURLConstants.ID_PARAM)
-    private ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO user) {
+    private ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
         UserDTO newUser = userService.update(id, user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }

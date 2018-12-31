@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(MappingURLConstants.LIBRARY_LIBRARIES)
@@ -22,8 +24,8 @@ public class LibraryController {
     private ImporterService importerService;
 
     @PostMapping
-    public ResponseEntity<PropertiesDTO> updateJavaLibraries(@RequestBody PathDTO path) {
-        PropertiesDTO result = importerService.processFolderWithJar(path.getPath());
+    public ResponseEntity<PropertiesDTO> updateJavaLibraries(@Valid @RequestBody PathDTO path) {
+        PropertiesDTO result = importerService.processFolderWithJars(path.getPath());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

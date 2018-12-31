@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(MappingURLConstants.PROJECT)
@@ -31,7 +33,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping(MappingURLConstants.PROJECT_CREATE)
-    public ResponseEntity<?> create(@RequestBody TemplateDTO template) {
+    public ResponseEntity<?> create(@Valid @RequestBody TemplateDTO template) {
         String projectId;
 
         try {
@@ -46,7 +48,7 @@ public class ProjectController {
     }
 
     @PostMapping(MappingURLConstants.PROJECT_IMPORT_LIBRARIES)
-    public ResponseEntity<ProjectDTO> importLibraries(@RequestBody LibrariesDTO libraries) {
+    public ResponseEntity<ProjectDTO> importLibraries(@Valid @RequestBody LibrariesDTO libraries) {
         String projectId = projectService.importLibraries(libraries);
 
         return new ResponseEntity<>(new ProjectDTO(projectId), HttpStatus.OK);

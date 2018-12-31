@@ -4,29 +4,39 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.rojik.backend.dto.BaseDTO;
-import cz.rojik.backend.entity.RoleEntity;
-import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
 import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
 import cz.rojik.backend.auth.user.Login;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserDTO extends BaseDTO implements UserDetails {
 
 	private static final long serialVersionUID = 1654651984613619846L;
 
+	@NotNull
+	@NotBlank
 	private String email;
+
+	@NotNull
+	@NotBlank
 	private String firstname;
+
+	@NotNull
+	@NotBlank
 	private String lastname;
+
+	@NotNull
 	private boolean enabled;
 	private long expires;
 
@@ -37,6 +47,8 @@ public class UserDTO extends BaseDTO implements UserDetails {
 	@JsonIgnore
 	private String password;
 
+	@NotNull
+	@NotEmpty
 	private List<RoleDTO> roles = new ArrayList<>();
 
 	public UserDTO() {

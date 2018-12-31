@@ -1,12 +1,19 @@
 package cz.rojik.service.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 
 public class LibrariesDTO {
 
+    @NotNull
+    @NotEmpty
     String projectId;
 
+    @NotNull
+    @NotEmpty
     Set<String> libraries;
 
     public String getProjectId() {
