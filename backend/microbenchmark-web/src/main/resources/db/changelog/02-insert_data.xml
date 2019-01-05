@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <property name="now" value="now()" dbms="postgresql"/>
+  <changeSet id="1" author="marek.rojik">
+    <comment>Inserting admin user</comment>
+    <insert tableName="mbmark_user">
+      <column name="id" valueNumeric="1" />
+      <column name="archived" valueBoolean="false" />
+      <column name="firstname" value="Marek" />
+      <column name="lastname" value="Rojik" />
+      <column name="email" value="marek@rojik.cz" />
+      <column name="password" value="$2a$10$pGyHiB1fW1pwz93h0PuHlOsxW8ewFqka4yJJLWr7WpA93zNYe3Toq" />
+      <column name="created" valueDate="${now}" />
+      <column name="enabled" valueBoolean="true" />
+    </insert>
+  </changeSet>
+  <changeSet id="2" author="marek.rojik">
+    <comment>Inserting roles</comment>
+    <insert tableName="mbmark_role">
+      <column name="id" valueNumeric="1" />
+      <column name="archived" valueBoolean="false" />
+      <column name="type" value="ADMIN" />
+    </insert>
+    <insert tableName="mbmark_role">
+      <column name="id" valueNumeric="2" />
+      <column name="archived" valueBoolean="false" />
+      <column name="type" value="USER" />
+    </insert>
+    <insert tableName="mbmark_role">
+      <column name="id" valueNumeric="3" />
+      <column name="archived" valueBoolean="false" />
+      <column name="type" value="DEMO" />
+    </insert>
+  </changeSet>
+  <changeSet id="3" author="marek.rojik">
+    <comment>Inserting admin role to created admin user</comment>
+    <insert tableName="mbmark_user_role">
+      <column name="user_id" valueNumeric="1" />
+      <column name="role_id" valueNumeric="1" />
+    </insert>
+    <insert tableName="mbmark_user_role">
+      <column name="user_id" valueNumeric="1" />
+      <column name="role_id" valueNumeric="2" />
+    </insert>
+  </changeSet>
+</databaseChangeLog>

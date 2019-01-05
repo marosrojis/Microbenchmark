@@ -8,6 +8,7 @@ create table mbmark_benchmark (
     measurement int4 not null,
     name varchar(255) not null,
     project_id varchar(255) not null,
+    success boolean not null,
     warmup int4 not null,
     user_id int8,
     primary key (id)
@@ -16,9 +17,11 @@ create table mbmark_benchmark (
 create table mbmark_benchmark_state (
    id  bigserial not null,
     archived boolean not null,
+    completed int4 not null,
     container_id varchar(255),
     number_of_connections int4 not null,
     project_id varchar(255) not null,
+    time_to_end time,
     type varchar(32) not null,
     updated timestamp not null,
     user_id int8,
@@ -34,6 +37,13 @@ create table mbmark_measure_method (
     primary key (id)
 );
 
+create table mbmark_property (
+   id  bigserial not null,
+    key text not null,
+    value text not null,
+    primary key (id)
+);
+
 create table mbmark_role (
    id  bigserial not null,
     archived boolean not null,
@@ -46,7 +56,7 @@ create table mbmark_user (
     archived boolean not null,
     created timestamp not null,
     email varchar(255) not null,
-    enabled boolean,
+    enabled boolean not null,
     firstname varchar(255) not null,
     lastname varchar(255) not null,
     password varchar(255) not null,
@@ -61,53 +71,59 @@ create table mbmark_user_role (
 
 create index IDXj6ipfh5mxg9mpd0912b04qt6s on mbmark_benchmark (project_id);
 
-alter table mbmark_benchmark 
+alter table mbmark_benchmark
    drop constraint if exists UKj6ipfh5mxg9mpd0912b04qt6s;
 
-alter table mbmark_benchmark 
+alter table mbmark_benchmark
    add constraint UKj6ipfh5mxg9mpd0912b04qt6s unique (project_id);
-
 create index IDXl4a16lo2fyvmmc89ogyfqv2ul on mbmark_benchmark_state (project_id);
 
-alter table mbmark_benchmark_state 
+alter table mbmark_benchmark_state
    drop constraint if exists UKl4a16lo2fyvmmc89ogyfqv2ul;
 
-alter table mbmark_benchmark_state 
+alter table mbmark_benchmark_state
    add constraint UKl4a16lo2fyvmmc89ogyfqv2ul unique (project_id);
+create index IDX3vu1ybf67hxfvaylmwyoj2wdg on mbmark_property (key);
 
-alter table mbmark_role 
+alter table mbmark_property
+   drop constraint if exists UK3vu1ybf67hxfvaylmwyoj2wdg;
+
+alter table mbmark_property
+   add constraint UK3vu1ybf67hxfvaylmwyoj2wdg unique (key);
+
+alter table mbmark_role
    drop constraint if exists UK_fiaddmsa40tvp59c5csnhmqst;
 
-alter table mbmark_role 
+alter table mbmark_role
    add constraint UK_fiaddmsa40tvp59c5csnhmqst unique (type);
 
-alter table mbmark_user 
+alter table mbmark_user
    drop constraint if exists UK7fqw9cx4dy2nvsqhl0g092v5x;
 
-alter table mbmark_user 
+alter table mbmark_user
    add constraint UK7fqw9cx4dy2nvsqhl0g092v5x unique (email);
 
-alter table mbmark_benchmark 
-   add constraint FKhqriqbk4wmt6axupffk4ylh6l 
-   foreign key (user_id) 
+alter table mbmark_benchmark
+   add constraint FKhqriqbk4wmt6axupffk4ylh6l
+   foreign key (user_id)
    references mbmark_user;
 
-alter table mbmark_benchmark_state 
-   add constraint FK8rs2b7hqrn0phn96qu0pi0493 
-   foreign key (user_id) 
+alter table mbmark_benchmark_state
+   add constraint FK8rs2b7hqrn0phn96qu0pi0493
+   foreign key (user_id)
    references mbmark_user;
 
-alter table mbmark_measure_method 
-   add constraint FKmlku3h3277exv6c83n8a9ywh3 
-   foreign key (result_id) 
+alter table mbmark_measure_method
+   add constraint FKmlku3h3277exv6c83n8a9ywh3
+   foreign key (result_id)
    references mbmark_benchmark;
 
-alter table mbmark_user_role 
-   add constraint FKktfkdqa6uwj7gpgvq0mgnm75n 
-   foreign key (role_id) 
+alter table mbmark_user_role
+   add constraint FKktfkdqa6uwj7gpgvq0mgnm75n
+   foreign key (role_id)
    references mbmark_role;
 
-alter table mbmark_user_role 
-   add constraint FK3mt2c0oxk2jmoapmr1xd3h0y2 
-   foreign key (user_id) 
+alter table mbmark_user_role
+   add constraint FK3mt2c0oxk2jmoapmr1xd3h0y2
+   foreign key (user_id)
    references mbmark_user;

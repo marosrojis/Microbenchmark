@@ -38,7 +38,7 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime created;
 
-    @Column
+    @Column(nullable = false)
     private boolean enabled;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -47,8 +47,8 @@ public class UserEntity extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<RoleEntity> roles = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
-    List<BenchmarkEntity> results;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    List<BenchmarkEntity> benchmarks;
 
     public UserEntity() {
 
@@ -167,12 +167,12 @@ public class UserEntity extends BaseEntity {
         return this.password;
     }
 
-    public List<BenchmarkEntity> getResults() {
-        return results;
+    public List<BenchmarkEntity> getBenchmarks() {
+        return benchmarks;
     }
 
-    public UserEntity setResults(List<BenchmarkEntity> results) {
-        this.results = results;
+    public UserEntity setBenchmarks(List<BenchmarkEntity> benchmarks) {
+        this.benchmarks = benchmarks;
         return this;
     }
 }
