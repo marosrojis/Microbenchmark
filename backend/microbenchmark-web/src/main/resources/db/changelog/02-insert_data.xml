@@ -49,4 +49,17 @@
       <column name="role_id" valueNumeric="2" />
     </insert>
   </changeSet>
+  <changeSet id="4" author="marek.rojik">
+    <comment>Inserting default properties</comment>
+    <insert tableName="mbmark_property">
+      <column name="id" valueNumeric="1" />
+      <column name="key" value="javaVersion" />
+      <column name="value" value="1.8" />
+    </insert>
+    <insert tableName="mbmark_property">
+      <column name="id" valueNumeric="2" />
+      <column name="key" value="jmhVersion" />
+      <column name="value" value="1.20" />
+    </insert>
+  </changeSet>
 </databaseChangeLog>
