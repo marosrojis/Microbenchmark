@@ -1,5 +1,6 @@
 package cz.rojik.backend.entity;
 
+import cz.rojik.backend.enums.RoleTypeEnum;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Column;
@@ -7,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Licence uživatele
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 @Entity
 @SQLDelete(sql = "UPDATE mbmark_role SET archived = true WHERE id = ?")
@@ -15,12 +16,12 @@ import javax.persistence.Table;
 public class RoleEntity extends BaseEntity {
 
     @Column(length=15, unique=true, nullable=false)
-    private String type = RoleType.USER.getRoleType();
+    private String type = RoleTypeEnum.USER.getRoleType();
     
     public RoleEntity(){
     }
     
-    public RoleEntity(RoleType role){
+    public RoleEntity(RoleTypeEnum role){
     	this.type = role.name();
     }
 

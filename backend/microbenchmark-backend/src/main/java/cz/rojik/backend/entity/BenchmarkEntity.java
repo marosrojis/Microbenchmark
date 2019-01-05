@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Entity
 @SQLDelete(sql = "UPDATE mbmark_benchmark SET archived = true WHERE id = ?")
 @Table(

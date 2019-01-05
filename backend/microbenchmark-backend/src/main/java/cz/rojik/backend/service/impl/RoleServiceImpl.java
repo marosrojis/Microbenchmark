@@ -2,7 +2,7 @@ package cz.rojik.backend.service.impl;
 
 import cz.rojik.backend.dto.user.RoleDTO;
 import cz.rojik.backend.entity.RoleEntity;
-import cz.rojik.backend.entity.RoleType;
+import cz.rojik.backend.enums.RoleTypeEnum;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.service.RoleService;
 import org.slf4j.Logger;
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -38,7 +41,7 @@ public class RoleServiceImpl implements RoleService {
 	 * @return the {@link RoleEntity} found
 	 */
 	@Override
-	public RoleDTO getByType(RoleType roleType) {
+	public RoleDTO getByType(RoleTypeEnum roleType) {
 		logger.trace("Get role by type {}", roleType);
 		return new RoleDTO(roleRepository.findFirstByType(roleType.name()));
 	}

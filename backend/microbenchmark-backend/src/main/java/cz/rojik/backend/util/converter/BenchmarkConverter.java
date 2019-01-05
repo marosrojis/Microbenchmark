@@ -14,6 +14,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Component
 public class BenchmarkConverter {
 

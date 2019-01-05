@@ -6,6 +6,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class LibrariesDTO {
 
     @NotNull

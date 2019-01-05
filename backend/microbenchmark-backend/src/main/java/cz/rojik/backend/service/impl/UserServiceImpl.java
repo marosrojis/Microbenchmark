@@ -3,13 +3,12 @@ package cz.rojik.backend.service.impl;
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.dto.user.UserRegistrationForm;
 import cz.rojik.backend.entity.RoleEntity;
-import cz.rojik.backend.entity.RoleType;
+import cz.rojik.backend.enums.RoleTypeEnum;
 import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.repository.UserRepository;
-import cz.rojik.backend.service.BenchmarkService;
 import cz.rojik.backend.service.EmailService;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.backend.util.SecurityHelper;
@@ -31,6 +30,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService {
 		if (user.getRoles() != null && user.getRoles().size() != 0) {
 			entity.setRoles(Collections.emptySet());
 			Set<RoleEntity> roles = new HashSet<>();
-			user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
+			user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleTypeEnum.getRoleById(role.getId()))));
 			boolean isRolesValidate = validateRoles(roles);
 			if (!isRolesValidate) {
 				logger.error("User's roles is not validate: " + roles);
@@ -196,7 +198,7 @@ public class UserServiceImpl implements UserService {
         UserEntity entity = new UserEntity(user.getFirstname(), user.getLastname(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
 
 		Set<RoleEntity> roles = new HashSet<>();
-        user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleType.getRoleById(role.getId()))));
+        user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleTypeEnum.getRoleById(role.getId()))));
 		boolean isRolesValidate = validateRoles(roles);
 		if (!isRolesValidate) {
 			logger.error("User's roles is not validate: " + roles);
@@ -258,7 +260,7 @@ public class UserServiceImpl implements UserService {
 
 	private boolean validateRoles(Set<RoleEntity> roles) {
     	logger.trace("Validate roles {}", roles);
-		List<RoleEntity> roleTypes = roles.stream().filter(r -> r.getType().equals(RoleType.USER.getRoleType()) || r.getType().equals(RoleType.DEMO.getRoleType())).collect(Collectors.toList());
+		List<RoleEntity> roleTypes = roles.stream().filter(r -> r.getType().equals(RoleTypeEnum.USER.getRoleType()) || r.getType().equals(RoleTypeEnum.DEMO.getRoleType())).collect(Collectors.toList());
 		return roleTypes.size() != 2;
 	}
 }

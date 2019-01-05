@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Service
 public class GeneratorServiceImpl implements GeneratorService {
 

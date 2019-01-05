@@ -5,7 +5,9 @@ import cz.rojik.backend.exception.EntityNotFoundException;
 
 import java.util.List;
 
-
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public interface PropertyService {
 
     PropertyDTO getOne(Long id);

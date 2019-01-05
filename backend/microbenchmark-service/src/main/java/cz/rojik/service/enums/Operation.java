@@ -1,5 +1,8 @@
 package cz.rojik.service.enums;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public enum Operation {
 
     MEASUREMENT("MEASUREMENT"),

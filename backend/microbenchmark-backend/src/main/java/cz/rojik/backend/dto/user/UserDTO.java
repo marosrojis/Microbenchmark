@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class UserDTO extends BaseDTO implements UserDetails {
 
 	private static final long serialVersionUID = 1654651984613619846L;

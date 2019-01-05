@@ -9,6 +9,9 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 
 import java.util.Set;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public interface DockerService {
 
     BenchmarkStateDTO runProject(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader)

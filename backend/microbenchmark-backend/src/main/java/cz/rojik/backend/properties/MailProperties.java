@@ -3,6 +3,9 @@ package cz.rojik.backend.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Configuration
 @ConfigurationProperties(prefix = "mail")
 public class MailProperties {

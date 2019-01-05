@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(MappingURLConstants.PROJECT)

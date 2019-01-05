@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
-import cz.rojik.backend.constants.ConfigConstants;
+import cz.rojik.backend.constants.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,14 +14,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class LocalDateTimeDeserializer extends StdScalarDeserializer<LocalDateTime> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LocalDateTimeDeserializer.class);
 
     //DateTimeFormatter is thread-safe
     private static final Collection<DateTimeFormatter> FORMATTERS = Arrays.asList(
-            DateTimeFormatter.ofPattern(ConfigConstants.LOCAL_DATE_PATTERN),
-            DateTimeFormatter.ofPattern(ConfigConstants.LOCAL_DATE_TIME_PATTERN)
+            DateTimeFormatter.ofPattern(DateTimeConstants.LOCAL_DATE_PATTERN),
+            DateTimeFormatter.ofPattern(DateTimeConstants.LOCAL_DATE_TIME_PATTERN)
         );
 
     private static final String NULL_VALUE = "null";

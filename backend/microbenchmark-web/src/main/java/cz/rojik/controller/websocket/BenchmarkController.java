@@ -25,6 +25,9 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Controller("webSocketBenchmarkController")
 public class BenchmarkController {
 

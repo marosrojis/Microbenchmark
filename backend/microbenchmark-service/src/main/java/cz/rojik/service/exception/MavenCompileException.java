@@ -2,6 +2,9 @@ package cz.rojik.service.exception;
 
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class MavenCompileException extends RuntimeException {
 
     public MavenCompileException() {

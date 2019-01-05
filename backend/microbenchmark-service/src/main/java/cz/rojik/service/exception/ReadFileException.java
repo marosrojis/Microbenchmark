@@ -1,5 +1,8 @@
 package cz.rojik.service.exception;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ReadFileException extends RuntimeException {
 
     public ReadFileException(String filename) {

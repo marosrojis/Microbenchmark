@@ -1,12 +1,7 @@
-/*
- * Copyright 2018 INVENTI Consulting, s.r.o.
- * http://www.inventi.cz
- */
 package cz.rojik.backend.exception;
 
 /**
- *
- * @author Lukáš Hamrle
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 public class ObjectNotFoundException extends RuntimeException {
 

@@ -1,5 +1,8 @@
 package cz.rojik.service.dto;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ErrorDTO {
 
     private String message;

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class BenchmarkSpecificationBuilder {
 
     public static Specification<BenchmarkEntity> matchQuery(Optional<Boolean> success, Optional<Long> userId) {

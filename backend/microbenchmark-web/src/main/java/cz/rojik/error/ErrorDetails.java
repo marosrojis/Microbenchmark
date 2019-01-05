@@ -1,7 +1,5 @@
 package cz.rojik.error;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
@@ -9,6 +7,9 @@ import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ErrorDetails {
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

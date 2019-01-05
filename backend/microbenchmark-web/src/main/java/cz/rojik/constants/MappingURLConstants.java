@@ -1,11 +1,10 @@
 package cz.rojik.constants;
+//                .simpSubscribeDestMatchers(MappingURLConstants.BENCHMARK_WEBSOCKET + "/**").permitAll()
 
 public class MappingURLConstants {
 
     public static final String API_PREFIX = "/api";
     public static final String ID_PARAM = "{id}";
-    public static final String KEY_PARAM = "{key}";
-    public static final String MAIN_PAGE = "/";
 
     // REST API //
 

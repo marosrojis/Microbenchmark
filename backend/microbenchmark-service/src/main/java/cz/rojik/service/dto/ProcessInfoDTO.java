@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ProcessInfoDTO {
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)

@@ -17,6 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Entity
 @SQLDelete(sql = "UPDATE mbmark_user SET archived = true WHERE id = ?")
 @Table(name = "mbmark_user", indexes = {

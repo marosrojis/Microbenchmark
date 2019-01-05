@@ -3,6 +3,9 @@ package cz.rojik.service.dto;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class LibrariesToChooseDTO {
 
     private String projectId;

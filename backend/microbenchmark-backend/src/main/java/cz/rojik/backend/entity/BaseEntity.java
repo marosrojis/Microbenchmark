@@ -8,6 +8,9 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 

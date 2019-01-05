@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @RestController("restBenchmarkController")
 @CrossOrigin(origins = "*")
 @RequestMapping(MappingURLConstants.BENCHMARK)

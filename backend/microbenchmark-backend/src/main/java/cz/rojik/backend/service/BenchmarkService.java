@@ -5,6 +5,9 @@ import cz.rojik.backend.dto.BenchmarkDTO;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public interface BenchmarkService {
 
     BenchmarkDTO getOne(Long id);

@@ -27,7 +27,7 @@ import java.util.Date;
 /**
  * General controller layer exception resolver.
  *
- * @author Marek Rojik [marek@rojik.cz]
+ * @author Marek Rojik [marek@rojik.cz] on 05. 01. 2019
  */
 @ControllerAdvice
 class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {

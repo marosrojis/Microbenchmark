@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Repository
 public interface MeasureMethodRepository extends BaseRepository<MeasureMethodEntity> {
 

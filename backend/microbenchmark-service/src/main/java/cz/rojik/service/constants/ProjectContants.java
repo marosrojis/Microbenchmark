@@ -1,5 +1,8 @@
 package cz.rojik.service.constants;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ProjectContants {
 
     public static final String PATH_DEFAULT_PROJECT     = "empty_project/";

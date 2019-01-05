@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * Base repository implementing soft delete.
- * @author Marek Rojik [marek@rojik.cz]
+ * @author Marek Rojik [marek@rojik.cz] on 05. 01. 2019
  *
  */
 @NoRepositoryBean

@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.Objects;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Entity
 @Table(
         name = "mbmark_property",

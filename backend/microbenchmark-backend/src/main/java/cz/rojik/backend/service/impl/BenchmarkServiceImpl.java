@@ -1,6 +1,6 @@
 package cz.rojik.backend.service.impl;
 
-import cz.rojik.backend.constants.ConfigConstants;
+import cz.rojik.backend.constants.DateTimeConstants;
 import cz.rojik.backend.dto.MeasureMethodDTO;
 import cz.rojik.backend.dto.BenchmarkDTO;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
@@ -27,10 +27,12 @@ import org.springframework.util.StringUtils;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Service("benchmarkServiceBackend")
 public class BenchmarkServiceImpl implements BenchmarkService {
 
@@ -80,7 +82,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         logger.debug("Save benchmark result {}", result);
 
         if (StringUtils.isEmpty(result.getName())) {
-            result.setName(result.getCreated().format(DateTimeFormatter.ofPattern(ConfigConstants.LOCAL_DATE_TIME_PATTERN)));
+            result.setName(result.getCreated().format(DateTimeFormatter.ofPattern(DateTimeConstants.LOCAL_DATE_TIME_PATTERN)));
         }
 
         BenchmarkEntity entity = benchmarkConverter.dtoToEntity(result);

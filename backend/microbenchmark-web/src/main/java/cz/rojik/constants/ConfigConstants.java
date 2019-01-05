@@ -1,4 +1,5 @@
 package cz.rojik.constants;
+//                .simpSubscribeDestMatchers(MappingURLConstants.BENCHMARK_WEBSOCKET + "/**").permitAll()
 
 public class ConfigConstants {
 

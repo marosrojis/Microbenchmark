@@ -3,6 +3,9 @@ package cz.rojik.service.dto;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ErrorInfoWithSourceCodeDTO {
 
     private List<ErrorInfoDTO> errors;

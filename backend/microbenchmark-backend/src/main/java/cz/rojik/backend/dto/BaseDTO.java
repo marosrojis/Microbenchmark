@@ -2,6 +2,9 @@ package cz.rojik.backend.dto;
 
 import java.io.Serializable;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public abstract class BaseDTO implements Serializable {
 
     protected Long id;

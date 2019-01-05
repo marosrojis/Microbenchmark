@@ -4,24 +4,26 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
-import cz.rojik.backend.constants.ConfigConstants;
+import cz.rojik.backend.constants.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class LocalTimeDeserializer extends StdScalarDeserializer<LocalTime> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LocalTimeDeserializer.class);
 
     //DateTimeFormatter is thread-safe
     private static final Collection<DateTimeFormatter> FORMATTERS = Collections.singletonList(
-            DateTimeFormatter.ofPattern(ConfigConstants.LOCAL_TIME_PATTERN)
+            DateTimeFormatter.ofPattern(DateTimeConstants.LOCAL_TIME_PATTERN)
     );
 
     private static final String NULL_VALUE = "null";

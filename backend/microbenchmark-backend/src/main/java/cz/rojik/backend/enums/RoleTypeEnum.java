@@ -1,18 +1,18 @@
-package cz.rojik.backend.entity;
+package cz.rojik.backend.enums;
 
 import java.io.Serializable;
 
 /**
- * Výčet možných licencí
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
-public enum RoleType implements Serializable {
-    USER(Values.ROLE_USER_VALUE), // ID - 1
-    ADMIN(Values.ROLE_ADMIN_VALUE), // ID - 2
+public enum RoleTypeEnum implements Serializable {
+    ADMIN(Values.ROLE_ADMIN_VALUE), // ID - 1
+    USER(Values.ROLE_USER_VALUE), // ID - 2
     DEMO(Values.ROLE_DEMO_VALUE); // ID - 3
 
     String userRole;
 
-    private RoleType(String userRole){
+    private RoleTypeEnum(String userRole){
         this.userRole = userRole;
     }
 
@@ -21,9 +21,9 @@ public enum RoleType implements Serializable {
     }
 
     public static String getRoleById(long id) {
-        if (id == 1) return RoleType.USER.getRoleType();
-        if (id == 2) return RoleType.ADMIN.getRoleType();
-        if (id == 3) return RoleType.DEMO.getRoleType();
+        if (id == 1) return RoleTypeEnum.ADMIN.getRoleType();
+        if (id == 2) return RoleTypeEnum.USER.getRoleType();
+        if (id == 3) return RoleTypeEnum.DEMO.getRoleType();
         return null;
     }
 

@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Objects;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Entity
 @SQLDelete(sql = "UPDATE mbmark_measure_method SET archived = true WHERE id = ?")
 @Table(name = "mbmark_measure_method")

@@ -1,5 +1,8 @@
 package cz.rojik.service.constants;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class OtherConstants {
 
     public static final String JAVA_PACKAGE_CLASS_REGEX = "^([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*([A-Z_$][a-zA-Z\\d_$]*)";

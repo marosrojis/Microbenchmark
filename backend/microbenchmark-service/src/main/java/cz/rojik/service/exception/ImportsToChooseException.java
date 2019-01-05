@@ -3,6 +3,9 @@ package cz.rojik.service.exception;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 public class ImportsToChooseException extends Exception {
 
     private String projectId;

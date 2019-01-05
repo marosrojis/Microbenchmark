@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 
+/**
+ * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ */
 @Configuration
 @EnableCaching
 public class CachingConfig {
