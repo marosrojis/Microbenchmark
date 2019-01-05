@@ -9,4 +9,8 @@ public class OtherConstants {
     public static final String LIBRARIES_CACHE = "libraries";
 
     public static final String IGNORE_CLASSES_CACHE = "ignoreClasses";
+
+    public static final String JMH_VERSION = "jmhVersion";
+
+    public static final String JAVA_VERSION = "javaVersion";
 }

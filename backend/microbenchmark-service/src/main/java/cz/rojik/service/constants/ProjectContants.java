@@ -30,5 +30,8 @@ public class ProjectContants {
 
     public static final String DOCKER_RESULT_FILE       = DOCKER_BENCHMARK_FOLDER + RESULT_JSON_FILE;
 
+    public static final String DEFAULT_JAVA_VERSION     = "1.8";
+
+    public static final String DEFAULT_JMH_VERSION      = "1.20";
 
 }

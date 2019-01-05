@@ -24,4 +24,8 @@ public class TemplateConstants {
 
     public static final String RESULT_JSON_FILE         = "config.resultFile";
 
+    public static final String JMH_VERSION              = "config.jmhVersion";
+
+    public static final String JAVA_VERSION             = "config.javaVersion";
+
 }

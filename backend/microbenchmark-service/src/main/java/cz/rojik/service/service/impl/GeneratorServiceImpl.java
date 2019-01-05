@@ -1,5 +1,9 @@
 package cz.rojik.service.service.impl;
 
+import cz.rojik.backend.dto.PropertiesDTO;
+import cz.rojik.backend.exception.EntityNotFoundException;
+import cz.rojik.backend.service.PropertiesService;
+import cz.rojik.service.constants.OtherConstants;
 import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.constants.TemplateConstants;
 import cz.rojik.service.dto.LibrariesDTO;
@@ -38,6 +42,9 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Autowired
     private PathProperties pathProperties;
+
+    @Autowired
+    private PropertiesService propertiesService;
 
     @Override
     public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
@@ -101,32 +108,6 @@ public class GeneratorServiceImpl implements GeneratorService {
         return content;
     }
 
-    private String replaceTemplateMark(String content, String templateMark, String text) {
-        logger.trace("Replace template mark {} with content {}", templateMark, text);
-        content = content.replaceAll(StringUtils.insertBracket(templateMark), text);
-        return content;
-    }
-
-    private String replaceTestMethods(String content, List<String> testMethods) {
-        logger.trace("Replace test methods {}", testMethods);
-        StringBuilder sb = new StringBuilder();
-        int i = 1;
-        for (String method : testMethods) {
-            sb.append("\t")
-                    .append(TemplateConstants.BENCHMARK_ANOTATE)
-                    .append("\n\t")
-                    .append(TemplateConstants.DECLARE_METHOD)
-                    .append(i)
-                    .append("() {\n\t\t")
-                    .append(method)
-                    .append("\n\t}\n");
-            i++;
-        }
-
-        content = replaceTemplateMark(content, TemplateConstants.TEST_METHODS, sb.toString());
-        return content;
-    }
-
     private ImportsResult getAllImports(TemplateDTO template) {
         logger.trace("Find all libraries to import {}", template);
         ImportsResult imports = new ImportsResult();
@@ -179,6 +160,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         File finalFile = new File(destDir.getPath() + File.separatorChar + "pom.xml");
 
+        fileContent = replaceVariablesInProjectPOM(fileContent);
         try {
             logger.debug("Copy default project folder to new folder {}", generatedID);
             FileUtils.writeStringToFile(finalFile, fileContent, StandardCharsets.UTF_8);
@@ -199,5 +181,54 @@ public class GeneratorServiceImpl implements GeneratorService {
         String output = sb.toString();
 
         return output;
+    }
+
+    private String replaceTestMethods(String content, List<String> testMethods) {
+        logger.trace("Replace test methods {}", testMethods);
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        for (String method : testMethods) {
+            sb.append("\t")
+                    .append(TemplateConstants.BENCHMARK_ANOTATE)
+                    .append("\n\t")
+                    .append(TemplateConstants.DECLARE_METHOD)
+                    .append(i)
+                    .append("() {\n\t\t")
+                    .append(method)
+                    .append("\n\t}\n");
+            i++;
+        }
+
+        content = replaceTemplateMark(content, TemplateConstants.TEST_METHODS, sb.toString());
+        return content;
+    }
+
+    private String replaceVariablesInProjectPOM(String fileContent) {
+        logger.trace("Replace variable in project POM.xml file.");
+        String javaVersion = getProperty(OtherConstants.JAVA_VERSION, ProjectContants.DEFAULT_JAVA_VERSION);
+        String jmhVersion = getProperty(OtherConstants.JMH_VERSION, ProjectContants.DEFAULT_JMH_VERSION);
+
+        fileContent = replaceTemplateMark(fileContent, TemplateConstants.JAVA_VERSION, javaVersion);
+        fileContent = replaceTemplateMark(fileContent, TemplateConstants.JMH_VERSION, jmhVersion);
+
+        return fileContent;
+    }
+
+    private String replaceTemplateMark(String content, String templateMark, String text) {
+        logger.trace("Replace template mark {} with content {}", templateMark, text);
+        content = content.replaceAll(StringUtils.insertBracket(templateMark), text);
+        return content;
+    }
+
+    private String getProperty(String keyProperty, String defaultValue) {
+        String value;
+        try {
+            PropertiesDTO property = propertiesService.getProperties(keyProperty);
+            value = property.getValue();
+        } catch (EntityNotFoundException e) {
+            logger.debug("Property {} is not in database, set default value {}.", keyProperty, defaultValue);
+            value = defaultValue;
+        }
+        return value;
     }
 }

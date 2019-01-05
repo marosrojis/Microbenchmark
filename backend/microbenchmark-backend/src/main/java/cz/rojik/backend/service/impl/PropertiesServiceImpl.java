@@ -25,7 +25,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 
     @Override
     public PropertiesDTO getProperties(String key) {
-        logger.trace("Get properties by key {} from database.", key);
+        logger.trace("Get property by key {} from database.", key);
 
         PropertiesEntity entity = propertiesRepository.getFirstByKey(key);
         if (entity == null) {

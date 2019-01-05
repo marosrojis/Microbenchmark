@@ -10,8 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jmh.version>1.20</jmh.version>
-        <javac.target>1.8</javac.target>
+        <jmh.version>[config.jmhVersion]</jmh.version>
+        <javac.target>[config.javaVersion]</javac.target>
         <uberjar.name>Microbenchmark</uberjar.name>
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <buildDirectory>${project.basedir}/targetqweqw</buildDirectory>
