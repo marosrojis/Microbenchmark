@@ -13,10 +13,10 @@ import java.util.Objects;
 
 @Entity
 @Table(
-        name = "mbmark_properties",
+        name = "mbmark_property",
         uniqueConstraints = @UniqueConstraint(columnNames = {"key"}),
         indexes = @Index(columnList = "key"))
-public class PropertiesEntity {
+public class PropertyEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class PropertiesEntity {
         return id;
     }
 
-    public PropertiesEntity setId(Long id) {
+    public PropertyEntity setId(Long id) {
         this.id = id;
         return this;
     }
@@ -44,7 +44,7 @@ public class PropertiesEntity {
         return key;
     }
 
-    public PropertiesEntity setKey(String key) {
+    public PropertyEntity setKey(String key) {
         this.key = key;
         return this;
     }
@@ -53,7 +53,7 @@ public class PropertiesEntity {
         return value;
     }
 
-    public PropertiesEntity setValue(String value) {
+    public PropertyEntity setValue(String value) {
         this.value = value;
         return this;
     }
@@ -71,7 +71,7 @@ public class PropertiesEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PropertiesEntity that = (PropertiesEntity) o;
+        PropertyEntity that = (PropertyEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);

@@ -1,8 +1,8 @@
 package cz.rojik.service.service.impl;
 
-import cz.rojik.backend.dto.PropertiesDTO;
+import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
-import cz.rojik.backend.service.PropertiesService;
+import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
 import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.constants.TemplateConstants;
@@ -44,7 +44,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private PathProperties pathProperties;
 
     @Autowired
-    private PropertiesService propertiesService;
+    private PropertyService propertiesService;
 
     @Override
     public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
@@ -223,7 +223,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private String getProperty(String keyProperty, String defaultValue) {
         String value;
         try {
-            PropertiesDTO property = propertiesService.getProperties(keyProperty);
+            PropertyDTO property = propertiesService.getByKey(keyProperty);
             value = property.getValue();
         } catch (EntityNotFoundException e) {
             logger.debug("Property {} is not in database, set default value {}.", keyProperty, defaultValue);

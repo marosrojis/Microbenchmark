@@ -3,9 +3,9 @@ package cz.rojik.service.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import cz.rojik.backend.dto.PropertiesDTO;
+import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
-import cz.rojik.backend.service.PropertiesService;
+import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
@@ -39,7 +39,7 @@ public class CachingDataServiceImpl implements CachingDataService {
     private static final String IGNORE_CLASS_FILE = "importer_files/ignore_class.txt";
 
     @Autowired
-    private PropertiesService propertiesService;
+    private PropertyService propertiesService;
 
     @Cacheable(OtherConstants.LIBRARIES_CACHE)
     @Override
@@ -49,10 +49,10 @@ public class CachingDataServiceImpl implements CachingDataService {
         Gson gson = new GsonBuilder().create();
         Type type = new TypeToken<HashMap<String, List<String>>>(){}.getType();
         HashMap<String, List<String>> libraries;
-        PropertiesDTO properties;
+        PropertyDTO properties;
 
         try {
-            properties = propertiesService.getProperties(OtherConstants.LIBRARIES_CACHE);
+            properties = propertiesService.getByKey(OtherConstants.LIBRARIES_CACHE);
         } catch (EntityNotFoundException e) {
             logger.debug("Property '{}' was not found in database", OtherConstants.LIBRARIES_CACHE);
 
@@ -72,10 +72,10 @@ public class CachingDataServiceImpl implements CachingDataService {
         logger.trace("Read file with classes to ignore import");
 
         Set<String> ignoreClasses;
-        PropertiesDTO properties;
+        PropertyDTO properties;
 
         try {
-            properties = propertiesService.getProperties(OtherConstants.IGNORE_CLASSES_CACHE);
+            properties = propertiesService.getByKey(OtherConstants.IGNORE_CLASSES_CACHE);
         } catch (EntityNotFoundException e) {
             logger.debug("Property '{}' was not found in database", OtherConstants.IGNORE_CLASSES_CACHE);
             logger.debug("Get ignore classes from file.");

@@ -2,8 +2,8 @@ package cz.rojik.service.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import cz.rojik.backend.dto.PropertiesDTO;
-import cz.rojik.backend.service.PropertiesService;
+import cz.rojik.backend.dto.PropertyDTO;
+import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
@@ -42,7 +42,7 @@ public class ImporterServiceImpl implements ImporterService {
     private CachingDataService cachingDataService;
 
     @Autowired
-    private PropertiesService propertiesService;
+    private PropertyService propertyService;
 
     @Override
     public ImportsResult getLibrariesToImport(ImportsResult imports, String input) {
@@ -88,13 +88,13 @@ public class ImporterServiceImpl implements ImporterService {
     }
 
     @Override
-    public PropertiesDTO processFolderWithJars(String folder) {
+    public PropertyDTO processFolderWithJars(String folder) {
         Map<String, List<String>> classes = readFolderWithJar(folder);
 
         Gson gson = new GsonBuilder().create();
         String result = gson.toJson(classes);
 
-        PropertiesDTO properties = propertiesService.updateProperties(new PropertiesDTO()
+        PropertyDTO properties = propertyService.updateProperty(new PropertyDTO()
                 .setKey(OtherConstants.LIBRARIES_CACHE)
                 .setValue(result)
         );

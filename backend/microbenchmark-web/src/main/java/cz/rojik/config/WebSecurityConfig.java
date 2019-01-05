@@ -85,6 +85,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// LIBRARY
 				.mvcMatchers(MappingURLConstants.LIBRARY_LIBRARIES).hasRole(RoleType.ADMIN.getRoleType())
 
+				// PROPERTY
+				.mvcMatchers(MappingURLConstants.PROPERTY).hasRole(RoleType.ADMIN.getRoleType())
+				.mvcMatchers(MappingURLConstants.PROPERTY + "/**").hasRole(RoleType.ADMIN.getRoleType())
+
 				// PROJECT
 				.mvcMatchers(HttpMethod.POST, MappingURLConstants.PROJECT + "/" + MappingURLConstants.PROJECT_CREATE).not().hasRole(RoleType.DEMO.getRoleType())
 				.mvcMatchers(HttpMethod.POST, MappingURLConstants.PROJECT + "/" + MappingURLConstants.PROJECT_IMPORT_LIBRARIES).not().hasRole(RoleType.DEMO.getRoleType())

@@ -4,6 +4,7 @@ public class MappingURLConstants {
 
     public static final String API_PREFIX = "/api";
     public static final String ID_PARAM = "{id}";
+    public static final String KEY_PARAM = "{key}";
     public static final String MAIN_PAGE = "/";
 
     // REST API //
@@ -24,6 +25,9 @@ public class MappingURLConstants {
 
     // BENCHMARK_STATE
     public static final String BENCHMARK_STATE = API_PREFIX + "/benchmarkState";
+
+    // PROPERTY
+    public static final String PROPERTY = API_PREFIX + "/property";
 
     // IMPORT LIBRARIES
     public static final String LIBRARY_LIBRARIES = API_PREFIX + "/library";

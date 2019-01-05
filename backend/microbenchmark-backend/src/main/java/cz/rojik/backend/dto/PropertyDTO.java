@@ -1,18 +1,27 @@
 package cz.rojik.backend.dto;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
-public class PropertiesDTO {
+public class PropertyDTO {
 
     private Long id;
+
+    @NotNull
+    @NotBlank
     private String key;
+
+    @NotNull
+    @NotBlank
     private String value;
 
     public Long getId() {
         return id;
     }
 
-    public PropertiesDTO setId(Long id) {
+    public PropertyDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -21,7 +30,7 @@ public class PropertiesDTO {
         return key;
     }
 
-    public PropertiesDTO setKey(String key) {
+    public PropertyDTO setKey(String key) {
         this.key = key;
         return this;
     }
@@ -30,7 +39,7 @@ public class PropertiesDTO {
         return value;
     }
 
-    public PropertiesDTO setValue(String value) {
+    public PropertyDTO setValue(String value) {
         this.value = value;
         return this;
     }
@@ -48,7 +57,7 @@ public class PropertiesDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PropertiesDTO that = (PropertiesDTO) o;
+        PropertyDTO that = (PropertyDTO) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);
