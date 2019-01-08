@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * All benchmark states which could to happen
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 public enum BenchmarkStateTypeEnum implements Serializable {

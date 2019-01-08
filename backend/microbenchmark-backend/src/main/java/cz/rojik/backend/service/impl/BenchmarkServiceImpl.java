@@ -154,6 +154,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         return benchmarkConverter.entityToDTO(entity);
     }
 
+    /**
+     * Find benchmark in database based on logged user and his role.
+     * If user has role 'User' od 'Demo' then add to SQL query user_id parameter.
+     * @param id benchmark id
+     * @return benchmark object
+     */
     private Optional<BenchmarkEntity> findBenchmarkById(Long id) {
         Optional<BenchmarkEntity> benchmarkEntity;
         if (SecurityHelper.isLoggedUserAdmin()) {

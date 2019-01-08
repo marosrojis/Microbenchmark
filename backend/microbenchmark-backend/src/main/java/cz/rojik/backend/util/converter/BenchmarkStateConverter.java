@@ -24,6 +24,11 @@ public class BenchmarkStateConverter {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Convert {@link BenchmarkStateEntity} to {@link BenchmarkStateDTO} object
+     * @param entity benchmark state entity object
+     * @return {@link BenchmarkStateDTO} object
+     */
     public BenchmarkStateDTO entityToDTO(BenchmarkStateEntity entity) {
         logger.trace("Convert BenchmarkState entity to DTO object: {}", entity);
 
@@ -44,6 +49,11 @@ public class BenchmarkStateConverter {
         return result;
     }
 
+    /**
+     * Convert {@link BenchmarkStateDTO} to {@link BenchmarkStateEntity} object
+     * @param dto benchmark state dto object to convert
+     * @return {@link BenchmarkStateEntity} object
+     */
     public BenchmarkStateEntity dtoToEntity(BenchmarkStateDTO dto) {
         logger.trace("Convert BenchmarkState DTO to entity object: {}", dto);
 
@@ -51,6 +61,11 @@ public class BenchmarkStateConverter {
         return entity;
     }
 
+    /**
+     * Convert {@link BenchmarkStateDTO} to {@link BenchmarkStateEntity} object
+     * @param dto benchmark state dto object to convert
+     * @return {@link BenchmarkStateEntity} object
+     */
     public BenchmarkStateEntity dtoToEntity(BenchmarkStateDTO dto, BenchmarkStateEntity entity) {
         logger.trace("Convert BenchmarkState DTO to entity object: {}", dto);
 

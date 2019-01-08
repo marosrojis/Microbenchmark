@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Update user with data from {@link UserDTO}
 	 * @param user {@link UserDTO} with data to update new user
-	 * @return true if the user was successfully updated
+	 * @return successfully updated user
 	 */
 	@Transactional
 	@Override
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Method that returns user by its email address
      * @param email the email address to find from
-     * @return the {@link UserEntity} found
+     * @return the {@link UserDTO} found
      */
     @Override
     public UserDTO getByEmail(String email) {
@@ -150,10 +150,6 @@ public class UserServiceImpl implements UserService {
         return userConverter.entityToDTO(user.get(), true);
     }
 
-    /**
-     * Creating and returning list of {@link UserDTO}  from user with Admin role
-     * @return list of {@link UserDTO} from user with admin role
-     */
     @Override
     public List<UserDTO> getAll(Optional<Boolean> enabled) {
     	logger.trace("Get all users (requested user: {})", SecurityHelper.getCurrentUser());
@@ -193,6 +189,31 @@ public class UserServiceImpl implements UserService {
 		logger.debug("User with ID {} was successfully deleted", id);
 	}
 
+	/**
+	 * Getting {@link UserDetails} from username.
+	 * @param username to find from
+	 * @exception UsernameNotFoundException when the user was not found
+	 * @return the {@link UserDetails}
+	 */
+	@Transactional(readOnly=true)
+	@Override
+	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+		logger.trace("Get user by username {}", username);
+		String email = username;
+		UserDTO user = getByEmail(email);
+
+		if(user == null) {
+			throw new UsernameNotFoundException("Username not found");
+		}
+
+		return user;
+	}
+
+	/**
+	 * Create user and assign him roles based on registration form
+	 * @param user registration user form
+	 * @return new user entity
+	 */
 	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm user) {
     	logger.trace("Create and save new user {}", user);
         UserEntity entity = new UserEntity(user.getFirstname(), user.getLastname(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
@@ -207,6 +228,7 @@ public class UserServiceImpl implements UserService {
 
         entity.setRoles(roles);
 
+		// if user account is created by admin, automatic enable account
         if (SecurityHelper.isLoggedUserAdmin()) {
             entity.setEnabled(true);
         }
@@ -231,25 +253,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * Getting {@link UserDetails} from username.
-	 * @param username to find from
-	 * @exception UsernameNotFoundException when the user was not found
-	 * @return the {@link UserDetails}
+	 * Find user by ID. If logged user has not 'Admin' role, check if user ID is equals with logged user ID
+	 * @param id user id
+	 * @return user entity object
 	 */
-    @Transactional(readOnly=true)
-	@Override
-	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-    	logger.trace("Get user by username {}", username);
-		String email = username;
-		UserDTO user = getByEmail(email);
-
-		if(user == null) {
-			throw new UsernameNotFoundException("Username not found");
-		}
-
-		return user;
-	}
-
 	private Optional<UserEntity> findById(Long id) {
     	if (!SecurityHelper.isLoggedUserAdmin() && !id.equals(SecurityHelper.getCurrentUserId())) {
 			throw new EntityNotFoundException(String.format("User with ID %s was not found.", id));
@@ -258,6 +265,12 @@ public class UserServiceImpl implements UserService {
     	return entity;
 	}
 
+	/**
+	 * Method for validate role for created/updated user.
+	 * User must not have role 'User' and 'Demo' at the same time.
+	 * @param roles role to set
+	 * @return ok/fail validation
+	 */
 	private boolean validateRoles(Set<RoleEntity> roles) {
     	logger.trace("Validate roles {}", roles);
 		List<RoleEntity> roleTypes = roles.stream().filter(r -> r.getType().equals(RoleTypeEnum.USER.getRoleType()) || r.getType().equals(RoleTypeEnum.DEMO.getRoleType())).collect(Collectors.toList());

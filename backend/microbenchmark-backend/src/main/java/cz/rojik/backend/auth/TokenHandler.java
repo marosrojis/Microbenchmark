@@ -26,6 +26,10 @@ public class TokenHandler {
 
 	private final Mac hmac;
 
+	/**
+	 * Constructor which create handler for generate token
+	 * @param secretKey secret key using for generate token
+	 */
 	public TokenHandler(byte[] secretKey) {
 		try {
 			hmac = Mac.getInstance(HMAC_ALGO);
@@ -35,6 +39,11 @@ public class TokenHandler {
 		}
 	}
 
+	/**
+	 * Parse user from giving user's token
+	 * @param token user's token
+	 * @return parsed user from token
+	 */
 	public UserDTO parseUserFromToken(String token) {
 		final String[] parts = token.split(SEPARATOR_SPLITTER);
 		if (parts.length == 2 && parts[0].length() > 0 && parts[1].length() > 0) {
@@ -55,6 +64,11 @@ public class TokenHandler {
 		return null;
 	}
 
+	/**
+	 * Create Bearer token for user
+	 * @param user user object to encode to token
+	 * @return user's token
+	 */
 	public String createTokenForUser(UserDTO user) {
 		byte[] userBytes = toJSON(new Login(user));
 		byte[] hash = createHmac(userBytes);
@@ -65,6 +79,11 @@ public class TokenHandler {
 		return sb.toString();
 	}
 
+	/**
+	 * Decode user from JSON
+	 * @param userBytes array of user's information
+	 * @return user object
+	 */
 	private UserDTO fromJSON(final byte[] userBytes) {
 		try {
 			return new UserDTO(new ObjectMapper().readValue(new ByteArrayInputStream(userBytes), Login.class));
@@ -73,14 +92,11 @@ public class TokenHandler {
 		}
 	}
 
-	private byte[] toJSON(UserDTO user) {
-		try {
-			return new ObjectMapper().writeValueAsBytes(user);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
+	/**
+	 * Generate array of byte from user login
+	 * @param login user login
+	 * @return array of byte contains user's information
+	 */
 	private byte[] toJSON(Login login) {
 		try {
 			return new ObjectMapper().writeValueAsBytes(login);
@@ -89,15 +105,29 @@ public class TokenHandler {
 		}
 	}
 
+	/**
+	 * Encode content to Base64
+	 * @param content content to encode
+	 * @return encode string
+	 */
 	private String toBase64(byte[] content) {
 		return DatatypeConverter.printBase64Binary(content);
 	}
 
+	/**
+	 * Decode content from Base64
+	 * @param content Base64 content
+	 * @return array of byte contains user information
+	 */
 	private byte[] fromBase64(String content) {
 		return DatatypeConverter.parseBase64Binary(content);
 	}
 
-	// synchronized to guard internal hmac object
+	/**
+	 * Generate unique hash. Synchronized to guard internal hmac object
+	 * @param content content to hash
+	 * @return generated hash
+	 */
 	private synchronized byte[] createHmac(byte[] content) {
 		return hmac.doFinal(content);
 	}

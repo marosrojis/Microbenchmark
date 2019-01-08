@@ -30,6 +30,11 @@ public class BenchmarkConverter {
 
     private static final String JAR_FILE_NAME = "Microbenchmark.jar";
 
+    /**
+     * Convert {@link BenchmarkEntity} to {@link BenchmarkDTO} object
+     * @param entity benchmark object entity
+     * @return {@link BenchmarkDTO} object
+     */
     public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
         logger.trace("Convert Benchmark entity to DTO object: {}", entity);
         BenchmarkDTO result = new BenchmarkDTO();
@@ -71,6 +76,11 @@ public class BenchmarkConverter {
         return result;
     }
 
+    /**
+     * Convert {@link BenchmarkDTO} to {@link BenchmarkEntity} object
+     * @param dto benchmark DTO object
+     * @return {@link BenchmarkEntity} object
+     */
     public BenchmarkEntity dtoToEntity(BenchmarkDTO dto) {
         logger.trace("Convert DTO to Entity: {}", dto);
         BenchmarkEntity entity = new BenchmarkEntity();

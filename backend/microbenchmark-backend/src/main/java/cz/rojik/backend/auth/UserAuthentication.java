@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
+ * Class contains information about logged user.
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 public class UserAuthentication implements Authentication {

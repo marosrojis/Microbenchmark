@@ -30,6 +30,11 @@ public class TokenAuthenticationService {
 		tokenHandler = new TokenHandler(DatatypeConverter.parseBase64Binary(secret));
 	}
 
+	/**
+	 * Create authentication to user
+	 * @param user logged user
+	 * @return user with token
+	 */
 	public LoginDTO createAuthentication(UserDTO user) {
 		long expires = System.currentTimeMillis() + TEN_DAYS;
 		user.setExpires(expires);
@@ -37,11 +42,20 @@ public class TokenAuthenticationService {
 		return new LoginDTO(token, expires, user);
 	}
 
+	/**
+	 * Get user authentication (Spring security auth) based on Http request
+	 * @return user authentication
+	 */
 	public Authentication getAuthentication(HttpServletRequest request) {
 		final String token = request.getHeader(AUTH_HEADER_NAME);
         return getAuthentication(token);
 	}
 
+	/**
+	 * Get user authentication (Spring security auth) based on user token
+	 * @param token user's token
+	 * @return user authentication
+	 */
 	public Authentication getAuthentication(String token) {
 		if (token != null) {
 			final UserDTO user = tokenHandler.parseUserFromToken(token);

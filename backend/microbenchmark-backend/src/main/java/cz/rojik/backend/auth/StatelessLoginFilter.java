@@ -63,7 +63,6 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 		final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
 
 		LoginDTO loginDTO = tokenAuthenticationService.createAuthentication(authenticatedUser);
-//		coworkUserDetailService.update(authenticatedUser);
 
 		response.setHeader("Content-Type", "application/json");
 		ObjectMapper mapper = new ObjectMapper();

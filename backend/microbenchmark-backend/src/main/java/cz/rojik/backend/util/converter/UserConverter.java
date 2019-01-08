@@ -20,6 +20,12 @@ public class UserConverter {
 
     private static Logger logger = LoggerFactory.getLogger(UserConverter.class);
 
+    /**
+     * Convert {@link UserEntity} to {@link UserDTO} object
+     * @param entity user entity object
+     * @param setRoles if convert object must have set roles from entity.
+     * @return {@link UserDTO} converted object
+     */
     public UserDTO entityToDTO(UserEntity entity, boolean setRoles) {
         logger.trace("Convert User entity to DTO object (setRoles = {}): {} ", setRoles, entity);
 
@@ -42,6 +48,11 @@ public class UserConverter {
         return user;
     }
 
+    /**
+     * Convert {@link UserDTO} to {@link UserEntity} object
+     * @param user user dto object
+     * @return {@link UserEntity} object
+     */
     public UserEntity dtoToEntity(UserDTO user) {
         logger.trace("Create entiy from develop user {}", user);
         UserEntity entity = new UserEntity();
@@ -57,6 +68,12 @@ public class UserConverter {
         return entity;
     }
 
+    /**
+     * Map new user values to old user {@link UserEntity}
+     * @param newState new user state
+     * @param previousState object to update with new user values
+     * @return updated user values
+     */
     public UserEntity mapToEntityUpdate(UserDTO newState, UserEntity previousState) {
         logger.trace("Map user dto to entity update, newState = {},\n previousState = {}", newState, previousState);
         if (!StringUtils.equals(newState.getFirstname(), previousState.getFirstname())) {

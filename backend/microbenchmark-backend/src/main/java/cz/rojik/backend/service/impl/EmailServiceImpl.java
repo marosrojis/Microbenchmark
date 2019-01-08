@@ -41,6 +41,13 @@ public class EmailServiceImpl implements EmailService {
         sendSimpleMessage(to, "Your account is active.", text, true);
     }
 
+    /**
+     * Create and send email to specific email
+     * @param to user email
+     * @param subject email subject
+     * @param text text of email
+     * @param sendBCC if email has to been sent to blind carbon copy user
+     */
     private void sendSimpleMessage(String to, String subject, String text, boolean sendBCC) {
         logger.trace("Send email to " + to + " with subject " + subject);
         SimpleMailMessage message = new SimpleMailMessage();

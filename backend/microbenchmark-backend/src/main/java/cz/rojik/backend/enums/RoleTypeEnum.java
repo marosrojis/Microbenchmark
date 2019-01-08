@@ -3,11 +3,24 @@ package cz.rojik.backend.enums;
 import java.io.Serializable;
 
 /**
+ * All basic roles
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 public enum RoleTypeEnum implements Serializable {
+
+    /**
+     * The most powerful role. User with this role can do it everything.
+     */
     ADMIN(Values.ROLE_ADMIN_VALUE), // ID - 1
+
+    /**
+     * Role for basic user. User with this role can run benchmark and see to all his completed benchmarks and results.
+     */
     USER(Values.ROLE_USER_VALUE), // ID - 2
+
+    /**
+     * Role only for view completed benchmarks. User with this role can only view completed benchmarks. He cannot run benchmark.
+     */
     DEMO(Values.ROLE_DEMO_VALUE); // ID - 3
 
     String userRole;

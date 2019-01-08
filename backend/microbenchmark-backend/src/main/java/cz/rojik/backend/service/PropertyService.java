@@ -10,15 +10,42 @@ import java.util.List;
  */
 public interface PropertyService {
 
+    /**
+     * Get property based on ID
+     * @param id property ID
+     * @return property object
+     */
     PropertyDTO getOne(Long id);
 
-    PropertyDTO getByKey(String key) throws EntityNotFoundException;
+    /***
+     * Get property based on key
+     * @param key property key
+     * @return property object
+     */
+    PropertyDTO getByKey(String key);
 
+    /**
+     * Get all properties from database
+     * @return list of properties
+     */
     List<PropertyDTO> getAll();
 
+    /**
+     * Update property in database
+     * @param property property with new values
+     * @return updated property
+     */
     PropertyDTO updateProperty(PropertyDTO property);
 
+    /**
+     * Delete property based on ID
+     * @param id property ID
+     */
     void delete(Long id);
 
+    /**
+     * Delete property based on key
+     * @param key property key
+     */
     void deleteByKey(String key);
 }
