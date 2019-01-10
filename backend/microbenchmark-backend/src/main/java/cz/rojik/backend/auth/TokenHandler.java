@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -55,7 +56,12 @@ public class TokenHandler {
 				boolean validHash = Arrays.equals(createHmac(userBytes), hash);
 				if (validHash) {
 					final UserDTO user = fromJSON(userBytes);
+					if (new Date().getTime() < user.getExpires()) {
 						return user;
+					}
+					else {
+						throw new InvalidBearerTokenException("Invalid bearer token - token is expired: " + token);
+					}
 				}
 			} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
                 throw new InvalidBearerTokenException("Invalid bearer token: " + token);
