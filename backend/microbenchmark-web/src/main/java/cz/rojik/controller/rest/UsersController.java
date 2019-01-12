@@ -41,8 +41,7 @@ public class UsersController {
 
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
-        UserDTO user;
-        user = userService.getUser(id);
+        UserDTO user = userService.getUser(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

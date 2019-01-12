@@ -1,4 +1,4 @@
-package cz.rojik.util.serialization;
+package cz.rojik.backend.util.serialization;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;

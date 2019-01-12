@@ -12,7 +12,7 @@ import cz.rojik.service.dto.TemplateDTO;
 import cz.rojik.service.exception.BenchmarkRunException;
 import cz.rojik.service.service.ProjectService;
 import cz.rojik.service.utils.FileUtils;
-import cz.rojik.util.serialization.LocalDateTimeGsonSerializer;
+import cz.rojik.backend.util.serialization.LocalDateTimeGsonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

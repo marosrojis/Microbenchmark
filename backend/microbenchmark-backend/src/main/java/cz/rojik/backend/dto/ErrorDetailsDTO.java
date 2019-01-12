@@ -1,4 +1,4 @@
-package cz.rojik.error;
+package cz.rojik.backend.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
-public class ErrorDetails {
+public class ErrorDetailsDTO {
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -18,7 +18,7 @@ public class ErrorDetails {
     private String message;
     private String details;
 
-    public ErrorDetails(LocalDateTime timestamp, String message, String details) {
+    public ErrorDetailsDTO(LocalDateTime timestamp, String message, String details) {
         super();
         this.timestamp = timestamp;
         this.message = message;

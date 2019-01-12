@@ -5,11 +5,14 @@ package cz.rojik.backend.exception;
  */
 public class InvalidBearerTokenException extends RuntimeException {
 
-    public InvalidBearerTokenException() {
-        super();
+    private String details;
+
+    public InvalidBearerTokenException(String message, String details) {
+        super(message);
+        this.details = details;
     }
 
-    public InvalidBearerTokenException(String message) {
-        super(message);
+    public String getDetails() {
+        return details;
     }
 }

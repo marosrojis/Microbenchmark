@@ -60,11 +60,11 @@ public class TokenHandler {
 						return user;
 					}
 					else {
-						throw new InvalidBearerTokenException("Invalid bearer token - token is expired: " + token);
+						throw new InvalidBearerTokenException("Invalid bearer token", "Token is expired");
 					}
 				}
 			} catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
-                throw new InvalidBearerTokenException("Invalid bearer token: " + token);
+                throw new InvalidBearerTokenException("Invalid bearer token", "Token is not validate");
 			}
 		}
 		return null;
