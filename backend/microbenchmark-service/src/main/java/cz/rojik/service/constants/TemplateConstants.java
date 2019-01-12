@@ -5,8 +5,6 @@ package cz.rojik.service.constants;
  */
 public class TemplateConstants {
 
-    public static final String JMH_LIBRARIES            = "config.JMH_libraries";
-
     public static final String LIBRARIES                = "config.libraries";
 
     public static final String WARMUP                   = "config.warmup";

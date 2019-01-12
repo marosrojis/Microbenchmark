@@ -88,7 +88,7 @@ public class CachingDataServiceImpl implements CachingDataService {
         }
 
         logger.debug("Get ignore classes properties from database.");
-        ignoreClasses = new HashSet<>(Arrays.asList(properties.getValue().split(";")));
+        ignoreClasses = new HashSet<>(Arrays.asList(properties.getValue().split(OtherConstants.PACKAGE_IGNORE_CLASSES_SEPARATOR)));
         return ignoreClasses;
     }
 

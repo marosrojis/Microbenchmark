@@ -28,6 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
 /**
@@ -102,6 +103,12 @@ public class ImporterServiceImpl implements ImporterService {
                 .setValue(result)
         );
 
+        String ignoreClasses = getIgnoreClasses(classes);
+        propertyService.updateProperty(new PropertyDTO()
+                .setKey(OtherConstants.IGNORE_CLASSES_CACHE)
+                .setValue(ignoreClasses)
+        );
+
         cachingDataService.evictLibrariesCacheValues();
 
         return properties;
@@ -149,5 +156,17 @@ public class ImporterServiceImpl implements ImporterService {
 
         }
         return classes;
+    }
+
+    private String getIgnoreClasses(Map<String, List<String>> classes) {
+        Set<String> ignoreClasses = new HashSet<>();
+        classes.forEach((key, value) -> {
+            if (value.contains(OtherConstants.PACKAGE_IGNORE_CLASSES)) {
+                ignoreClasses.add(key);
+            }
+        });
+
+        String result = ignoreClasses.stream().collect(Collectors.joining(OtherConstants.PACKAGE_IGNORE_CLASSES_SEPARATOR));
+        return result;
     }
 }
