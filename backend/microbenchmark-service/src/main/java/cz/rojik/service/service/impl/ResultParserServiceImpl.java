@@ -66,6 +66,13 @@ public class ResultParserServiceImpl implements ResultParserService {
 
     // PRIVATE
 
+    /**
+     * Get result from generated JSON file from JMH project.
+     * File with result is in JSON format.
+     * Method parses only one given measured method.
+     * @param element measured method
+     * @return parsed result of one method
+     */
     private MicrobenchmarkResultDTO parseBenchmarkResult(JsonElement element) {
         JsonObject object = (JsonObject) element;
         String name = object.get("benchmark").getAsString();
@@ -85,6 +92,11 @@ public class ResultParserServiceImpl implements ResultParserService {
         return new MicrobenchmarkResultDTO(name, warmupIterations, measurementIterations, unit, measureValues, score, error);
     }
 
+    /**
+     * Read file with result of microbenchmark project.
+     * @param projectId generated project ID
+     * @return content of result file
+     */
     private String readResultFile(String projectId) {
         logger.trace("Read result file for project {}", projectId);
         File file = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);

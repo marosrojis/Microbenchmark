@@ -3,6 +3,7 @@ package cz.rojik.service.exception;
 import cz.rojik.service.dto.ErrorInfoWithSourceCodeDTO;
 
 /**
+ * Exception is thrown when maven compilation is failed
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 public class MavenCompileException extends RuntimeException {

@@ -9,7 +9,20 @@ import cz.rojik.service.utils.pojo.ImportsResult;
  */
 public interface ImporterService {
 
+    /**
+     * Analyze code from user and find all libraries to import and libraries needs to choose
+     * @param imports already found libraries to import
+     * @param input code to analyze
+     * @return libraries to import
+     */
     ImportsResult getLibrariesToImport(ImportsResult imports, String input);
 
+    /**
+     * Find all classes with package name from JAR files.
+     * Save libraries and list of ignore classes to database.
+     * @param folder folder contains all JAR files to analyze
+     * @return classes with packages found in JAR files
+     * @throws ReadFileException problem with reading JAR file in specified folder
+     */
     PropertyDTO processFolderWithJars(String folder) throws ReadFileException;
 }

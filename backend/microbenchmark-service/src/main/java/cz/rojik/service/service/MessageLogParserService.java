@@ -8,5 +8,11 @@ import cz.rojik.service.dto.TemplateDTO;
  */
 public interface MessageLogParserService {
 
+    /**
+     * Parse important messages from JMH log (e.g iterate, warmup, measurement, result).
+     * @param message log message
+     * @param template code to measure
+     * @return object contains code to measure
+     */
     ProcessInfoDTO parseMessage(String message, TemplateDTO template);
 }

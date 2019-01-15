@@ -40,6 +40,11 @@ public class FileUtils {
         FileUtils.pathProperties = pathProperties;
     }
 
+    /**
+     * Save project template to file in JSON format.
+     * @param template project template
+     * @param projectId generated project ID
+     */
     public static void saveTemplateToJson(TemplateDTO template, String projectId) {
         logger.trace("Save template {} for project {}", template, projectId);
         try (Writer writer = new FileWriter(pathProperties.getProjects() + projectId + File.separatorChar + "template.json")) {
@@ -52,6 +57,11 @@ public class FileUtils {
         logger.trace("Saving template {} to file {} is completed.", template, projectId);
     }
 
+    /**
+     * Read project template from file in JSON format
+     * @param projectId generated project ID
+     * @return template project
+     */
     public static TemplateDTO getTemplateFromJson(String projectId) {
         logger.trace("Read template from file {}", projectId);
         TemplateDTO template = null;
@@ -67,6 +77,11 @@ public class FileUtils {
         return template;
     }
 
+    /**
+     * Read generated java class with JMH anotations and codes from user.
+     * @param projectId generated project ID
+     * @return JMH project class
+     */
     public static List<String> readSourceFile(String projectId) {
         logger.trace("Read source java file for project {}", projectId);
         List<String> sourceCode;
@@ -80,6 +95,11 @@ public class FileUtils {
         return sourceCode;
     }
 
+    /**
+     * Read file from maven folder 'resources'.
+     * @param file file to read
+     * @return file from folder 'resources'
+     */
     public static String readFileFromResource(String file) {
         logger.trace("Read file {} from resources folder.", file);
         Resource resource = new ClassPathResource(file);

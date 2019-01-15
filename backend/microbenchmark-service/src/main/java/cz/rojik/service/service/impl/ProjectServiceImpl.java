@@ -137,6 +137,12 @@ public class ProjectServiceImpl implements ProjectService {
         benchmarkStateService.updateState(runningBenchmark);
     }
 
+    /**
+     * Compile generated maven JMH project.
+     * Result of compilation is generated JAR file with JMH libraries.
+     * @param projectId generated project ID
+     * @return error found during compilation
+     */
     private Set<String> runCompileMavenProject(String projectId) {
         Set<String> output = new LinkedHashSet<>();
         final Pattern p = Pattern.compile(REGEX_ERROR);

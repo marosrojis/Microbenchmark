@@ -105,6 +105,11 @@ public class CachingDataServiceImpl implements CachingDataService {
     }
 
     // PRIVATE
+
+    /**
+     * Get all classes that can be ignore during importing process
+     * @return collection of ignore classes
+     */
     private Set<String> readIgnoreClasses() {
         Set<String> ignoreClasses;
         Resource resource = new ClassPathResource(IGNORE_CLASS_FILE);

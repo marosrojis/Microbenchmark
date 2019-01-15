@@ -82,6 +82,11 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
 
     // PRIVATE
 
+    /**
+     *  Parse error from maven log using REGEX expressions
+     * @param errors found errors
+     * @return extended found errors
+     */
     private List<ErrorDTO> getErrorsInfo(Set<String> errors) {
         Pattern regexParseError = Pattern.compile(PARSE_ERROR_REGEX);
         Pattern regexWithoutAbsolutePath = Pattern.compile(PARSE_ERROR_WITHOUT_ABSOLUTE_PATH);
@@ -104,6 +109,13 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
         return errorList;
     }
 
+    /**
+     * Read source code from generated maven project file and parse file on rows.
+     * Add to {@link ErrorDTO} to each error paste source code with found error.
+     * @param projectId generated project ID
+     * @param errors found errors
+     * @return generated source code
+     */
     private List<String> insertSourceCodeToError(String projectId, List<ErrorDTO> errors) {
         List<String> sourceCode;
         try {
@@ -121,6 +133,12 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
         return sourceCode;
     }
 
+    /**
+     * Log from maven project contains unnecessary HELP errors.
+     * Method removes unnecessary errors from list of errors
+     * @param errors found errors
+     * @return list of errors without unnecessary errors
+     */
     private Set<String> removeErrorsHelp(Set<String> errors) {
         Iterator<String> i = errors.iterator();
         while (i.hasNext()) {
@@ -139,11 +157,23 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
         return errors;
     }
 
+    /**
+     * Log from maven project contains unnecessary COMPILATION or EMPTY errors.
+     * Method removes unnecessary errors from list of errors
+     * @param errors found errors
+     * @return list of errors without unnecessary errors
+     */
     private Set<String> removeCertainErrors(Set<String> errors) {
         errors.removeIf(item -> item.equals(ERROR_COMPILATION) || item.equals(ERROR_EMPTY));
         return errors;
     }
 
+    /**
+     * Log from maven project contains unnecessary MAVEN errors.
+     * Method removes unnecessary errors from list of errors
+     * @param errors found errors
+     * @return list of errors without unnecessary errors
+     */
     private Set<String> removeMavenErrors(Set<String> errors) {
         Pattern p = Pattern.compile(ERROR_MAVEN_REGEX);
         errors.removeIf(item -> p.matcher(item.toLowerCase()).matches());

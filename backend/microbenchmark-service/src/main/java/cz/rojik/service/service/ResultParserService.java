@@ -7,5 +7,10 @@ import cz.rojik.service.dto.ResultDTO;
  */
 public interface ResultParserService {
 
+    /**
+     * Parse result from generated JSON file from JMH microbenchmark
+     * @param projectId completed benchmark with result
+     * @return result from generated file
+     */
     ResultDTO parseResult(String projectId);
 }

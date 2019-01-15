@@ -59,6 +59,11 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
 
     // PRIVATE
 
+    /**
+     * Get number from text use regex matcher
+     * @param matcher regex matcher
+     * @return number from text
+     */
     private int getNumberFromRegex(Matcher matcher) {
         if (matcher.find()) {
             return Integer.parseInt(matcher.group(1));

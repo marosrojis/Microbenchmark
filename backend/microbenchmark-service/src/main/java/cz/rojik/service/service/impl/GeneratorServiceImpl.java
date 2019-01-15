@@ -96,6 +96,13 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     // PRIVATE
 
+    /**
+     * Generate final java class contains data from user.
+     * Method replace mark with specific user code.
+     * @param template code from user
+     * @param content generated class content
+     * @return generated class content
+     */
     private String generateContent(TemplateDTO template, String content) {
         logger.trace("Generate content of file from template {}", template);
         content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
@@ -111,6 +118,12 @@ public class GeneratorServiceImpl implements GeneratorService {
         return content;
     }
 
+    /**
+     * Get all libraries imports from java code.
+     * Method find libraries in declare, init and measure methods codes.
+     * @param template code from user
+     * @return found libraries imports
+     */
     private ImportsResult getAllImports(TemplateDTO template) {
         logger.trace("Find all libraries to import {}", template);
         ImportsResult imports = new ImportsResult();
@@ -128,6 +141,12 @@ public class GeneratorServiceImpl implements GeneratorService {
         return imports;
     }
 
+    /**
+     * Save generated java class to file in project folder.
+     * @param projectID generated project ID
+     * @param content generated content of java class
+     * @return true/false if file is successfully saved
+     */
     private boolean saveFile(String projectID, String content) {
         logger.trace("Save file with content {} for project {}", content, projectID);
         try {
@@ -141,6 +160,11 @@ public class GeneratorServiceImpl implements GeneratorService {
         return true;
     }
 
+    /**
+     * Copy folder with default POM file to folder with unique name.
+     * Unique name is for represent measured project.
+     * @return generated unique project ID
+     */
     private String copyProjectFolder() {
         File projectsFolder = new File(pathProperties.getProjects());
         if (!projectsFolder.exists()) {
@@ -174,6 +198,11 @@ public class GeneratorServiceImpl implements GeneratorService {
         return generatedID;
     }
 
+    /**
+     * Generate 'imports' rows to java class based on found libraries
+     * @param libraries found libraries
+     * @return generated all imports rows
+     */
     private String generateImports(Set<String> libraries) {
         logger.trace("Generate imports of libraries {}", libraries);
         StringBuilder sb = new StringBuilder();
@@ -186,6 +215,12 @@ public class GeneratorServiceImpl implements GeneratorService {
         return output;
     }
 
+    /**
+     * Replace content of measure methods with source code from user.
+     * @param content generated java class
+     * @param testMethods method for microbenchmark
+     * @return generated java class with measure methods
+     */
     private String replaceTestMethods(String content, List<String> testMethods) {
         logger.trace("Replace test methods {}", testMethods);
         StringBuilder sb = new StringBuilder();
@@ -206,6 +241,12 @@ public class GeneratorServiceImpl implements GeneratorService {
         return content;
     }
 
+    /**
+     * Replace variables in POM file in maven project.
+     * POM file contain variables for JAVA_VERSION and JMH_VERSION.
+     * @param fileContent generated POM file
+     * @return generated POM file with replaced variables
+     */
     private String replaceVariablesInProjectPOM(String fileContent) {
         logger.trace("Replace variable in project POM.xml file.");
         String javaVersion = getProperty(OtherConstants.JAVA_VERSION, ProjectContants.DEFAULT_JAVA_VERSION);
@@ -217,12 +258,26 @@ public class GeneratorServiceImpl implements GeneratorService {
         return fileContent;
     }
 
+    /**
+     * Replace mark in default java class with defined content
+     * @param content generated java class
+     * @param templateMark mark to replace
+     * @param text replacement text
+     * @return generated java class
+     */
     private String replaceTemplateMark(String content, String templateMark, String text) {
         logger.trace("Replace template mark {} with content {}", templateMark, text);
         content = content.replaceAll(StringUtils.insertBracket(templateMark), text);
         return content;
     }
 
+    /**
+     * Get defined property from database or default value.
+     * If database does not contain defined property, use default property.
+     * @param keyProperty key property
+     * @param defaultValue default value of property
+     * @return final property value
+     */
     private String getProperty(String keyProperty, String defaultValue) {
         String value;
         try {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Exception is thrown when benchmark needs to specify libraries to import
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 public class ImportsToChooseException extends Exception {

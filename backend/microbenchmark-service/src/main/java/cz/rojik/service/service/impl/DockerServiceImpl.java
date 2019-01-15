@@ -172,6 +172,14 @@ public class DockerServiceImpl implements DockerService {
         logger.debug("Killing running docker container {} was successful", containerId);
     }
 
+    /**
+     * Copy generated json file with benchmark result to folder in project
+     * @param client docker client
+     * @param containerId running docker container ID
+     * @param projectId project ID
+     * @throws DockerException
+     * @throws InterruptedException
+     */
     private void copyResultFile(DockerClient client, String containerId, String projectId) throws DockerException, InterruptedException {
         logger.trace("Copy result file from docker container {} for project {} to folder.", containerId, projectId);
         File projectsFolder = new File(pathProperties.getResults());
@@ -193,6 +201,13 @@ public class DockerServiceImpl implements DockerService {
         }
     }
 
+    /**
+     * Update benchmark state in database for running project
+     * @param projectId running project ID
+     * @param containerId docker container ID
+     * @param type type of benchmark state
+     * @return updated {@link BenchmarkStateDTO}
+     */
     private BenchmarkStateDTO updateState(String projectId, String containerId, BenchmarkStateTypeEnum type) {
         logger.trace("Update benchmark state {} for project {} and container ID", type, projectId, containerId);
         BenchmarkStateDTO state = new BenchmarkStateDTO()
@@ -213,6 +228,14 @@ public class DockerServiceImpl implements DockerService {
         return state;
     }
 
+    /**
+     * Calculate estimate time of running project.
+     * Update running benchmark state with percent of completed project and estimated time.
+     * @param totalIterations total project iterations
+     * @param currentIteration current running iteration
+     * @param state last updated benchmark state
+     * @return updated {@link BenchmarkStateDTO}
+     */
     private BenchmarkStateDTO updateRunningState(int totalIterations, int currentIteration, BenchmarkStateDTO state) {
         int part = (int)Math.ceil((double)totalIterations / TOTAL_PART);
         if (currentIteration % part != 0 || currentIteration == 0) {

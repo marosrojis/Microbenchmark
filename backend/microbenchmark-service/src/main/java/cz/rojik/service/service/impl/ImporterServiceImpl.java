@@ -110,6 +110,7 @@ public class ImporterServiceImpl implements ImporterService {
         );
 
         cachingDataService.evictLibrariesCacheValues();
+        cachingDataService.evictIgnoreClassesCacheValues();
 
         return properties;
     }

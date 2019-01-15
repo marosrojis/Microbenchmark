@@ -8,5 +8,10 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
  */
 public interface WebSocketService {
 
+    /**
+     * Send process information from JMH log to user using websocket session
+     * @param processInfo parsed information
+     * @param headerAccessor socket header
+     */
     void sendProcessInfo(ProcessInfoDTO processInfo, SimpMessageHeaderAccessor headerAccessor);
 }

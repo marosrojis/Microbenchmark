@@ -5,6 +5,12 @@ package cz.rojik.service.utils;
  */
 public class StringUtils {
 
+    /**
+     * Insert boundary bracket to mark.
+     * Default java class contains boundary bracket around mark.
+     * @param string mark to border with bracket
+     * @return mark with bracket
+     */
     public static String insertBracket(String string) {
         return "\\[" + string + "\\]";
     }
