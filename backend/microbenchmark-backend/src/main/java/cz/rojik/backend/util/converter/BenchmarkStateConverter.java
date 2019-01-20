@@ -41,7 +41,7 @@ public class BenchmarkStateConverter {
                 .setType(entity.getType())
                 .setUpdated(entity.getUpdated())
                 .setCompleted(entity.getCompleted())
-                .setTimeToEnd(entity.getTimeToEnd());
+                .setEstimatedEndTime(entity.getEstimatedEndTime());
         if (entity.getUser() != null) {
             result.setUser(userConverter.entityToDTO(entity.getUser(), false));
         }
@@ -78,7 +78,7 @@ public class BenchmarkStateConverter {
 
         entity.setType(dto.getType())
                 .setUpdated(dto.getUpdated())
-                .setTimeToEnd(dto.getTimeToEnd())
+                .setEstimatedEndTime(dto.getEstimatedEndTime())
                 .setCompleted(dto.getCompleted());
 
         return entity;

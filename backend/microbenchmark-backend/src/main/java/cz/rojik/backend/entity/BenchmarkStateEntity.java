@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -47,8 +46,8 @@ public class BenchmarkStateEntity extends BaseEntity {
     @Column(name = "completed", nullable = false)
     private int completed;
 
-    @Column(name = "timeToEnd")
-    private LocalTime timeToEnd;
+    @Column(name = "estimated_end_time")
+    private LocalDateTime estimatedEndTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -117,12 +116,12 @@ public class BenchmarkStateEntity extends BaseEntity {
         return this;
     }
 
-    public LocalTime getTimeToEnd() {
-        return timeToEnd;
+    public LocalDateTime getEstimatedEndTime() {
+        return estimatedEndTime;
     }
 
-    public BenchmarkStateEntity setTimeToEnd(LocalTime timeToEnd) {
-        this.timeToEnd = timeToEnd;
+    public BenchmarkStateEntity setEstimatedEndTime(LocalDateTime estimatedEndTime) {
+        this.estimatedEndTime = estimatedEndTime;
         return this;
     }
 
@@ -135,7 +134,7 @@ public class BenchmarkStateEntity extends BaseEntity {
                 ", updated=" + updated +
                 ", numberOfConnections=" + numberOfConnections +
                 ", completed=" + completed +
-                ", timeToEnd=" + timeToEnd +
+                ", estimatedEndTime=" + estimatedEndTime +
                 '}';
     }
 
@@ -151,12 +150,12 @@ public class BenchmarkStateEntity extends BaseEntity {
                 Objects.equals(containerId, entity.containerId) &&
                 type == entity.type &&
                 Objects.equals(updated, entity.updated) &&
-                Objects.equals(timeToEnd, entity.timeToEnd);
+                Objects.equals(estimatedEndTime, entity.estimatedEndTime);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), projectId, containerId, type, updated, numberOfConnections, completed, timeToEnd);
+        return Objects.hash(super.hashCode(), projectId, containerId, type, updated, numberOfConnections, completed, estimatedEndTime);
     }
 }

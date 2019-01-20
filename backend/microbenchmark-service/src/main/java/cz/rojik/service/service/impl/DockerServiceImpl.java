@@ -138,6 +138,7 @@ public class DockerServiceImpl implements DockerService {
                 }
 
                 benchmarkState = updateRunningState(totalIterations, currentIteration, benchmarkState);
+                processInfo.setEstimatedEndTime(benchmarkState.getEstimatedEndTime());
                 webSocketService.sendProcessInfo(processInfo, socketHeader);
                 if (!processInfo.getOperation().equals(Operation.RESULT)) {
                     currentIteration++;
@@ -213,7 +214,7 @@ public class DockerServiceImpl implements DockerService {
         BenchmarkStateDTO state = new BenchmarkStateDTO()
                 .setProjectId(projectId)
                 .setContainerId(containerId)
-                .setTimeToEnd(null)
+                .setEstimatedEndTime(null)
                 .setType(type);
 
         if (type.equals(BenchmarkStateTypeEnum.BENCHMARK_START)) {
@@ -245,17 +246,19 @@ public class DockerServiceImpl implements DockerService {
 
         int percent = 100 * currentIteration / totalIterations;
 
-        Duration duration = Duration.between(state.getUpdated(), LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(state.getUpdated(), now);
         long timeOfOneIteration = duration.getSeconds() / part;
-        long restOfTime = timeOfOneIteration *(totalIterations - currentIteration);
+        long restOfTime = timeOfOneIteration * (totalIterations - currentIteration);
 
-        LocalTime timeToEnd = LocalTime.ofSecondOfDay(restOfTime);
-        logger.trace("Rest of time of benchmark {} is {}", state.getProjectId(), timeToEnd);
+        LocalDateTime estimatedEndTime = now.plusSeconds(restOfTime);
+
+        logger.trace("Rest of time of benchmark {} is {}", state.getProjectId(), estimatedEndTime);
 
         state.setType(BenchmarkStateTypeEnum.BENCHMARK_RUNNING)
                 .setCompleted(percent)
                 .setUpdated(LocalDateTime.now())
-                .setTimeToEnd(timeToEnd);
+                .setEstimatedEndTime(estimatedEndTime);
 
         state = benchmarkStateService.updateState(state);
         return state;

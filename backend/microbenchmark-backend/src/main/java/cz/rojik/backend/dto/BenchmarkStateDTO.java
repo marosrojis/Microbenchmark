@@ -6,11 +6,8 @@ import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.util.serialization.LocalDateTimeDeserializer;
 import cz.rojik.backend.util.serialization.LocalDateTimeSerializer;
-import cz.rojik.backend.util.serialization.LocalTimeDeserializer;
-import cz.rojik.backend.util.serialization.LocalTimeSerializer;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -29,9 +26,9 @@ public class BenchmarkStateDTO extends BaseDTO {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updated;
 
-    @JsonSerialize(using = LocalTimeSerializer.class)
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
-    private LocalTime timeToEnd;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime estimatedEndTime;
 
     public BenchmarkStateDTO() {
         updated = LocalDateTime.now();
@@ -101,12 +98,12 @@ public class BenchmarkStateDTO extends BaseDTO {
         return this;
     }
 
-    public LocalTime getTimeToEnd() {
-        return timeToEnd;
+    public LocalDateTime getEstimatedEndTime() {
+        return estimatedEndTime;
     }
 
-    public BenchmarkStateDTO setTimeToEnd(LocalTime timeToEnd) {
-        this.timeToEnd = timeToEnd;
+    public BenchmarkStateDTO setEstimatedEndTime(LocalDateTime estimatedEndTime) {
+        this.estimatedEndTime = estimatedEndTime;
         return this;
     }
 
@@ -120,7 +117,7 @@ public class BenchmarkStateDTO extends BaseDTO {
                 ", user=" + user +
                 ", completed=" + completed +
                 ", updated=" + updated +
-                ", timeToEnd=" + timeToEnd +
+                ", estimatedEndTime=" + estimatedEndTime +
                 ", id=" + id +
                 '}';
     }
@@ -137,12 +134,12 @@ public class BenchmarkStateDTO extends BaseDTO {
                 Objects.equals(containerId, that.containerId) &&
                 type == that.type &&
                 Objects.equals(updated, that.updated) &&
-                Objects.equals(timeToEnd, that.timeToEnd);
+                Objects.equals(estimatedEndTime, that.estimatedEndTime);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), projectId, containerId, type, numberOfConnections, completed, updated, timeToEnd);
+        return Objects.hash(super.hashCode(), projectId, containerId, type, numberOfConnections, completed, updated, estimatedEndTime);
     }
 }

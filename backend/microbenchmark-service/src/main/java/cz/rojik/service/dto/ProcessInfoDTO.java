@@ -20,6 +20,10 @@ public class ProcessInfoDTO {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime time;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime estimatedEndTime;
+
     private Operation operation;
     private int number;
     private String note;
@@ -104,6 +108,15 @@ public class ProcessInfoDTO {
 
     public ProcessInfoDTO setNumber(int number) {
         this.number = number;
+        return this;
+    }
+
+    public LocalDateTime getEstimatedEndTime() {
+        return estimatedEndTime;
+    }
+
+    public ProcessInfoDTO setEstimatedEndTime(LocalDateTime estimatedEndTime) {
+        this.estimatedEndTime = estimatedEndTime;
         return this;
     }
 }
