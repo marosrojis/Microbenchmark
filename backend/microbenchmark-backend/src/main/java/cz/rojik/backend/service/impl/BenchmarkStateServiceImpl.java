@@ -50,7 +50,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @PostConstruct
     public void clearTableBenchmarkState() {
         logger.trace("Clear table BenchmarkState after start application.");
-//        benchmarkStateRepository.deleteAll();
+        benchmarkStateRepository.deleteAll();
         logger.trace("Clear table BenchmarkState was successful.");
     }
 
