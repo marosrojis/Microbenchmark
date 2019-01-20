@@ -7,7 +7,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
   <property name="now" value="now()" dbms="postgresql"/>
-  <changeSet id="1" author="marek.rojik">
+  <changeSet id="insert_admin_user" author="marek.rojik">
     <comment>Inserting admin user</comment>
     <insert tableName="mbmark_user">
       <column name="id" valueNumeric="1" />
@@ -20,7 +20,8 @@
       <column name="enabled" valueBoolean="true" />
     </insert>
   </changeSet>
-  <changeSet id="2" author="marek.rojik">
+
+  <changeSet id="create_roles" author="marek.rojik">
     <comment>Inserting roles</comment>
     <insert tableName="mbmark_role">
       <column name="id" valueNumeric="1" />
@@ -38,7 +39,8 @@
       <column name="type" value="DEMO" />
     </insert>
   </changeSet>
-  <changeSet id="3" author="marek.rojik">
+
+  <changeSet id="assign_admin_role" author="marek.rojik">
     <comment>Inserting admin role to created admin user</comment>
     <insert tableName="mbmark_user_role">
       <column name="user_id" valueNumeric="1" />
@@ -49,7 +51,8 @@
       <column name="role_id" valueNumeric="2" />
     </insert>
   </changeSet>
-  <changeSet id="4" author="marek.rojik">
+
+  <changeSet id="insert_default_properties" author="marek.rojik">
     <comment>Inserting default properties</comment>
     <insert tableName="mbmark_property">
       <column name="id" valueNumeric="1" />
@@ -61,5 +64,12 @@
       <column name="key" value="jmhVersion" />
       <column name="value" value="1.20" />
     </insert>
+  </changeSet>
+
+  <changeSet id="increase_sequences_number" author="marek.rojik">
+      <comment>Increase sequences number</comment>
+      <sql dbms="postgresql">select setval('mbmark_user_id_seq', (select max(id)+1 from mbmark_user), false)</sql>
+      <sql dbms="postgresql">select setval('mbmark_property_id_seq', (select max(id)+1 from mbmark_property), false)</sql>
+      <sql dbms="postgresql">select setval('mbmark_role_id_seq', (select max(id)+1 from mbmark_role), false)</sql>
   </changeSet>
 </databaseChangeLog>
