@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Controller for java user manipulation.
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 @RestController
@@ -39,30 +40,57 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Get user by specific ID
+     * @param id user id
+     * @return user by specific ID
+     */
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         UserDTO user = userService.getUser(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    /**
+     * Get all existing users.
+     * @param enabled optional parameter. If is true than return only users with enable account. If is false, return only users with disable account.
+     * @return list of users
+     */
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(value = "enabled") Optional<Boolean> enabled) {
         List<UserDTO> users = userService.getAll(enabled);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    /**
+     * Create new user.
+     * If user is created by anonymous user, account has to be confirm by ADMIN.
+     * If user is created by user with 'ADMIN' role, account is automatically confirmed.
+     * @param user user to create
+     * @return created user
+     */
     @PostMapping
     private ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserRegistrationForm user) {
         UserDTO newUser = userService.create(user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
 
+    /**
+     * Update existing user.
+     * @param id user ID to update
+     * @param user new user's data to update
+     * @return updated user
+     */
     @PutMapping(MappingURLConstants.ID_PARAM)
     private ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
         UserDTO newUser = userService.update(id, user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
 
+    /**
+     * Delete existing user.
+     * @param id user ID to delete
+     */
     @DeleteMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity delete(@PathVariable Long id) {
         userService.delete(id);

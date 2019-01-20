@@ -19,6 +19,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
+ * Controller for java property manipulation.
+ * Property are used for specific some server information (e. g. java version to compile JMH project, map of java libraries, version of JMH, ...)
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 @RestController
@@ -29,24 +31,43 @@ public class PropertyController {
     @Autowired
     private PropertyService propertyService;
 
+    /**
+     * Get property by ID
+     * @param id property ID
+     * @return property by specific ID
+     */
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<PropertyDTO> getOne(@PathVariable Long id) {
         PropertyDTO property = propertyService.getOne(id);
         return new ResponseEntity<>(property, HttpStatus.OK);
     }
 
+    /**
+     * Get all properties
+     * @return list of properties
+     */
     @GetMapping
     public ResponseEntity<List<PropertyDTO>> getAll() {
         List<PropertyDTO> properties = propertyService.getAll();
         return new ResponseEntity<>(properties, HttpStatus.OK);
     }
 
+    /**
+     * Create new or update existing property.
+     * If exist property with defined key, property is updated. If key is not exist, create new property
+     * @param property property for create or update
+     * @return
+     */
     @PostMapping
     public ResponseEntity<PropertyDTO> update(@Valid @RequestBody PropertyDTO property) {
         property = propertyService.updateProperty(property);
         return new ResponseEntity<>(property, HttpStatus.OK);
     }
 
+    /**
+     * Delete property by ID.
+     * @param id property ID
+     */
     @DeleteMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity delete(@PathVariable Long id) {
         propertyService.delete(id);

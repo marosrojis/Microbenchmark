@@ -34,17 +34,17 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { Exception.class, RuntimeException.class })
     public ResponseEntity<ErrorDetailsDTO> handleGeneralException(Exception exception, WebRequest request) {
-        return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR, false);
+        return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class, DockerException.class, KillContainerException.class})
     public ResponseEntity<ErrorDetailsDTO> handleBadRequestException(Exception exception, WebRequest request) {
-        return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST, false);
+        return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = { EntityNotFoundException.class, NotFoundException.class })
     public ResponseEntity<ErrorDetailsDTO> handleNotFoundException(Exception exception, WebRequest request) {
-        return handleExceptionInternal(exception, request, HttpStatus.NOT_FOUND, false);
+        return handleExceptionInternal(exception, request, HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -55,12 +55,8 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ErrorDetailsDTO> handleExceptionInternal(Exception exception, WebRequest request, HttpStatus status, boolean warnLevel) {
-        if (warnLevel) {
-            logger.warn("Exception occured.", exception);
-        } else {
-            logger.info("Exception occured.", exception);
-        }
+    private ResponseEntity<ErrorDetailsDTO> handleExceptionInternal(Exception exception, WebRequest request, HttpStatus status) {
+        logger.error("Exception occured.", exception);
 
         ErrorDetailsDTO errorDetails = new ErrorDetailsDTO(LocalDateTime.now(), exception.getMessage(),
                 request.getDescription(false));

@@ -10,7 +10,9 @@ import cz.rojik.service.exception.ImportsToChooseException;
 public interface GeneratorService {
 
     /**
-     * Generate java class with JMH anotations and methods for start microbenchmark
+     * Generate java class with JMH annotations and methods for start microbenchmark.
+     * At first method generate maven project with JMH annotations, configuration and method to measure.
+     * Second method analyze java code and generate imports selected java classes.
      * @param template code to measure
      * @return Generated project ID
      * @throws ImportsToChooseException Code needs to choose from which package want to import class

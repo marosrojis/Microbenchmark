@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Controller for benchmark state manipulation.
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 @RestController
@@ -26,6 +27,11 @@ public class BenchmarkStateController {
     @Autowired
     private BenchmarkStateService benchmarkStateService;
 
+    /**
+     * Return info about what benchmark has run, who has started benchmark and another info.
+     * @param running if true return info only about running benchmarks, if false return info only about completed benchmarks.
+     * @return list of benchmarks with basic info
+     */
     @GetMapping
     public ResponseEntity<List<BenchmarkStateDTO>> getBenchmarksState(@RequestParam(value = "running") Optional<Boolean> running) {
         List<BenchmarkStateDTO> benchmarksState = benchmarkStateService.getBenchmarksState(running);

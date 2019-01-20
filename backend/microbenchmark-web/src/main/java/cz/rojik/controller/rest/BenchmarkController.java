@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Controller for benchmark manipulation.
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 @RestController("restBenchmarkController")
@@ -33,12 +34,25 @@ public class BenchmarkController {
     @Autowired
     private BenchmarkService benchmarkService;
 
+    /**
+     * Get benchmark by ID
+     * @param id benchmark id
+     * @return benchmark
+     */
     @GetMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<BenchmarkDTO> getOne(@PathVariable Long id) {
         BenchmarkDTO benchmark = benchmarkService.getOne(id);
         return new ResponseEntity<>(benchmark, HttpStatus.OK);
     }
 
+    /**
+     * Get all benchmarks depends on the specified parameters.
+     * If user has roles 'USER' or 'DEMO', returns only his benchmarks.
+     * If user has role 'ADMIN', returns all benchmarks.
+     * @param success optional parameter. If is true return only successful benchmarks, if false return only unsuccessful benchmarks
+     * @param user optional parameter. Return benchmarks that were created by the specific user
+     * @return list of benchmarks
+     */
     @GetMapping
     public ResponseEntity<List<BenchmarkDTO>> getAll(@RequestParam(value = "success") Optional<Boolean> success,
                                                      @RequestParam(value = "user") Optional<Long> user) {
@@ -46,12 +60,22 @@ public class BenchmarkController {
         return new ResponseEntity<>(benchmarks, HttpStatus.OK);
     }
 
+    /**
+     * Assign specific benchmark to another user.
+     * @param id benchmark id
+     * @param userId user id
+     * @return benchmark with new user
+     */
     @PostMapping(MappingURLConstants.BENCHMARK_ASSIGN_TO_USER)
     public ResponseEntity<BenchmarkDTO> assignToUser(@PathVariable Long id, @PathVariable Long userId) {
         BenchmarkDTO benchmark = benchmarkService.assignToUser(id, userId);
         return new ResponseEntity<>(benchmark, HttpStatus.OK);
     }
 
+    /**
+     * Delete specific benchmark.
+     * @param id benchmark id to delete
+     */
     @DeleteMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity delete(@PathVariable Long id) {
         benchmarkService.delete(id);

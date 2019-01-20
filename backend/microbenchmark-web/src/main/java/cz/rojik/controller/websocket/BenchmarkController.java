@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDateTime;
 
 /**
+ * Websocket controller for run JMH benchmark
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
  */
 @Controller("webSocketBenchmarkController")
@@ -42,6 +43,13 @@ public class BenchmarkController {
     @Autowired
     private BenchmarkService benchmarkServiceBackend;
 
+    /**
+     * Method for run benchmark project.
+     * To websocket queue is sent continuously message about new benchmark state.
+     * @param headerAccessor session ID. Based on session ID is sent message to queue where opposite site is listening. Session ID is used for send message only specific user.
+     * @param projectId project to run
+     * @return if benchmark is successful than return benchmark stats. If benchmark is not successful than return information about occurred errors during running benchmark (e. g. runtime exceptions).
+     */
     @MessageMapping(MappingURLConstants.BENCHMARK_RUN)
     @SendToUser(MappingURLConstants.BENCHMARK_RESULT)
     public String runBenchmark(SimpMessageHeaderAccessor headerAccessor, String projectId) {

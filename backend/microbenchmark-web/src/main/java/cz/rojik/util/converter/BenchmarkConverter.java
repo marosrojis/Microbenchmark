@@ -15,6 +15,11 @@ import java.util.stream.IntStream;
 @Component("benchmarkConverterRest")
 public class BenchmarkConverter {
 
+    /**
+     * Convert {@link TemplateDTO} to {@link BenchmarkDTO}.
+     * @param template template object to convert
+     * @return {@link BenchmarkDTO} object
+     */
     public BenchmarkDTO templateToResult(TemplateDTO template) {
         BenchmarkDTO result = new BenchmarkDTO();
 
