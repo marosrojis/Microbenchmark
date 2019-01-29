@@ -27,7 +27,6 @@ public class PropertyEntity {
     private Long id;
 
     @Column(name = "key", nullable = false)
-    @Lob
     private String key;
 
     @Column(name = "value", nullable = false)

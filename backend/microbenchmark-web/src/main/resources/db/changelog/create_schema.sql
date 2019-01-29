@@ -39,7 +39,7 @@ create table mbmark_measure_method (
 
 create table mbmark_property (
    id  bigserial not null,
-    key text not null,
+    key varchar(255) not null,
     value text not null,
     primary key (id)
 );

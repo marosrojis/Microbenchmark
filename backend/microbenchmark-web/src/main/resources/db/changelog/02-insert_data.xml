@@ -72,4 +72,19 @@
       <sql dbms="postgresql">select setval('mbmark_property_id_seq', (select max(id)+1 from mbmark_property), false)</sql>
       <sql dbms="postgresql">select setval('mbmark_role_id_seq', (select max(id)+1 from mbmark_role), false)</sql>
   </changeSet>
+
+  <changeSet id="test" author="">
+    <insert tableName="mbmark_benchmark_state">
+      <column name="id" valueNumeric="2" />
+      <column name="archived" valueBoolean="false" />
+      <column name="completed" valueNumeric="10" />
+      <column name="user_id" valueNumeric="1" />
+      <column name="number_of_connections" valueNumeric="10" />
+      <column name="container_id" value="container_id" />
+      <column name="project_id" value="container_id" />
+      <column name="type" value="container_id" />
+      <column name="estimated_end_time" valueDate="${now}" />
+      <column name="updated" valueDate="${now}" />
+    </insert>
+  </changeSet>
 </databaseChangeLog>
