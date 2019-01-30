@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    private static Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
     private static final String REGEX_ERROR = "\\[ERROR\\].*";
 
     @Autowired
@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean compile(String projectId) {
-        logger.trace("Compile project {}", projectId);
+        LOGGER.trace("Compile project {}", projectId);
         benchmarkStateService.createState(new BenchmarkStateDTO()
                 .setProjectId(projectId)
                 .setType(BenchmarkStateTypeEnum.COMPILE_START));
@@ -89,7 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
         Set<String> errors = runCompileMavenProject(projectId);
 
         if (errors.size() != 0) {
-            logger.error("Compilation is failed!!\n {}", errors);
+            LOGGER.error("Compilation is failed!!\n {}", errors);
             benchmarkStateService.updateState(new BenchmarkStateDTO()
                     .setProjectId(projectId)
                     .setType(BenchmarkStateTypeEnum.COMPILE_ERROR));
@@ -97,23 +97,23 @@ public class ProjectServiceImpl implements ProjectService {
 
             List<ErrorDTO> errorList = errorsParserService.getSyntaxErrors(errors);
             ErrorInfoWithSourceCodeDTO errorInfoList = errorsParserService.processErrorList(errorList, projectId);
-            logger.error("Throw exception with errors {} to project {}", errorInfoList, projectId);
+            LOGGER.error("Throw exception with errors {} to project {}", errorInfoList, projectId);
             throw new MavenCompileException(errorInfoList);
         }
-        logger.info("Compilation is successful.");
+        LOGGER.info("Compilation is successful.");
 
         return true;
     }
 
     @Override
     public ResultDTO runBenchmark(String projectId, TemplateDTO template, SimpMessageHeaderAccessor socketHeader) throws BenchmarkRunException {
-        logger.debug("Run benchmark for project {} with template {}", projectId, template);
+        LOGGER.debug("Run benchmark for project {} with template {}", projectId, template);
         BenchmarkStateDTO state;
 
         try {
             state = runnerService.runProject(projectId, template, socketHeader);
         } catch (DockerCertificateException | DockerException | InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw new cz.rojik.service.exception.DockerException(e.getMessage());
         }
 
@@ -124,10 +124,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void kill(String projectId) {
-        logger.debug("Kill running benchmark with project ID {}", projectId);
+        LOGGER.debug("Kill running benchmark with project ID {}", projectId);
         BenchmarkStateDTO runningBenchmark = benchmarkStateService.getByProjectId(projectId);
         if (!BenchmarkStateTypeEnum.runningBenchmarks().contains(runningBenchmark.getType())) {
-            logger.error("Benchmark for kill is not in running state: {}", runningBenchmark);
+            LOGGER.error("Benchmark for kill is not in running state: {}", runningBenchmark);
             throw new KillContainerException(String.format("Benchmark with project ID %s for kill is not in running state.", projectId));
         }
 
@@ -158,14 +158,14 @@ public class ProjectServiceImpl implements ProjectService {
             }
         });
         try {
-            logger.info("Start compiling project {}", projectId);
+            LOGGER.info("Start compiling project {}", projectId);
             invoker.execute(request);
         } catch (MavenInvocationException e) {
-            logger.error("Maven invocation exception: {}", e.getMessage());
+            LOGGER.error("Maven invocation exception: {}", e.getMessage());
             throw new MavenCompileException();
         }
 
-        logger.debug("Compiling project {} is completed", projectId);
+        LOGGER.debug("Compiling project {} is completed", projectId);
         return output;
     }
 }

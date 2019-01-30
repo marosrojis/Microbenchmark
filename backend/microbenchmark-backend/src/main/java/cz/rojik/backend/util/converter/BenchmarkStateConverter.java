@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BenchmarkStateConverter {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkConverter.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BenchmarkConverter.class);
 
     @Autowired
     private UserConverter userConverter;
@@ -30,7 +30,7 @@ public class BenchmarkStateConverter {
      * @return {@link BenchmarkStateDTO} object
      */
     public BenchmarkStateDTO entityToDTO(BenchmarkStateEntity entity) {
-        logger.trace("Convert BenchmarkState entity to DTO object: {}", entity);
+        LOGGER.trace("Convert BenchmarkState entity to DTO object: {}", entity);
 
         BenchmarkStateDTO result = new BenchmarkStateDTO();
 
@@ -55,7 +55,7 @@ public class BenchmarkStateConverter {
      * @return {@link BenchmarkStateEntity} object
      */
     public BenchmarkStateEntity dtoToEntity(BenchmarkStateDTO dto) {
-        logger.trace("Convert BenchmarkState DTO to entity object: {}", dto);
+        LOGGER.trace("Convert BenchmarkState DTO to entity object: {}", dto);
 
         BenchmarkStateEntity entity = objectMapper.convertValue(dto, BenchmarkStateEntity.class);
         return entity;
@@ -67,7 +67,7 @@ public class BenchmarkStateConverter {
      * @return {@link BenchmarkStateEntity} object
      */
     public BenchmarkStateEntity dtoToEntity(BenchmarkStateDTO dto, BenchmarkStateEntity entity) {
-        logger.trace("Convert BenchmarkState DTO to entity object: {}", dto);
+        LOGGER.trace("Convert BenchmarkState DTO to entity object: {}", dto);
 
         if (!StringUtils.equals(dto.getContainerId(), entity.getContainerId())) {
             entity.setContainerId(dto.getContainerId());

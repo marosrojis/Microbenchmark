@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
     @Override
     public UserDTO create(UserRegistrationForm user) {
-		logger.trace("Create new user {}", user);
+		LOGGER.trace("Create new user {}", user);
 		boolean verifyExistEmail = verifyExistEmail(user.getEmail());
 		if (!verifyExistEmail) {
             UserEntity entity = createAndSaveRegisteredUser(user);
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	@Override
 	public UserDTO update(Long userId, UserDTO user) {
-		logger.trace("Update existed user {} in DB with data {}", userId, user);
+		LOGGER.trace("Update existed user {} in DB with data {}", userId, user);
 		Optional<UserEntity> userEntity = findById(userId);
 		if (!userEntity.isPresent()) {
 			throw new EntityNotFoundException(String.format("User with ID %s was not found.", userId));
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 			user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleTypeEnum.getRoleById(role.getId()))));
 			boolean isRolesValidate = validateRoles(roles);
 			if (!isRolesValidate) {
-				logger.error("User's roles is not validate: " + roles);
+				LOGGER.error("User's roles is not validate: " + roles);
 				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user.");
 			}
 
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		entity = userRepository.save(entity);
-		logger.debug("User with email was successfully updated: {}", userId, entity);
+		LOGGER.debug("User with email was successfully updated: {}", userId, entity);
 
 		if (!isEnabled && entity.isEnabled()) {
 			emailService.sendAfterUpdateUser(entity.getEmail());
@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getByEmail(String email) {
-    	logger.trace("Get user by email {}", email);
+    	LOGGER.trace("Get user by email {}", email);
 		UserEntity entity = userRepository.findByEmail(email);
 		if (entity == null) {
 			throw new EntityNotFoundException(String.format("User with email %s was not found", email));
@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getUser(Long id) {
-    	logger.trace("Get user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
+    	LOGGER.trace("Get user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
         Optional<UserEntity> user = findById(id);
 
         if (!user.isPresent()) {
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAll(Optional<Boolean> enabled) {
-    	logger.trace("Get all users (requested user: {})", SecurityHelper.getCurrentUser());
+    	LOGGER.trace("Get all users (requested user: {})", SecurityHelper.getCurrentUser());
         List<UserEntity> users;
 
         if (enabled.isPresent()) {
@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity getLoggedUserEntity() {
-    	logger.trace("Get logged user entity");
+    	LOGGER.trace("Get logged user entity");
 		UserDTO userDTO = SecurityHelper.getCurrentUser();
 		if (userDTO != null) {
 			Optional<UserEntity> entity = findById(userDTO.getId());
@@ -179,14 +179,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void delete(Long id) {
-    	logger.debug("Delete user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
+    	LOGGER.debug("Delete user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
 		Optional<UserEntity> entity = userRepository.findById(id);
 		if (!entity.isPresent()) {
 			throw new EntityNotFoundException(String.format("User with ID %s was not found.", id));
 		}
 
 		userRepository.delete(entity.get());
-		logger.debug("User with ID {} was successfully deleted", id);
+		LOGGER.debug("User with ID {} was successfully deleted", id);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional(readOnly=true)
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-		logger.trace("Get user by username {}", username);
+		LOGGER.trace("Get user by username {}", username);
 		String email = username;
 		UserDTO user = getByEmail(email);
 
@@ -215,14 +215,14 @@ public class UserServiceImpl implements UserService {
 	 * @return new user entity
 	 */
 	private UserEntity createAndSaveRegisteredUser(UserRegistrationForm user) {
-    	logger.trace("Create and save new user {}", user);
+    	LOGGER.trace("Create and save new user {}", user);
         UserEntity entity = new UserEntity(user.getFirstname(), user.getLastname(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
 
 		Set<RoleEntity> roles = new HashSet<>();
         user.getRoles().forEach(role -> roles.add(roleRepository.findFirstByType(RoleTypeEnum.getRoleById(role.getId()))));
 		boolean isRolesValidate = validateRoles(roles);
 		if (!isRolesValidate) {
-			logger.error("User's roles is not validate: " + roles);
+			LOGGER.error("User's roles is not validate: " + roles);
 			throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user.");
 		}
 
@@ -234,7 +234,7 @@ public class UserServiceImpl implements UserService {
         }
 
 		entity = userRepository.save(entity);
-        logger.debug("User {} was successfully saved", entity);
+        LOGGER.debug("User {} was successfully saved", entity);
 
         emailService.sendAfterRegistrationUser(entity.getEmail(), entity.isEnabled());
 
@@ -247,7 +247,7 @@ public class UserServiceImpl implements UserService {
 	 * @return true if email has existed
 	 */
 	private boolean verifyExistEmail(String email) {
-		logger.trace("Verify if email {} is exists", email);
+		LOGGER.trace("Verify if email {} is exists", email);
 		UserEntity entity = userRepository.findByEmail(email);
 		return !(entity == null);
 	}
@@ -272,7 +272,7 @@ public class UserServiceImpl implements UserService {
 	 * @return ok/fail validation
 	 */
 	private boolean validateRoles(Set<RoleEntity> roles) {
-    	logger.trace("Validate roles {}", roles);
+    	LOGGER.trace("Validate roles {}", roles);
 		List<RoleEntity> roleTypes = roles.stream().filter(r -> r.getType().equals(RoleTypeEnum.USER.getRoleType()) || r.getType().equals(RoleTypeEnum.DEMO.getRoleType())).collect(Collectors.toList());
 		return roleTypes.size() != 2;
 	}

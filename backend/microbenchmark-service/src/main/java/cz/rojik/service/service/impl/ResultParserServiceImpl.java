@@ -25,14 +25,14 @@ import java.util.List;
 @Service
 public class ResultParserServiceImpl implements ResultParserService {
 
-    private static Logger logger = LoggerFactory.getLogger(ResultParserServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ResultParserServiceImpl.class);
 
     @Autowired
     private PathProperties pathProperties;
 
     @Override
     public ResultDTO parseResult(String projectId) {
-        logger.trace("Parse result of benchmark {}", projectId);
+        LOGGER.trace("Parse result of benchmark {}", projectId);
         JsonParser jParser = new JsonParser();
 
         List<MicrobenchmarkResultDTO> mbResults = new ArrayList<>();
@@ -44,9 +44,9 @@ public class ResultParserServiceImpl implements ResultParserService {
         for (JsonElement object : jsonResults) {
             mbResults.add(parseBenchmarkResult(object));
         }
-        logger.debug("Parsed result of project {} is {}", projectId, mbResults);
+        LOGGER.debug("Parsed result of project {} is {}", projectId, mbResults);
 
-        logger.trace("Finding the fastest benchmark time for project {}", projectId);
+        LOGGER.trace("Finding the fastest benchmark time for project {}", projectId);
         int minIndex = 0;
         double minScore = mbResults.get(0).getScore();
         for (int i = 1; i < mbResults.size(); i++) {
@@ -56,7 +56,7 @@ public class ResultParserServiceImpl implements ResultParserService {
                 minIndex = i;
             }
         }
-        logger.debug("The fastest test method for project {} is {}", projectId, mbResults.get(minIndex));
+        LOGGER.debug("The fastest test method for project {} is {}", projectId, mbResults.get(minIndex));
 
         ResultDTO result = new ResultDTO()
                 .setResults(mbResults)
@@ -76,7 +76,7 @@ public class ResultParserServiceImpl implements ResultParserService {
     private MicrobenchmarkResultDTO parseBenchmarkResult(JsonElement element) {
         JsonObject object = (JsonObject) element;
         String name = object.get("benchmark").getAsString();
-        logger.trace("Get values of test method {}", name);
+        LOGGER.trace("Get values of test method {}", name);
 
         int warmupIterations = object.get("warmupIterations").getAsInt();
         int measurementIterations = object.get("measurementIterations").getAsInt();
@@ -98,17 +98,17 @@ public class ResultParserServiceImpl implements ResultParserService {
      * @return content of result file
      */
     private String readResultFile(String projectId) {
-        logger.trace("Read result file for project {}", projectId);
+        LOGGER.trace("Read result file for project {}", projectId);
         File file = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);
         String fileContent = "";
         try {
             fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw new ReadFileException(projectId);
         }
 
-        logger.trace("Result file of project {} is {}", projectId, fileContent);
+        LOGGER.trace("Result file of project {} is {}", projectId, fileContent);
         return fileContent;
     }
 }

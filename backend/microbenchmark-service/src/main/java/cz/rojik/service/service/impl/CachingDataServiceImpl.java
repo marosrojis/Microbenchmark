@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Service
 public class CachingDataServiceImpl implements CachingDataService {
 
-    private static Logger logger = LoggerFactory.getLogger(ImporterServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ImporterServiceImpl.class);
 
     private static final String LIBRARIES_FILE = "importer_files/libraries.json";
     private static final String IGNORE_CLASS_FILE = "importer_files/ignore_class.txt";
@@ -47,7 +47,7 @@ public class CachingDataServiceImpl implements CachingDataService {
     @Cacheable(OtherConstants.LIBRARIES_CACHE)
     @Override
     public Map<String, List<String>> getJavaLibraries() {
-        logger.trace("Read file with all java classes and packages.");
+        LOGGER.trace("Read file with all java classes and packages.");
 
         Gson gson = new GsonBuilder().create();
         Type type = new TypeToken<HashMap<String, List<String>>>(){}.getType();
@@ -57,13 +57,13 @@ public class CachingDataServiceImpl implements CachingDataService {
         try {
             properties = propertiesService.getByKey(OtherConstants.LIBRARIES_CACHE);
         } catch (EntityNotFoundException e) {
-            logger.debug("Property '{}' was not found in database", OtherConstants.LIBRARIES_CACHE);
+            LOGGER.debug("Property '{}' was not found in database", OtherConstants.LIBRARIES_CACHE);
 
             libraries = gson.fromJson(cz.rojik.service.utils.FileUtils.readFileFromResource(LIBRARIES_FILE), type);
             return libraries;
         }
 
-        logger.debug("Read libraries properties from database.");
+        LOGGER.debug("Read libraries properties from database.");
         libraries = gson.fromJson(properties.getValue(), type);
         return libraries;
 
@@ -72,7 +72,7 @@ public class CachingDataServiceImpl implements CachingDataService {
     @Cacheable(OtherConstants.IGNORE_CLASSES_CACHE)
     @Override
     public Set<String> getIgnoreClasses() {
-        logger.trace("Read file with classes to ignore import");
+        LOGGER.trace("Read file with classes to ignore import");
 
         Set<String> ignoreClasses;
         PropertyDTO properties;
@@ -80,14 +80,14 @@ public class CachingDataServiceImpl implements CachingDataService {
         try {
             properties = propertiesService.getByKey(OtherConstants.IGNORE_CLASSES_CACHE);
         } catch (EntityNotFoundException e) {
-            logger.debug("Property '{}' was not found in database", OtherConstants.IGNORE_CLASSES_CACHE);
-            logger.debug("Get ignore classes from file.");
+            LOGGER.debug("Property '{}' was not found in database", OtherConstants.IGNORE_CLASSES_CACHE);
+            LOGGER.debug("Get ignore classes from file.");
 
             ignoreClasses = readIgnoreClasses();
             return ignoreClasses;
         }
 
-        logger.debug("Get ignore classes properties from database.");
+        LOGGER.debug("Get ignore classes properties from database.");
         ignoreClasses = new HashSet<>(Arrays.asList(properties.getValue().split(OtherConstants.PACKAGE_IGNORE_CLASSES_SEPARATOR)));
         return ignoreClasses;
     }
@@ -95,13 +95,13 @@ public class CachingDataServiceImpl implements CachingDataService {
     @CacheEvict(value = OtherConstants.LIBRARIES_CACHE, allEntries = true)
     @Override
     public void evictLibrariesCacheValues() {
-        logger.debug("Clear cache '{}'", OtherConstants.LIBRARIES_CACHE);
+        LOGGER.debug("Clear cache '{}'", OtherConstants.LIBRARIES_CACHE);
     }
 
     @CacheEvict(value = OtherConstants.IGNORE_CLASSES_CACHE, allEntries = true)
     @Override
     public void evictIgnoreClassesCacheValues() {
-        logger.debug("Clear cache '{}'", OtherConstants.IGNORE_CLASSES_CACHE);
+        LOGGER.debug("Clear cache '{}'", OtherConstants.IGNORE_CLASSES_CACHE);
     }
 
     // PRIVATE
@@ -118,7 +118,7 @@ public class CachingDataServiceImpl implements CachingDataService {
                     .lines().collect(Collectors.toSet());
 
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw new ReadFileException(IGNORE_CLASS_FILE);
         }
         return ignoreClasses;

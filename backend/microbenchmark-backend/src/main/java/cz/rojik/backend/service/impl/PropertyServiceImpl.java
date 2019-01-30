@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
-    private static Logger logger = LoggerFactory.getLogger(PropertyServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(PropertyServiceImpl.class);
 
     @Autowired
     private PropertyRepository propertyRepository;
@@ -32,7 +32,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public PropertyDTO getOne(Long id) {
-        logger.trace("Get property by id {} from database.", id);
+        LOGGER.trace("Get property by id {} from database.", id);
 
         Optional<PropertyEntity> entity = propertyRepository.findById(id);
         if (!entity.isPresent()) {
@@ -43,7 +43,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public PropertyDTO getByKey(String key) {
-        logger.trace("Get property by key {} from database.", key);
+        LOGGER.trace("Get property by key {} from database.", key);
 
         Optional<PropertyEntity> entity = propertyRepository.findFirstByKey(key);
         if (!entity.isPresent()) {
@@ -54,7 +54,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public List<PropertyDTO> getAll() {
-        logger.trace("Get all properties from DB.");
+        LOGGER.trace("Get all properties from DB.");
         List<PropertyEntity> entities = propertyRepository.findAll();
         List<PropertyDTO> result = entities.stream().map(entity -> objectMapper.convertValue(entity, PropertyDTO.class)).collect(Collectors.toList());
         return result;
@@ -62,7 +62,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public PropertyDTO updateProperty(PropertyDTO property) {
-        logger.trace("Update property in database: {}", property);
+        LOGGER.trace("Update property in database: {}", property);
         Optional<PropertyEntity> entity = propertyRepository.findFirstByKey(property.getKey());
         PropertyEntity propertyEntity = entity.orElseGet(PropertyEntity::new);
 
@@ -75,25 +75,25 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public void delete(Long id) {
-        logger.debug("Delete property with id {} (requested user {})", id, SecurityHelper.getCurrentUser());
+        LOGGER.debug("Delete property with id {} (requested user {})", id, SecurityHelper.getCurrentUser());
         Optional<PropertyEntity> entity = propertyRepository.findById(id);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException(String.format("Property with id %s was not found.", id));
         }
 
         propertyRepository.delete(entity.get());
-        logger.debug("Propery with id {} was successfully deleted", id);
+        LOGGER.debug("Propery with id {} was successfully deleted", id);
     }
 
     @Override
     public void deleteByKey(String key) {
-        logger.debug("Delete property with key {} (requested user {})", key, SecurityHelper.getCurrentUser());
+        LOGGER.debug("Delete property with key {} (requested user {})", key, SecurityHelper.getCurrentUser());
         Optional<PropertyEntity> entity = propertyRepository.findFirstByKey(key);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException(String.format("Property with key %s was not found.", key));
         }
 
         propertyRepository.delete(entity.get());
-        logger.debug("Propery with key {} was successfully deleted", key);
+        LOGGER.debug("Propery with key {} was successfully deleted", key);
     }
 }

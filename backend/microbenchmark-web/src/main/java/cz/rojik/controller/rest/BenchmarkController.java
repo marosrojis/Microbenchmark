@@ -29,7 +29,7 @@ import java.util.Optional;
 @RequestMapping(MappingURLConstants.BENCHMARK)
 public class BenchmarkController {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BenchmarkController.class);
 
     @Autowired
     private BenchmarkService benchmarkService;

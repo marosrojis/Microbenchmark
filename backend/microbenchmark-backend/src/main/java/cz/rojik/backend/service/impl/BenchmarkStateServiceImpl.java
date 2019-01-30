@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Service
 public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkStateServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BenchmarkStateServiceImpl.class);
 
     @Autowired
     private BenchmarkStateRepository benchmarkStateRepository;
@@ -49,14 +49,14 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @Transactional
     @PostConstruct
     public void clearTableBenchmarkState() {
-        logger.trace("Clear table BenchmarkState after start application.");
+        LOGGER.trace("Clear table BenchmarkState after start application.");
         benchmarkStateRepository.deleteAll();
-        logger.trace("Clear table BenchmarkState was successful.");
+        LOGGER.trace("Clear table BenchmarkState was successful.");
     }
 
     @Override
     public BenchmarkStateDTO getByProjectId(String projectId) {
-        logger.trace("Get benchmark state by project ID for user {}", projectId, SecurityHelper.getCurrentUser());
+        LOGGER.trace("Get benchmark state by project ID for user {}", projectId, SecurityHelper.getCurrentUser());
         Optional<BenchmarkStateEntity> entity = benchmarkStateRepository.findByProjectId(projectId);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException("Benchmark state was not found by project ID " + projectId);
@@ -68,7 +68,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
     @Override
     public List<BenchmarkStateDTO> getAll() {
-        logger.trace("Get all benchmark states for user {}", SecurityHelper.getCurrentUser());
+        LOGGER.trace("Get all benchmark states for user {}", SecurityHelper.getCurrentUser());
         List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByOrderByUpdated();
         List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
 
@@ -83,24 +83,24 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         if (running.isPresent()) {
             if (running.get()) {
-                logger.trace("Get all running benchmark states for user {}", SecurityHelper.getCurrentUser());
+                LOGGER.trace("Get all running benchmark states for user {}", SecurityHelper.getCurrentUser());
                 result = getAllByState(BenchmarkStateTypeEnum.runningStates());
             }
             else {
-                logger.trace("Get all non running benchmark states for user {}", SecurityHelper.getCurrentUser());
+                LOGGER.trace("Get all non running benchmark states for user {}", SecurityHelper.getCurrentUser());
                 result = getAllByState(BenchmarkStateTypeEnum.stopStates());
             }
         }
         else {
             result = getAll();
         }
-        logger.trace("Return selected benchmark states for user {}", SecurityHelper.getCurrentUser());
+        LOGGER.trace("Return selected benchmark states for user {}", SecurityHelper.getCurrentUser());
         return result;
     }
 
     @Override
     public List<BenchmarkStateDTO> getAllByState(List<BenchmarkStateTypeEnum> stateType) {
-        logger.trace("Get all benchmark states by specific types: {}\n for user {}", stateType, SecurityHelper.getCurrentUser());
+        LOGGER.trace("Get all benchmark states by specific types: {}\n for user {}", stateType, SecurityHelper.getCurrentUser());
         List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(stateType);
         List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
 
@@ -113,7 +113,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         if (state == null) {
             throw new BadRequestException("The given benchmark state is null");
         }
-        logger.trace("Create benchmark state in DB: {}", state);
+        LOGGER.trace("Create benchmark state in DB: {}", state);
         BenchmarkStateEntity entity = benchmarkStateConverter.dtoToEntity(state);
 
         UserEntity loggedUser = userService.getLoggedUserEntity();
@@ -124,7 +124,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         int numberOfConnections = benchmarkStateRepository.countAllByStateType(BenchmarkStateTypeEnum.runningStates());
         entity.setNumberOfConnections(++numberOfConnections);
 
-        logger.debug("Save benchmark state {} to DB", entity);
+        LOGGER.debug("Save benchmark state {} to DB", entity);
         entity = benchmarkStateRepository.save(entity);
 
         increaseNumberOfConnectionsToAllActive(entity.getProjectId());
@@ -143,7 +143,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         if (!entity.isPresent()) {
             throw new EntityNotFoundException("Benchmark state was not found by project ID " + state.getProjectId());
         }
-        logger.trace("Update benchmark state in DB: {}", state);
+        LOGGER.trace("Update benchmark state in DB: {}", state);
 
         BenchmarkStateEntity benchmarkStateEntity = entity.get();
         benchmarkStateEntity = benchmarkStateConverter.dtoToEntity(state, benchmarkStateEntity);
@@ -155,7 +155,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @Transactional
     @Override
     public void increaseNumberOfConnectionsToAllActive(String projectId) {
-        logger.trace("Increate number of connections to all active benchmark state. Start compile project is {}", projectId);
+        LOGGER.trace("Increate number of connections to all active benchmark state. Start compile project is {}", projectId);
         if (projectId == null) {
             throw new BadRequestException("The given project ID is null");
         }
@@ -167,21 +167,21 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
         });
 
         benchmarkStateRepository.saveAll(benchmarks);
-        logger.debug("Count of increase benchmarks is " + benchmarks.size());
+        LOGGER.debug("Count of increase benchmarks is " + benchmarks.size());
     }
 
     @Transactional
     @Override
     public void synchronizeContainersWithRunningBenchmarks() {
-        logger.trace("Synchronize running benchmark states with running docker containers.");
+        LOGGER.trace("Synchronize running benchmark states with running docker containers.");
         DockerClient docker;
         List<Container> containers;
         try {
             docker = DefaultDockerClient.fromEnv().build();
             containers = docker.listContainers();
-            logger.debug("Running docker containers: {}", containers);
+            LOGGER.debug("Running docker containers: {}", containers);
         } catch (InterruptedException | DockerException | DockerCertificateException e) {
-            logger.error("Docker is not running", e); // TODO: throw exception
+            LOGGER.error("Docker is not running", e); // TODO: throw exception
             return;
         }
 
@@ -190,12 +190,12 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         benchmarks.forEach(benchmark ->  {
             if (!containersId.contains(benchmark.getContainerId())) {
-                logger.info("Docker container {} for project {} is not running.", benchmark.getContainerId(), benchmark.getProjectId());
+                LOGGER.info("Docker container {} for project {} is not running.", benchmark.getContainerId(), benchmark.getProjectId());
                 benchmark.setType(BenchmarkStateTypeEnum.BENCHMARK_ERROR);
                 benchmarkStateRepository.save(benchmark);
             }
         });
-        logger.trace("Synchronize running benchmark states is completed.");
+        LOGGER.trace("Synchronize running benchmark states is completed.");
 
     }
 }

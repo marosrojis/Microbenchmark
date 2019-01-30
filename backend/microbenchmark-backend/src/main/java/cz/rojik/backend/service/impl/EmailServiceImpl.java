@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    private static Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     @Autowired
     private JavaMailSender emailSender;
@@ -49,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
      * @param sendBCC if email has to been sent to blind carbon copy user
      */
     private void sendSimpleMessage(String to, String subject, String text, boolean sendBCC) {
-        logger.trace("Send email to " + to + " with subject " + subject);
+        LOGGER.trace("Send email to " + to + " with subject " + subject);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);

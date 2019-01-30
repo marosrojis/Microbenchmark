@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 @Controller("webSocketBenchmarkController")
 public class BenchmarkController {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BenchmarkController.class);
 
     @Autowired
     private ProjectService benchmarkService;
@@ -62,16 +62,16 @@ public class BenchmarkController {
         messageHeaderAccessor.setSessionId(headerAccessor.getSessionId());
         messageHeaderAccessor.setLeaveMutable(true);
 
-        logger.trace("Read template for project {}", projectId);
+        LOGGER.trace("Read template for project {}", projectId);
         TemplateDTO template = FileUtils.getTemplateFromJson(projectId);
 
         ResultDTO benchmarkResult;
         try {
             benchmarkResult = benchmarkService.runBenchmark(projectId, template, messageHeaderAccessor);
         } catch (BenchmarkRunException e) {
-            logger.error(e.getException(), e);
+            LOGGER.error(e.getException(), e);
 
-            logger.trace("Create error result {} of benchmark to DB for project {}", e.getException(), projectId);
+            LOGGER.trace("Create error result {} of benchmark to DB for project {}", e.getException(), projectId);
             BenchmarkDTO resultToSave = transformService.createErrorResult(projectId, template, e.getException());
             benchmarkServiceBackend.saveResult(resultToSave);
 
@@ -79,7 +79,7 @@ public class BenchmarkController {
             return gson.toJson(error);
         }
 
-        logger.trace("Create result {} of benchmark to DB for project {}", benchmarkResult, projectId);
+        LOGGER.trace("Create result {} of benchmark to DB for project {}", benchmarkResult, projectId);
         BenchmarkDTO resultToSave = transformService.createResult(projectId, template, benchmarkResult);
         benchmarkServiceBackend.saveResult(resultToSave);
 

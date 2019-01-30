@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 @Service
 public class ErrorsParserServiceImpl implements ErrorsParserService {
 
-    private static Logger logger = LoggerFactory.getLogger(ErrorsParserServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ErrorsParserServiceImpl.class);
 
     @Autowired
     private PathProperties pathProperties;
@@ -44,19 +44,19 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
 
     @Override
     public List<ErrorDTO> getSyntaxErrors(Set<String> errors) {
-        logger.trace("Parse errors from maven project: {}", errors);
+        LOGGER.trace("Parse errors from maven project: {}", errors);
         errors = removeCertainErrors(errors);
         errors = removeErrorsHelp(errors);
         errors = removeMavenErrors(errors);
         List<ErrorDTO> errorList = getErrorsInfo(errors);
 
-        logger.debug("Parse errors is completed.\n{}", errorList);
+        LOGGER.debug("Parse errors is completed.\n{}", errorList);
         return errorList;
     }
 
     @Override
     public ErrorInfoWithSourceCodeDTO processErrorList(List<ErrorDTO> errors, String projectId) {
-        logger.trace("Processing error list {} to project {}", errors, projectId);
+        LOGGER.trace("Processing error list {} to project {}", errors, projectId);
         List<String> sourceCode = insertSourceCodeToError(projectId, errors);
 
         List<ErrorInfoDTO> errorInfoList = new ArrayList<>();
@@ -121,7 +121,7 @@ public class ErrorsParserServiceImpl implements ErrorsParserService {
         try {
             sourceCode = Files.readAllLines(Paths.get(pathProperties.getProjects() + projectId + File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
-            logger.error("Cannot open class from project witd ID {0}", projectId);
+            LOGGER.error("Cannot open class from project witd ID {0}", projectId);
             throw new ReadFileException(projectId);
 
         }

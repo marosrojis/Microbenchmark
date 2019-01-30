@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(value = { Exception.class, RuntimeException.class })
     public ResponseEntity<ErrorDetailsDTO> handleGeneralException(Exception exception, WebRequest request) {
@@ -56,12 +56,12 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorDetailsDTO> handleExceptionInternal(Exception exception, WebRequest request, HttpStatus status) {
-        logger.error("Exception occured.", exception);
+        LOGGER.error("Exception occured.", exception);
 
         ErrorDetailsDTO errorDetails = new ErrorDetailsDTO(LocalDateTime.now(), exception.getMessage(),
                 request.getDescription(false));
 
-        logger.info(new ResponseEntity<>(errorDetails, status).getStatusCode().toString());
+        LOGGER.info(new ResponseEntity<>(errorDetails, status).getStatusCode().toString());
         return new ResponseEntity<>(errorDetails, status);
     }
 

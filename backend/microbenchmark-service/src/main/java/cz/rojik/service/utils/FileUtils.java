@@ -31,7 +31,7 @@ import java.util.List;
 @Component
 public class FileUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
     private static PathProperties pathProperties;
 
@@ -46,15 +46,15 @@ public class FileUtils {
      * @param projectId generated project ID
      */
     public static void saveTemplateToJson(TemplateDTO template, String projectId) {
-        logger.trace("Save template {} for project {}", template, projectId);
+        LOGGER.trace("Save template {} for project {}", template, projectId);
         try (Writer writer = new FileWriter(pathProperties.getProjects() + projectId + File.separatorChar + "template.json")) {
             Gson gson = new GsonBuilder().create();
             gson.toJson(template, writer);
         } catch (IOException e) {
-            logger.error("Cannot save template class from project with ID {}", projectId);
+            LOGGER.error("Cannot save template class from project with ID {}", projectId);
             throw new ReadFileException(projectId, e);
         }
-        logger.trace("Saving template {} to file {} is completed.", template, projectId);
+        LOGGER.trace("Saving template {} to file {} is completed.", template, projectId);
     }
 
     /**
@@ -63,17 +63,17 @@ public class FileUtils {
      * @return template project
      */
     public static TemplateDTO getTemplateFromJson(String projectId) {
-        logger.trace("Read template from file {}", projectId);
+        LOGGER.trace("Read template from file {}", projectId);
         TemplateDTO template = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(pathProperties.getProjects() +
                 projectId + File.separatorChar + "template.json"))) {
             Gson gson = new GsonBuilder().create();
             template = gson.fromJson(reader, TemplateDTO.class);
         } catch (IOException e) {
-            logger.error("Cannot open template file from project with ID {}", projectId);
+            LOGGER.error("Cannot open template file from project with ID {}", projectId);
             throw new ReadFileException(projectId, e);
         }
-        logger.debug("Reading template from file {} is finished {}", projectId, template);
+        LOGGER.debug("Reading template from file {} is finished {}", projectId, template);
         return template;
     }
 
@@ -83,13 +83,13 @@ public class FileUtils {
      * @return JMH project class
      */
     public static List<String> readSourceFile(String projectId) {
-        logger.trace("Read source java file for project {}", projectId);
+        LOGGER.trace("Read source java file for project {}", projectId);
         List<String> sourceCode;
         try {
             sourceCode = Files.readAllLines(Paths.get(pathProperties.getProjects() + projectId +
                     File.separatorChar + ProjectContants.PATH_JAVA_PACKAGE + ProjectContants.JAVA_CLASS_FILE));
         } catch (IOException e) {
-            logger.error("Cannot open class from project with ID {}", projectId);
+            LOGGER.error("Cannot open class from project with ID {}", projectId);
             throw new ReadFileException(projectId, e);
         }
         return sourceCode;
@@ -101,7 +101,7 @@ public class FileUtils {
      * @return file from folder 'resources'
      */
     public static String readFileFromResource(String file) {
-        logger.trace("Read file {} from resources folder.", file);
+        LOGGER.trace("Read file {} from resources folder.", file);
         Resource resource = new ClassPathResource(file);
         String fileContent = null;
         try {

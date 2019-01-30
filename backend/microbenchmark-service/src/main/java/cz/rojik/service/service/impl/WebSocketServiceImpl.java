@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WebSocketServiceImpl implements WebSocketService {
 
-    private static Logger logger = LoggerFactory.getLogger(WebSocketServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(WebSocketServiceImpl.class);
 
     private static final String BENCHMARK_RESULT_STEP = "/benchmark/result/step";
 
@@ -26,7 +26,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public void sendProcessInfo(ProcessInfoDTO processInfo, SimpMessageHeaderAccessor headerAccessor) {
-        logger.trace("Send websocket with process info {} to user with session ID {}", processInfo, headerAccessor.getSessionId());
+        LOGGER.trace("Send websocket with process info {} to user with session ID {}", processInfo, headerAccessor.getSessionId());
         this.template.convertAndSendToUser(headerAccessor.getSessionId(), BENCHMARK_RESULT_STEP, processInfo, headerAccessor.getMessageHeaders());
     }
 }

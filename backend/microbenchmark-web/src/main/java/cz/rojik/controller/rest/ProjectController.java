@@ -31,7 +31,7 @@ import javax.validation.Valid;
 @RequestMapping(MappingURLConstants.PROJECT)
 public class ProjectController {
 
-    private static Logger logger = LoggerFactory.getLogger(ProjectController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
     private ProjectService projectService;
@@ -51,7 +51,7 @@ public class ProjectController {
             projectId = projectService.createProject(template);
         } catch (ImportsToChooseException exception) {
             LibrariesToChooseDTO libraries = new LibrariesToChooseDTO(exception.getProjectId(), exception.getImportsToChoose());
-            logger.debug("Return response CONFLICT - select libraries to import {} in project {}", libraries.getImports(), libraries.getProjectId());
+            LOGGER.debug("Return response CONFLICT - select libraries to import {} in project {}", libraries.getImports(), libraries.getProjectId());
             return new ResponseEntity<>(libraries, HttpStatus.CONFLICT);
         }
 
@@ -80,7 +80,7 @@ public class ProjectController {
         try {
             projectService.compile(projectId);
         } catch (MavenCompileException exception) {
-            logger.debug("Return response BAD_REQUEST - compiler errors {} in project {}: {}", exception.getErrors(), projectId, exception.getMessage());
+            LOGGER.debug("Return response BAD_REQUEST - compiler errors {} in project {}: {}", exception.getErrors(), projectId, exception.getMessage());
             return new ResponseEntity<>(exception.getErrors(), HttpStatus.BAD_REQUEST);
         }
 

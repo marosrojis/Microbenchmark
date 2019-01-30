@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class BenchmarkConverter {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkConverter.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BenchmarkConverter.class);
 
     @Autowired
     private PathProperties pathProperties;
@@ -36,7 +36,7 @@ public class BenchmarkConverter {
      * @return {@link BenchmarkDTO} object
      */
     public BenchmarkDTO entityToDTO(BenchmarkEntity entity) {
-        logger.trace("Convert Benchmark entity to DTO object: {}", entity);
+        LOGGER.trace("Convert Benchmark entity to DTO object: {}", entity);
         BenchmarkDTO result = new BenchmarkDTO();
 
         result.setContent(entity.getContent())
@@ -71,7 +71,7 @@ public class BenchmarkConverter {
             result.setJarUrl(pathProperties.getLinkProjects() + File.separator + jarPath);
         }
 
-        logger.trace("Converted Benchmark measure methods DTO: {}", methods);
+        LOGGER.trace("Converted Benchmark measure methods DTO: {}", methods);
 
         return result;
     }
@@ -82,7 +82,7 @@ public class BenchmarkConverter {
      * @return {@link BenchmarkEntity} object
      */
     public BenchmarkEntity dtoToEntity(BenchmarkDTO dto) {
-        logger.trace("Convert DTO to Entity: {}", dto);
+        LOGGER.trace("Convert DTO to Entity: {}", dto);
         BenchmarkEntity entity = new BenchmarkEntity();
 
         entity.setContent(dto.getContent())

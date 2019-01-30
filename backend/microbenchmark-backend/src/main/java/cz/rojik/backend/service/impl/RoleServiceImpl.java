@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-	private static Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(RoleServiceImpl.class);
 
 	@Autowired
     private RoleRepository roleRepository;
@@ -31,7 +31,7 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public RoleDTO getByType(String type) {
-		logger.trace("Get role by type {}", type);
+		LOGGER.trace("Get role by type {}", type);
 		return new RoleDTO(roleRepository.findFirstByType(type));
 	}
 
@@ -42,7 +42,7 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public RoleDTO getByType(RoleTypeEnum roleType) {
-		logger.trace("Get role by type {}", roleType);
+		LOGGER.trace("Get role by type {}", roleType);
 		return new RoleDTO(roleRepository.findFirstByType(roleType.name()));
 	}
 
@@ -52,7 +52,7 @@ public class RoleServiceImpl implements RoleService {
 	 */
 	@Override
 	public List<RoleDTO> findAll() {
-		logger.trace("Find all roles");
+		LOGGER.trace("Find all roles");
 		List<RoleEntity> roles = roleRepository.findAll();
 
 		List<RoleDTO> output = new ArrayList<>();

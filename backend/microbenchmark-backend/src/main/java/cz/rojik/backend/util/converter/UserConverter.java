@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserConverter {
 
-    private static Logger logger = LoggerFactory.getLogger(UserConverter.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(UserConverter.class);
 
     /**
      * Convert {@link UserEntity} to {@link UserDTO} object
@@ -27,7 +27,7 @@ public class UserConverter {
      * @return {@link UserDTO} converted object
      */
     public UserDTO entityToDTO(UserEntity entity, boolean setRoles) {
-        logger.trace("Convert User entity to DTO object (setRoles = {}): {} ", setRoles, entity);
+        LOGGER.trace("Convert User entity to DTO object (setRoles = {}): {} ", setRoles, entity);
 
         UserDTO user = new UserDTO();
         if (entity != null) {
@@ -54,7 +54,7 @@ public class UserConverter {
      * @return {@link UserEntity} object
      */
     public UserEntity dtoToEntity(UserDTO user) {
-        logger.trace("Create entiy from develop user {}", user);
+        LOGGER.trace("Create entiy from develop user {}", user);
         UserEntity entity = new UserEntity();
         entity.setId(user.getId());
 
@@ -75,7 +75,7 @@ public class UserConverter {
      * @return updated user values
      */
     public UserEntity mapToEntityUpdate(UserDTO newState, UserEntity previousState) {
-        logger.trace("Map user dto to entity update, newState = {},\n previousState = {}", newState, previousState);
+        LOGGER.trace("Map user dto to entity update, newState = {},\n previousState = {}", newState, previousState);
         if (!StringUtils.equals(newState.getFirstname(), previousState.getFirstname())) {
             previousState.setFirstname(newState.getFirstname());
         }

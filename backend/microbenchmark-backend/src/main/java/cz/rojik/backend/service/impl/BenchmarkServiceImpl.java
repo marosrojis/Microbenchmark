@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Service("benchmarkServiceBackend")
 public class BenchmarkServiceImpl implements BenchmarkService {
 
-    private static Logger logger = LoggerFactory.getLogger(BenchmarkServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BenchmarkServiceImpl.class);
 
     @Autowired
     private BenchmarkConverter benchmarkConverter;
@@ -79,7 +79,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     @Transactional
     public BenchmarkDTO saveResult(BenchmarkDTO result) {
-        logger.debug("Save benchmark result {}", result);
+        LOGGER.debug("Save benchmark result {}", result);
 
         if (StringUtils.isEmpty(result.getName())) {
             result.setName(result.getCreated().format(DateTimeFormatter.ofPattern(DateTimeConstants.LOCAL_DATE_TIME_PATTERN)));
@@ -101,7 +101,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     .setOrder(method.getOrder())
                     .setResult(entity);
             methodEntity = measureMethodRepository.save(methodEntity);
-            logger.trace("Save measured method {} for project {}", methodEntity, result.getProjectId());
+            LOGGER.trace("Save measured method {} for project {}", methodEntity, result.getProjectId());
             measureMethodEntityList.add(methodEntity);
         }
 
@@ -111,7 +111,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public BenchmarkDTO delete(Long id) {
-        logger.trace("Delete benchmark {}", id);
+        LOGGER.trace("Delete benchmark {}", id);
         Optional<BenchmarkEntity> entity = findBenchmarkById(id);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
@@ -125,17 +125,17 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             benchmarkStateRepository.delete(benchmarkStateEntity.get());
         }
         else {
-            logger.debug("Benchmark state with project ID {} is not exist -> it cannot be deleted.");
+            LOGGER.debug("Benchmark state with project ID {} is not exist -> it cannot be deleted.");
         }
 
         benchmarkRepository.delete(entity.get());
-        logger.debug("Deleting benchmark {} is completed.", entity);
+        LOGGER.debug("Deleting benchmark {} is completed.", entity);
         return benchmarkConverter.entityToDTO(entity.get());
     }
 
     @Override
     public BenchmarkDTO assignToUser(Long id, Long userId) {
-        logger.debug("Assign benchmark {} to user {}", id, userId);
+        LOGGER.debug("Assign benchmark {} to user {}", id, userId);
         Optional<BenchmarkEntity> benchmarkEntity = benchmarkRepository.findById(id);
         if (!benchmarkEntity.isPresent()) {
             throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
@@ -148,7 +148,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
         BenchmarkEntity entity = benchmarkEntity.get();
         entity.setUser(userEntity.get());
-        logger.trace("Save benchmark {}", entity);
+        LOGGER.trace("Save benchmark {}", entity);
         benchmarkRepository.saveAndFlush(entity);
 
         return benchmarkConverter.entityToDTO(entity);

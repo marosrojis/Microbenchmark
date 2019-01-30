@@ -37,7 +37,7 @@ import java.util.zip.ZipEntry;
 @Service
 public class ImporterServiceImpl implements ImporterService {
 
-    private static Logger logger = LoggerFactory.getLogger(ImporterServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ImporterServiceImpl.class);
 
     private final Pattern JAVA_PACKAGE_CLASS_REGEX = Pattern.compile(OtherConstants.JAVA_PACKAGE_CLASS_REGEX);
     private static final int REMOVE_CLASS = 6;
@@ -50,7 +50,7 @@ public class ImporterServiceImpl implements ImporterService {
 
     @Override
     public ImportsResult getLibrariesToImport(ImportsResult imports, String input) {
-        logger.trace("Start finding all classes in project to import in file {}", input);
+        LOGGER.trace("Start finding all classes in project to import in file {}", input);
 
         Map<String, List<String>> javaLibraries = cachingDataService.getJavaLibraries();
         Set<String> ignoreClasses = cachingDataService.getIgnoreClasses();
@@ -83,10 +83,10 @@ public class ImporterServiceImpl implements ImporterService {
         }
 
         imports.getLibraries().addAll(libraries);
-        logger.debug("All classes to automatic import {}", libraries);
+        LOGGER.debug("All classes to automatic import {}", libraries);
 
         imports.getLibrariesToChoose().putAll(selectImports);
-        logger.debug("All classes to choose which to import {}", selectImports);
+        LOGGER.debug("All classes to choose which to import {}", selectImports);
 
         return imports;
     }
@@ -121,17 +121,17 @@ public class ImporterServiceImpl implements ImporterService {
 
         File directory = new File(folder);
         if (!directory.exists()) {
-            logger.error("Read folder {} with JAR files is fail.", folder);
+            LOGGER.error("Read folder {} with JAR files is fail.", folder);
             throw new ReadFileException(folder);
         }
 
-        logger.debug("Read all files from folder {}", folder);
+        LOGGER.debug("Read all files from folder {}", folder);
         File[] fList = directory.listFiles();
         for (File file : fList) {
             try {
                 jarFile = new JarFile(file);
             } catch (IOException e) {
-                logger.error("Read JAR file {} is fail.", file.getAbsoluteFile());
+                LOGGER.error("Read JAR file {} is fail.", file.getAbsoluteFile());
                 throw new ReadFileException(folder, e);
             }
 

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 @Service
 public class MessageLogParserServiceImpl implements MessageLogParserService {
 
-    private static Logger logger = LoggerFactory.getLogger(MessageLogParserServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(MessageLogParserServiceImpl.class);
 
     private static final String MEASUREMENT_REGEX = "Iteration[ \\t]*(\\d+):.*";
     private static final String WARMUP_REGEX = "# Warmup Iteration[ \\t]*(\\d+):.*";
@@ -29,7 +29,7 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
 
     @Override
     public ProcessInfoDTO parseMessage(String message, TemplateDTO template) {
-        logger.trace("Parse message {} from running docker container", message);
+        LOGGER.trace("Parse message {} from running docker container", message);
         ProcessInfoDTO info = null;
         final Pattern pMeasurement = Pattern.compile(MEASUREMENT_REGEX);
         final Pattern pWarmup = Pattern.compile(WARMUP_REGEX);

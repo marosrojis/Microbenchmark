@@ -35,7 +35,7 @@ import java.util.Optional;
 @RequestMapping(MappingURLConstants.USERS)
 public class UsersController {
 
-    private static Logger logger = LoggerFactory.getLogger(UsersController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
 
     @Autowired
     private UserService userService;
