@@ -96,10 +96,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
         List<MeasureMethodEntity> measureMethodEntityList = new ArrayList<>();
         for (MeasureMethodDTO method : result.getMeasureMethods()) {
-            MeasureMethodEntity methodEntity = new MeasureMethodEntity()
-                    .setMethod(method.getMethod())
-                    .setOrder(method.getOrder())
-                    .setResult(entity);
+            MeasureMethodEntity methodEntity = new MeasureMethodEntity(method.getOrder(), method.getMethod(), entity);
             methodEntity = measureMethodRepository.save(methodEntity);
             LOGGER.trace("Save measured method {} for project {}", methodEntity, result.getProjectId());
             measureMethodEntityList.add(methodEntity);
@@ -117,7 +114,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             throw new EntityNotFoundException(String.format("Benchmark with ID %s was not found.", id));
         }
 
-        List<MeasureMethodEntity> methods = measureMethodRepository.findAllByResult(entity.get());
+        List<MeasureMethodEntity> methods = measureMethodRepository.findAllByBenchmark(entity.get());
         measureMethodRepository.deleteAll(methods);
 
         Optional<BenchmarkStateEntity> benchmarkStateEntity = benchmarkStateRepository.findByProjectId(entity.get().getProjectId());

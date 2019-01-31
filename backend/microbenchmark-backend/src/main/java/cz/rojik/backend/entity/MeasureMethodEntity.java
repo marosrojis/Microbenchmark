@@ -25,8 +25,16 @@ public class MeasureMethodEntity extends BaseEntity {
     private String method;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "result_id", nullable = false)
-    private BenchmarkEntity result;
+    @JoinColumn(name = "benchmark_id", nullable = false)
+    private BenchmarkEntity benchmark;
+
+    public MeasureMethodEntity() {}
+
+    public MeasureMethodEntity(int order, String method, BenchmarkEntity benchmark) {
+        this.order = order;
+        this.method = method;
+        this.benchmark = benchmark;
+    }
 
     public int getOrder() {
         return order;
@@ -46,12 +54,12 @@ public class MeasureMethodEntity extends BaseEntity {
         return this;
     }
 
-    public BenchmarkEntity getResult() {
-        return result;
+    public BenchmarkEntity getBenchmark() {
+        return benchmark;
     }
 
-    public MeasureMethodEntity setResult(BenchmarkEntity result) {
-        this.result = result;
+    public MeasureMethodEntity setBenchmark(BenchmarkEntity benchmark) {
+        this.benchmark = benchmark;
         return this;
     }
 
@@ -71,12 +79,12 @@ public class MeasureMethodEntity extends BaseEntity {
         MeasureMethodEntity that = (MeasureMethodEntity) o;
         return order == that.order &&
                 Objects.equals(method, that.method) &&
-                Objects.equals(result, that.result);
+                Objects.equals(benchmark, that.benchmark);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), order, method, result);
+        return Objects.hash(super.hashCode(), order, method, benchmark);
     }
 }

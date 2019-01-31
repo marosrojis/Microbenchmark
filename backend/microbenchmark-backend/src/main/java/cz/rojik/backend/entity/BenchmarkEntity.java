@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,11 +56,25 @@ public class BenchmarkEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "result")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "benchmark")
     private List<MeasureMethodEntity> measureMethods;
 
     @Column(name = "success", nullable = false)
     private boolean success;
+
+    public BenchmarkEntity() {}
+
+    public BenchmarkEntity(String projectId, String name, LocalDateTime created, String content, int warmup, int measurement, String init, String declare, boolean success) {
+        this.projectId = projectId;
+        this.name = name;
+        this.created = created;
+        this.content = content;
+        this.warmup = warmup;
+        this.measurement = measurement;
+        this.init = init;
+        this.declare = declare;
+        this.success = success;
+    }
 
     @Override
     public String toString() {

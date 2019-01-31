@@ -1,5 +1,6 @@
 package cz.rojik;
 
+import cz.rojik.mock.MockDataFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
@@ -14,7 +15,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @EntityScan("cz.rojik.backend.entity")
 @EnableJpaRepositories(basePackages = "cz.rojik.backend.repository")
 @ComponentScan("cz.rojik")
-@Import({ ValidationAutoConfiguration.class, JacksonAutoConfiguration.class})
+@Import({ ValidationAutoConfiguration.class, JacksonAutoConfiguration.class, MockDataFactory.class})
 public class EmptyDbConfig {
 
     @Bean

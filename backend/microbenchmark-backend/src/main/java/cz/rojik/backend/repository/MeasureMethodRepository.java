@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface MeasureMethodRepository extends BaseRepository<MeasureMethodEntity> {
 
-    List<MeasureMethodEntity> findAllByResult(BenchmarkEntity result);
+    List<MeasureMethodEntity> findAllByBenchmark(BenchmarkEntity benchmark);
 }

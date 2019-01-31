@@ -1,6 +1,7 @@
 package cz.rojik.service;
 
 import cz.rojik.MBMarkApplicationTest;
+import cz.rojik.backend.repository.UserRepository;
 import cz.rojik.service.service.ImporterService;
 import cz.rojik.service.utils.pojo.ImportsResult;
 import org.junit.Before;
@@ -17,8 +18,9 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
 
     private ImportsResult imports;
 
-    @Before
-    public void setUp() throws Exception {
+    @Override
+    public void setUp() {
+        super.setUp();
         imports = new ImportsResult();
     }
 

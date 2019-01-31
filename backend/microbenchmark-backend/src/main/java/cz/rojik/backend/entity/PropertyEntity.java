@@ -33,6 +33,13 @@ public class PropertyEntity {
     @Lob
     private String value;
 
+    public PropertyEntity() {}
+
+    public PropertyEntity(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     public Long getId() {
         return id;
     }

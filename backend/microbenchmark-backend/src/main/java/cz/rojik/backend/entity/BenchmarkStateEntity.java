@@ -53,6 +53,18 @@ public class BenchmarkStateEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    public BenchmarkStateEntity() {}
+
+    public BenchmarkStateEntity(String projectId, String containerId, BenchmarkStateTypeEnum type, LocalDateTime updated, int numberOfConnections, int completed, LocalDateTime estimatedEndTime) {
+        this.projectId = projectId;
+        this.containerId = containerId;
+        this.type = type;
+        this.updated = updated;
+        this.numberOfConnections = numberOfConnections;
+        this.completed = completed;
+        this.estimatedEndTime = estimatedEndTime;
+    }
+
     public String getProjectId() {
         return projectId;
     }
