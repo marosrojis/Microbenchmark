@@ -15,7 +15,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @EntityScan("cz.rojik.backend.entity")
 @EnableJpaRepositories(basePackages = "cz.rojik.backend.repository")
 @ComponentScan("cz.rojik")
-@Import({ ValidationAutoConfiguration.class, JacksonAutoConfiguration.class, MockDataFactory.class})
+@Import({ ValidationAutoConfiguration.class, JacksonAutoConfiguration.class, MockDataFactory.class })
 public class EmptyDbConfig {
 
     @Bean

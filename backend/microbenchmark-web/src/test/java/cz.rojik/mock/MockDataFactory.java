@@ -1,6 +1,5 @@
 package cz.rojik.mock;
 
-import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.entity.BenchmarkEntity;
 import cz.rojik.backend.entity.BenchmarkStateEntity;
 import cz.rojik.backend.entity.MeasureMethodEntity;
@@ -13,9 +12,6 @@ import cz.rojik.backend.repository.MeasureMethodRepository;
 import cz.rojik.backend.repository.PropertyRepository;
 import cz.rojik.backend.repository.RoleRepository;
 import cz.rojik.backend.repository.UserRepository;
-import cz.rojik.backend.util.SecurityHelper;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
