@@ -53,6 +53,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SecurityHelper securityHelper;
+
     @Override
     public BenchmarkDTO getOne(Long id) {
         Optional<BenchmarkEntity> benchmarkEntity = findBenchmarkById(id);
@@ -65,12 +68,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public List<BenchmarkDTO> getAll(Optional<Boolean> success, Optional<Long> user) {
-        if (!SecurityHelper.isLoggedUserAdmin() &&
-                user.isPresent() && !SecurityHelper.hasLoggedUserId(user.get())) {
+        if (!securityHelper.isLoggedUserAdmin() &&
+                user.isPresent() && !securityHelper.hasLoggedUserId(user.get())) {
             throw new EntityNotFoundException("User with ID " + user.get() + " was not found.");
         }
 
-        List<BenchmarkEntity> entities = benchmarkRepository.findAll(BenchmarkSpecificationBuilder.matchQuery(success, user));
+        List<BenchmarkEntity> entities = benchmarkRepository.findAll(BenchmarkSpecificationBuilder.matchQuery(success, user, securityHelper));
         List<BenchmarkDTO> result = entities.stream().map(entity -> benchmarkConverter.entityToDTO(entity)).collect(Collectors.toList());
 
         return result;
@@ -159,11 +162,11 @@ public class BenchmarkServiceImpl implements BenchmarkService {
      */
     private Optional<BenchmarkEntity> findBenchmarkById(Long id) {
         Optional<BenchmarkEntity> benchmarkEntity;
-        if (SecurityHelper.isLoggedUserAdmin()) {
+        if (securityHelper.isLoggedUserAdmin()) {
             benchmarkEntity = benchmarkRepository.findById(id);
         }
         else {
-            benchmarkEntity = benchmarkRepository.findByIdAndUserId(id, SecurityHelper.getCurrentUserId());
+            benchmarkEntity = benchmarkRepository.findByIdAndUserId(id, securityHelper.getCurrentUserId());
         }
         return benchmarkEntity;
     }

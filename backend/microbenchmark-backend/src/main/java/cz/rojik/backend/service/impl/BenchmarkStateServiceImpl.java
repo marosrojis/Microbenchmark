@@ -46,6 +46,9 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SecurityHelper securityHelper;
+
     @Transactional
     @PostConstruct
     public void clearTableBenchmarkState() {
@@ -56,7 +59,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
     @Override
     public BenchmarkStateDTO getByProjectId(String projectId) {
-        LOGGER.trace("Get benchmark state by project ID for user {}", projectId, SecurityHelper.getCurrentUser());
+        LOGGER.trace("Get benchmark state by project ID for user {}", projectId, securityHelper.getCurrentUser());
         Optional<BenchmarkStateEntity> entity = benchmarkStateRepository.findByProjectId(projectId);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException("Benchmark state was not found by project ID " + projectId);
@@ -68,7 +71,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
     @Override
     public List<BenchmarkStateDTO> getAll() {
-        LOGGER.trace("Get all benchmark states for user {}", SecurityHelper.getCurrentUser());
+        LOGGER.trace("Get all benchmark states for user {}", securityHelper.getCurrentUser());
         List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByOrderByUpdated();
         List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
 
@@ -83,24 +86,24 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
 
         if (running.isPresent()) {
             if (running.get()) {
-                LOGGER.trace("Get all running benchmark states for user {}", SecurityHelper.getCurrentUser());
+                LOGGER.trace("Get all running benchmark states for user {}", securityHelper.getCurrentUser());
                 result = getAllByState(BenchmarkStateTypeEnum.runningStates());
             }
             else {
-                LOGGER.trace("Get all non running benchmark states for user {}", SecurityHelper.getCurrentUser());
+                LOGGER.trace("Get all non running benchmark states for user {}", securityHelper.getCurrentUser());
                 result = getAllByState(BenchmarkStateTypeEnum.stopStates());
             }
         }
         else {
             result = getAll();
         }
-        LOGGER.trace("Return selected benchmark states for user {}", SecurityHelper.getCurrentUser());
+        LOGGER.trace("Return selected benchmark states for user {}", securityHelper.getCurrentUser());
         return result;
     }
 
     @Override
     public List<BenchmarkStateDTO> getAllByState(List<BenchmarkStateTypeEnum> stateType) {
-        LOGGER.trace("Get all benchmark states by specific types: {}\n for user {}", stateType, SecurityHelper.getCurrentUser());
+        LOGGER.trace("Get all benchmark states by specific types: {}\n for user {}", stateType, securityHelper.getCurrentUser());
         List<BenchmarkStateEntity> entities = benchmarkStateRepository.findAllByTypeIsInOrderByUpdated(stateType);
         List<BenchmarkStateDTO> result = entities.stream().map(entity -> benchmarkStateConverter.entityToDTO(entity)).collect(Collectors.toList());
 

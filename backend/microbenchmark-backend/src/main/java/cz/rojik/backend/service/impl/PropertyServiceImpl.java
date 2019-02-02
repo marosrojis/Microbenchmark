@@ -30,6 +30,9 @@ public class PropertyServiceImpl implements PropertyService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SecurityHelper securityHelper;
+
     @Override
     public PropertyDTO getOne(Long id) {
         LOGGER.trace("Get property by id {} from database.", id);
@@ -75,7 +78,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public void delete(Long id) {
-        LOGGER.debug("Delete property with id {} (requested user {})", id, SecurityHelper.getCurrentUser());
+        LOGGER.debug("Delete property with id {} (requested user {})", id, securityHelper.getCurrentUser());
         Optional<PropertyEntity> entity = propertyRepository.findById(id);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException(String.format("Property with id %s was not found.", id));
@@ -87,7 +90,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public void deleteByKey(String key) {
-        LOGGER.debug("Delete property with key {} (requested user {})", key, SecurityHelper.getCurrentUser());
+        LOGGER.debug("Delete property with key {} (requested user {})", key, securityHelper.getCurrentUser());
         Optional<PropertyEntity> entity = propertyRepository.findFirstByKey(key);
         if (!entity.isPresent()) {
             throw new EntityNotFoundException(String.format("Property with key %s was not found.", key));

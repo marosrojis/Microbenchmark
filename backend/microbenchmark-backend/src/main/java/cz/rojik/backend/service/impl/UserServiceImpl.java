@@ -53,6 +53,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private EmailService emailService;
 
+	@Autowired
+	private SecurityHelper securityHelper;
+
     /**
      * Creating user with data from {@link UserRegistrationForm}
      * @param user {@link UserRegistrationForm} with data to create new user
@@ -141,7 +144,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO getUser(Long id) {
-    	LOGGER.trace("Get user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
+    	LOGGER.trace("Get user with ID {} (requested user {})", id, securityHelper.getCurrentUser());
         Optional<UserEntity> user = findById(id);
 
         if (!user.isPresent()) {
@@ -152,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAll(Optional<Boolean> enabled) {
-    	LOGGER.trace("Get all users (requested user: {})", SecurityHelper.getCurrentUser());
+    	LOGGER.trace("Get all users (requested user: {})", securityHelper.getCurrentUser());
         List<UserEntity> users;
 
         if (enabled.isPresent()) {
@@ -169,7 +172,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserEntity getLoggedUserEntity() {
     	LOGGER.trace("Get logged user entity");
-		UserDTO userDTO = SecurityHelper.getCurrentUser();
+		UserDTO userDTO = securityHelper.getCurrentUser();
 		if (userDTO != null) {
 			Optional<UserEntity> entity = findById(userDTO.getId());
 			return entity.get();
@@ -179,7 +182,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void delete(Long id) {
-    	LOGGER.debug("Delete user with ID {} (requested user {})", id, SecurityHelper.getCurrentUser());
+    	LOGGER.debug("Delete user with ID {} (requested user {})", id, securityHelper.getCurrentUser());
 		Optional<UserEntity> entity = userRepository.findById(id);
 		if (!entity.isPresent()) {
 			throw new EntityNotFoundException(String.format("User with ID %s was not found.", id));
@@ -229,7 +232,7 @@ public class UserServiceImpl implements UserService {
         entity.setRoles(roles);
 
 		// if user account is created by admin, automatic enable account
-        if (SecurityHelper.isLoggedUserAdmin()) {
+        if (securityHelper.isLoggedUserAdmin()) {
             entity.setEnabled(true);
         }
 
@@ -258,7 +261,7 @@ public class UserServiceImpl implements UserService {
 	 * @return user entity object
 	 */
 	private Optional<UserEntity> findById(Long id) {
-    	if (!SecurityHelper.isLoggedUserAdmin() && !id.equals(SecurityHelper.getCurrentUserId())) {
+    	if (!securityHelper.isLoggedUserAdmin() && !id.equals(securityHelper.getCurrentUserId())) {
 			throw new EntityNotFoundException(String.format("User with ID %s was not found.", id));
 		}
     	Optional<UserEntity> entity = userRepository.findById(id);

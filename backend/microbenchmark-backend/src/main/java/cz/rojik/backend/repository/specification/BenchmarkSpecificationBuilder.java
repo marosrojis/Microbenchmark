@@ -3,6 +3,7 @@ package cz.rojik.backend.repository.specification;
 import cz.rojik.backend.entity.BenchmarkEntity;
 import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.util.SecurityHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.JoinType;
@@ -17,7 +18,7 @@ import java.util.Optional;
  */
 public class BenchmarkSpecificationBuilder {
 
-    public static Specification<BenchmarkEntity> matchQuery(Optional<Boolean> success, Optional<Long> userId) {
+    public static Specification<BenchmarkEntity> matchQuery(Optional<Boolean> success, Optional<Long> userId, SecurityHelper securityHelper) {
         return (root, query, cb) ->{
             root.fetch("measureMethods", JoinType.INNER);
             root.fetch("user", JoinType.LEFT);
@@ -30,8 +31,8 @@ public class BenchmarkSpecificationBuilder {
             userId.ifPresent(user -> predicates.add(cb.equal(root.<UserEntity>get("user").<Long>get("id"), user)));
             success.ifPresent(val -> predicates.add(cb.equal(root.<Boolean>get("success"), val)));
 
-            if (!SecurityHelper.isLoggedUserAdmin()) {
-                predicates.add(cb.equal(root.<UserEntity>get("user").<Long>get("id"), SecurityHelper.getCurrentUserId()));
+            if (!securityHelper.isLoggedUserAdmin()) {
+                predicates.add(cb.equal(root.<UserEntity>get("user").<Long>get("id"), securityHelper.getCurrentUserId()));
             }
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));

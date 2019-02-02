@@ -23,6 +23,9 @@ public class TransformServiceImpl implements TransformService {
     @Qualifier("benchmarkConverterRest")
     private BenchmarkConverter benchmarkConverter;
 
+    @Autowired
+    private SecurityHelper securityHelper;
+
     @Override
     public BenchmarkDTO createResult(String projectId, TemplateDTO template, cz.rojik.service.dto.ResultDTO benchmarkResult) {
         Gson gson = new GsonBuilder().create();
@@ -32,7 +35,7 @@ public class TransformServiceImpl implements TransformService {
         result.setProjectId(projectId)
                 .setCreated(benchmarkResult.getTime())
                 .setContent(gson.toJson(benchmarkResult))
-                .setUser(SecurityHelper.getCurrentUser())
+                .setUser(securityHelper.getCurrentUser())
                 .setSuccess(true);
 
         return result;
@@ -45,7 +48,7 @@ public class TransformServiceImpl implements TransformService {
         result.setProjectId(projectId)
                 .setCreated(LocalDateTime.now())
                 .setContent(error)
-                .setUser(SecurityHelper.getCurrentUser())
+                .setUser(securityHelper.getCurrentUser())
                 .setSuccess(false);
 
         return result;
