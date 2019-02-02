@@ -6,8 +6,13 @@ import cz.rojik.backend.entity.BenchmarkEntity;
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.repository.BenchmarkRepository;
 import cz.rojik.backend.service.BenchmarkService;
+import cz.rojik.controller.rest.BenchmarkController;
+import cz.rojik.mock.SecurityHelperMock;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -17,14 +22,20 @@ import java.util.List;
 public class BenchmarkControllerTest extends MBMarkApplicationTest {
 
     @Autowired
-    private BenchmarkRepository benchmarkRepository;
+    private BenchmarkController benchmarkController;
 
-    @Autowired
-    private BenchmarkService benchmarkService;
+    private SecurityHelperMock securityHelperMock;
+
+    @Before
+    public void setUp() {
+        super.setUp();
+        securityHelperMock = new SecurityHelperMock(securityHelper);
+    }
 
     @Test(expected = EntityNotFoundException.class)
-    public void getOneTest() {
-        List<BenchmarkEntity> entities = benchmarkRepository.findAll();
-        BenchmarkDTO benchmark = benchmarkService.getOne(1L);
+    public void getOneEntityNotFoundTest() {
+        securityHelperMock.mockUser();
+
+        ResponseEntity<BenchmarkDTO> response = benchmarkController.getOne(1L);
     }
 }

@@ -1,11 +1,13 @@
 package cz.rojik;
 
+import cz.rojik.backend.util.SecurityHelper;
 import cz.rojik.mock.MockDataFactory;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,6 +19,9 @@ public abstract class MBMarkApplicationTest {
 
     @Autowired
     private MockDataFactory mockDataFactory;
+
+    @MockBean
+    public SecurityHelper securityHelper;
 
     @Before
     public void setUp() {

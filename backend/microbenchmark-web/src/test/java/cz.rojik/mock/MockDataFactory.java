@@ -92,10 +92,20 @@ public class MockDataFactory {
         BenchmarkEntity benchmark3 = new BenchmarkEntity(BENCHMARK_PROJECT_ID_3, BENCHMARK_NAME_3, LocalDateTime.now(),
                 BENCHMARK_CONTENT_3, BENCHMARK_WARMUP_3, BENCHMARK_MEASUREMENT_3, null, null, BENCHMARK_SUCCESS_3);
         benchmark3.setId(BENCHMARK_ID_3);
+        BenchmarkEntity benchmark4 = new BenchmarkEntity(BENCHMARK_PROJECT_ID_4, BENCHMARK_NAME_4, LocalDateTime.now(),
+                BENCHMARK_CONTENT_4, BENCHMARK_WARMUP_4, BENCHMARK_MEASUREMENT_4, null, null, BENCHMARK_SUCCESS_4)
+                .setUser(user2);
+        benchmark4.setId(BENCHMARK_ID_4);
+        BenchmarkEntity benchmark5 = new BenchmarkEntity(BENCHMARK_PROJECT_ID_5, BENCHMARK_NAME_5, LocalDateTime.now(),
+                BENCHMARK_CONTENT_5, BENCHMARK_WARMUP_5, BENCHMARK_MEASUREMENT_5, null, null, BENCHMARK_SUCCESS_5)
+                .setUser(user3);
+        benchmark5.setId(BENCHMARK_ID_5);
 
         benchmark1 = benchmarkRepository.saveAndFlush(benchmark1);
         benchmark2 = benchmarkRepository.saveAndFlush(benchmark2);
         benchmark3 = benchmarkRepository.saveAndFlush(benchmark3);
+        benchmark4 = benchmarkRepository.saveAndFlush(benchmark4);
+        benchmark5 = benchmarkRepository.saveAndFlush(benchmark5);
 
         // MEASURE_METHOD
         MeasureMethodEntity method1 = new MeasureMethodEntity(MEASURE_METHOD_ORDER_1, MEASURE_METHOD_METHOD_1, benchmark1);
@@ -108,16 +118,24 @@ public class MockDataFactory {
         method4.setId(MEASURE_METHOD_ID_4);
         MeasureMethodEntity method5 = new MeasureMethodEntity(MEASURE_METHOD_ORDER_5, MEASURE_METHOD_METHOD_5, benchmark3);
         method5.setId(MEASURE_METHOD_ID_5);
+        MeasureMethodEntity method6 = new MeasureMethodEntity(MEASURE_METHOD_ORDER_6, MEASURE_METHOD_METHOD_6, benchmark4);
+        method6.setId(MEASURE_METHOD_ID_6);
+        MeasureMethodEntity method7 = new MeasureMethodEntity(MEASURE_METHOD_ORDER_7, MEASURE_METHOD_METHOD_7, benchmark5);
+        method7.setId(MEASURE_METHOD_ID_7);
 
         method1 = measureMethodRepository.saveAndFlush(method1);
         method2 = measureMethodRepository.saveAndFlush(method2);
         method3 = measureMethodRepository.saveAndFlush(method3);
         method4 = measureMethodRepository.saveAndFlush(method4);
         method5 = measureMethodRepository.saveAndFlush(method5);
+        method6 = measureMethodRepository.saveAndFlush(method6);
+        method7 = measureMethodRepository.saveAndFlush(method7);
 
         benchmark1.setMeasureMethods(Arrays.asList(method1, method2));
         benchmark2.setMeasureMethods(Arrays.asList(method3, method4));
         benchmark3.setMeasureMethods(Collections.singletonList(method5));
+        benchmark4.setMeasureMethods(Collections.singletonList(method6));
+        benchmark5.setMeasureMethods(Collections.singletonList(method7));
         benchmarkRepository.flush();
 
         // BENCHMARK_STATE

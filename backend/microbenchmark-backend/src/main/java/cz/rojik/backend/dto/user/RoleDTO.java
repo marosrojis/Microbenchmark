@@ -11,7 +11,6 @@ public class RoleDTO extends BaseDTO {
     private static final long serialVersionUID = 6446218251439828650L;
 
     private String type;
-    private boolean new_;
 
     public RoleDTO() {}
 
@@ -48,16 +47,9 @@ public class RoleDTO extends BaseDTO {
         return type;
     }
 
-    public void setType(String type) {
+    public RoleDTO setType(String type) {
         this.type = type;
+        return this;
     }
-
-	public void setNew(boolean new_) {
-		this.new_ = new_;
-	}
-
-	public boolean getNew() {
-		return new_;
-	}
 
 }

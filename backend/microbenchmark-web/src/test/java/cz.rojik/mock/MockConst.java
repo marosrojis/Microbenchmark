@@ -71,6 +71,22 @@ public class MockConst {
     public static final int BENCHMARK_WARMUP_3 = 11;
     public static final int BENCHMARK_MEASUREMENT_3 = 11;
 
+    public static final Long BENCHMARK_ID_4 = 4L;
+    public static final String BENCHMARK_PROJECT_ID_4 = "project-id-4";
+    public static final String BENCHMARK_NAME_4 = "name-4";
+    public static final String BENCHMARK_CONTENT_4 = "content-4";
+    public static final Boolean BENCHMARK_SUCCESS_4 = true;
+    public static final int BENCHMARK_WARMUP_4 = 12;
+    public static final int BENCHMARK_MEASUREMENT_4 = 1;
+
+    public static final Long BENCHMARK_ID_5 = 5L;
+    public static final String BENCHMARK_PROJECT_ID_5 = "project-id-5";
+    public static final String BENCHMARK_NAME_5 = "name-5";
+    public static final String BENCHMARK_CONTENT_5 = "content-5";
+    public static final Boolean BENCHMARK_SUCCESS_5 = false;
+    public static final int BENCHMARK_WARMUP_5 = 20;
+    public static final int BENCHMARK_MEASUREMENT_5 = 5;
+
     // MEASURE_METHOD
     public static final Long MEASURE_METHOD_ID_1 = 1L;
     public static final String MEASURE_METHOD_METHOD_1 = "measure_method_content-1";
@@ -91,6 +107,14 @@ public class MockConst {
     public static final Long MEASURE_METHOD_ID_5 = 5L;
     public static final String MEASURE_METHOD_METHOD_5 = "measure_method_content-5";
     public static final int MEASURE_METHOD_ORDER_5 = 5;
+
+    public static final Long MEASURE_METHOD_ID_6 = 6L;
+    public static final String MEASURE_METHOD_METHOD_6 = "measure_method_content-6";
+    public static final int MEASURE_METHOD_ORDER_6 = 6;
+
+    public static final Long MEASURE_METHOD_ID_7 = 7L;
+    public static final String MEASURE_METHOD_METHOD_7 = "measure_method_content-7";
+    public static final int MEASURE_METHOD_ORDER_7 = 7;
 
     // BENCHMARK_STATE
     public static final Long BENCHMARK_STATE_ID_1 = 1L;
