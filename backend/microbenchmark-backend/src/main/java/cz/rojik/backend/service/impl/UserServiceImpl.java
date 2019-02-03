@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 			boolean isRolesValidate = validateRoles(roles);
 			if (!isRolesValidate) {
 				LOGGER.error("User's roles is not validate: " + roles);
-				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user.");
+				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user or set ADMIN.");
 			}
 
 			entity.setRoles(roles);
@@ -271,12 +271,18 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Method for validate role for created/updated user.
 	 * User must not have role 'User' and 'Demo' at the same time.
+	 * If new user contains role 'Admin' and logged user is not 'Admin' => roles invalidate
 	 * @param roles role to set
 	 * @return ok/fail validation
 	 */
 	private boolean validateRoles(Set<RoleEntity> roles) {
     	LOGGER.trace("Validate roles {}", roles);
 		List<RoleEntity> roleTypes = roles.stream().filter(r -> r.getType().equals(RoleTypeEnum.USER.getRoleType()) || r.getType().equals(RoleTypeEnum.DEMO.getRoleType())).collect(Collectors.toList());
-		return roleTypes.size() != 2;
+		boolean success = roleTypes.size() != 2;
+
+		if (roles.stream().anyMatch(r -> r.getType().equalsIgnoreCase(RoleTypeEnum.ADMIN.getRoleType())) && !securityHelper.isLoggedUserAdmin()) {
+			success = false;
+		}
+		return success;
 	}
 }

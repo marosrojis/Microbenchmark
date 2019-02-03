@@ -100,9 +100,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// USERS
 				.mvcMatchers(HttpMethod.GET, MappingURLConstants.USERS).hasRole(RoleTypeEnum.ADMIN.getRoleType())
 				.mvcMatchers(HttpMethod.GET, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleTypeEnum.USER.getRoleType(), RoleTypeEnum.DEMO.getRoleType())
-				.mvcMatchers(HttpMethod.PUT, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleTypeEnum.ADMIN.getRoleType())
-				.mvcMatchers(HttpMethod.DELETE, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleTypeEnum.ADMIN.getRoleType())
-
+				.mvcMatchers(HttpMethod.PUT, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleTypeEnum.USER.getRoleType(), RoleTypeEnum.DEMO.getRoleType())
+				.mvcMatchers(HttpMethod.DELETE, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasRole(RoleTypeEnum.ADMIN.getRoleType())
 
 				.antMatchers("/**").permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()

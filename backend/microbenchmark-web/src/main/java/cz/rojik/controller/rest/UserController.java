@@ -2,7 +2,6 @@ package cz.rojik.controller.rest;
 
 import cz.rojik.backend.dto.user.UserDTO;
 import cz.rojik.backend.dto.user.UserRegistrationForm;
-import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.service.UserService;
 import cz.rojik.constants.MappingURLConstants;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +31,9 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(MappingURLConstants.USERS)
-public class UsersController {
+public class UserController {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
