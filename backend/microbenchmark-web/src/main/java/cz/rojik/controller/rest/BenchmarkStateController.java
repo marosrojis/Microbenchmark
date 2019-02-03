@@ -33,7 +33,7 @@ public class BenchmarkStateController {
      * @return list of benchmarks with basic info
      */
     @GetMapping
-    public ResponseEntity<List<BenchmarkStateDTO>> getBenchmarksState(@RequestParam(value = "running") Optional<Boolean> running) {
+    public ResponseEntity<List<BenchmarkStateDTO>> getAll(@RequestParam(value = "running") Optional<Boolean> running) {
         List<BenchmarkStateDTO> benchmarksState = benchmarkStateService.getBenchmarksState(running);
         return new ResponseEntity<>(benchmarksState, HttpStatus.OK);
     }

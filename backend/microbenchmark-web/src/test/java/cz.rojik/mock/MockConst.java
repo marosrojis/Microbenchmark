@@ -2,6 +2,7 @@ package cz.rojik.mock;
 
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.enums.RoleTypeEnum;
+import cz.rojik.service.constants.OtherConstants;
 
 import java.time.LocalDateTime;
 
@@ -177,4 +178,12 @@ public class MockConst {
     public static final Long PROPERTY_ID_3 = 3L;
     public static final String PROPERTY_KEY_3 = "key-3";
     public static final String PROPERTY_VALUE_3 = "value-3";
+
+    public static final Long PROPERTY_ID_4 = 4L;
+    public static final String PROPERTY_KEY_4 = OtherConstants.LIBRARIES_CACHE;
+    public static final String PROPERTY_VALUE_4 = "value-4";
+
+    // OTHERS
+    public static final Long UNKNOWN_ID = 0L;
+
 }

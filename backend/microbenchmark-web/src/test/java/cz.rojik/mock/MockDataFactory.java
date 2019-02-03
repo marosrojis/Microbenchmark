@@ -177,8 +177,11 @@ public class MockDataFactory {
         property2.setId(PROPERTY_ID_2);
         PropertyEntity property3 = new PropertyEntity(PROPERTY_KEY_3, PROPERTY_VALUE_3);
         property3.setId(PROPERTY_ID_3);
+        PropertyEntity property4 = new PropertyEntity(PROPERTY_KEY_4, PROPERTY_VALUE_4);
+        property4.setId(PROPERTY_ID_4);
         propertyRepository.saveAndFlush(property1);
         propertyRepository.saveAndFlush(property2);
         propertyRepository.saveAndFlush(property3);
+        propertyRepository.saveAndFlush(property4);
     }
 }

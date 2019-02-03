@@ -254,13 +254,13 @@ public class BenchmarkControllerTest extends MBMarkApplicationTest {
     @Test(expected = EntityNotFoundException.class)
     public void assignToUserUserNotFoundExceptionTest() {
         securityHelperMock.mockAdmin();
-        benchmarkController.assignToUser(3L, 0L);
+        benchmarkController.assignToUser(3L, UNKNOWN_ID);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void assignToUserBenchmarkNotFoundExceptionTest() {
         securityHelperMock.mockAdmin();
-        benchmarkController.assignToUser(0L, USER_ID_3);
+        benchmarkController.assignToUser(UNKNOWN_ID, USER_ID_3);
     }
 
     private void assertBenchmark(Long id, String projectId, String content, boolean success, Long userId, BenchmarkDTO benchmark) {

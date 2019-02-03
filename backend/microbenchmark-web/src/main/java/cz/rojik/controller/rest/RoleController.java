@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Controller for roles manipulation.
- * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
+ * @author Marek Rojik (marek@rojik.cz) on 03. 02. 2019
  */
 @RestController
 @CrossOrigin(origins = "*")
