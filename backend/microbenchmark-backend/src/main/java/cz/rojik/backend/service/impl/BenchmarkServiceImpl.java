@@ -143,7 +143,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (!userEntity.isPresent()) {
-            throw new UserException(String.format("User with ID %s was not found.", userId));
+            throw new EntityNotFoundException(String.format("User with ID %s was not found.", userId));
         }
 
         BenchmarkEntity entity = benchmarkEntity.get();

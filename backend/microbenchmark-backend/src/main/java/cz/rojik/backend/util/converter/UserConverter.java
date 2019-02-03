@@ -29,8 +29,9 @@ public class UserConverter {
     public UserDTO entityToDTO(UserEntity entity, boolean setRoles) {
         LOGGER.trace("Convert User entity to DTO object (setRoles = {}): {} ", setRoles, entity);
 
-        UserDTO user = new UserDTO();
+        UserDTO user = null;
         if (entity != null) {
+            user = new UserDTO();
             user.setEmail(entity.getEmail())
                 .setFirstname(entity.getFirstname())
                 .setLastname(entity.getLastname())

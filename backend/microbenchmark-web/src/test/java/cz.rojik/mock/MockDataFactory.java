@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -131,11 +132,11 @@ public class MockDataFactory {
         method6 = measureMethodRepository.saveAndFlush(method6);
         method7 = measureMethodRepository.saveAndFlush(method7);
 
-        benchmark1.setMeasureMethods(Arrays.asList(method1, method2));
-        benchmark2.setMeasureMethods(Arrays.asList(method3, method4));
-        benchmark3.setMeasureMethods(Collections.singletonList(method5));
-        benchmark4.setMeasureMethods(Collections.singletonList(method6));
-        benchmark5.setMeasureMethods(Collections.singletonList(method7));
+        benchmark1.setMeasureMethods(new ArrayList<>(Arrays.asList(method1, method2)));
+        benchmark2.setMeasureMethods(new ArrayList<>(Arrays.asList(method3, method4)));
+        benchmark3.setMeasureMethods(new ArrayList<>(Collections.singletonList(method5)));
+        benchmark4.setMeasureMethods(new ArrayList<>(Collections.singletonList(method6)));
+        benchmark5.setMeasureMethods(new ArrayList<>(Collections.singletonList(method7)));
         benchmarkRepository.flush();
 
         // BENCHMARK_STATE
