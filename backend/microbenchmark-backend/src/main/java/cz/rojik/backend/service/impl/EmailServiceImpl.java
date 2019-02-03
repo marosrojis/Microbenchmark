@@ -2,12 +2,18 @@ package cz.rojik.backend.service.impl;
 
 import cz.rojik.backend.properties.MailProperties;
 import cz.rojik.backend.service.EmailService;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -16,6 +22,11 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
+
+    private static String FOLDER_WITH_EMAILS = "emails/";
+    private static String REGISTRATION_TEMPLATE = FOLDER_WITH_EMAILS + "registration.txt";
+    private static String REGISTRATION_NONACTIVE_TEMPLATE = FOLDER_WITH_EMAILS + "registraionNonActive.txt";
+    private static String ACTIVATE_TEMPLATE = FOLDER_WITH_EMAILS + "activate.txt";
 
     @Autowired
     private JavaMailSender emailSender;
@@ -26,18 +37,29 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendAfterRegistrationUser(String to, boolean isActive) {
         String text;
-        if (isActive) {
-            text = String.format(mailProperties.getRegistrationText(), to);
-        }
-        else {
-            text = String.format(mailProperties.getRegistrationTextNonActive(), to);
+        try {
+            if (isActive) {
+                text = String.format(readEmailTemplateFromResource(REGISTRATION_TEMPLATE), to);
+            }
+            else {
+                text = String.format(readEmailTemplateFromResource(REGISTRATION_NONACTIVE_TEMPLATE), to);
+            }
+        }  catch (IOException e) {
+            LOGGER.warn("Email template was not found.", e);
+            return;
         }
         sendSimpleMessage(to, "Registration to MBMark", text, true);
     }
 
     @Override
     public void sendAfterUpdateUser(String to) {
-        String text = String.format(mailProperties.getActiveText(), to);
+        String text;
+        try {
+            text = String.format(readEmailTemplateFromResource(ACTIVATE_TEMPLATE), to);
+        } catch (IOException e) {
+            LOGGER.warn("Email template {} was not found.", ACTIVATE_TEMPLATE, e);
+            return;
+        }
         sendSimpleMessage(to, "Your account is active.", text, true);
     }
 
@@ -60,5 +82,17 @@ public class EmailServiceImpl implements EmailService {
         }
 
         emailSender.send(message);
+    }
+
+    /**
+     * Read email template from maven folder 'resources'.
+     * @param file file to read
+     * @return file from folder 'resources'
+     */
+    private String readEmailTemplateFromResource(String file) throws IOException {
+        LOGGER.trace("Read file {} from resources folder.", file);
+        Resource resource = new ClassPathResource(file);
+        String fileContent = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
+        return fileContent;
     }
 }

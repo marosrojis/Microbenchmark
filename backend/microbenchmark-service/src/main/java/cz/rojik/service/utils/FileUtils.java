@@ -107,7 +107,7 @@ public class FileUtils {
         try {
             fileContent = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("File {} is not exist.", file);
             throw new ReadFileException(file, e);
         }
 

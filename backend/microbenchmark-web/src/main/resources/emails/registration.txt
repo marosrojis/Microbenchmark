@@ -1,0 +1,7 @@
+Hi,
+
+your account %s is created.
+
+You can log in to the MBMark application.
+
+Thank you.

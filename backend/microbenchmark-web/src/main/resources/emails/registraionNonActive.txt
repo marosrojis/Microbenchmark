@@ -1,0 +1,9 @@
+Hi,
+
+your account %s is created.
+
+You have to wait until the administrator will confirm your registration.
+
+You will be informed after your account will be confirmed.
+
+Thank you.
