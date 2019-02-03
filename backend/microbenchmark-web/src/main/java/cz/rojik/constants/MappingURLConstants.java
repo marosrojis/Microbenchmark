@@ -20,7 +20,7 @@ public class MappingURLConstants {
     public static final String PROJECT_KILL = "kill/{projectId}";
 
     // USERS
-    public static final String USERS = API_PREFIX + "/users";
+    public static final String USERS = API_PREFIX + "/user";
 
     // BENCHMARK_STATE
     public static final String BENCHMARK_STATE = API_PREFIX + "/benchmarkState";
@@ -28,8 +28,11 @@ public class MappingURLConstants {
     // PROPERTY
     public static final String PROPERTY = API_PREFIX + "/property";
 
-    // IMPORT LIBRARIES
+    // LIBRARIES
     public static final String LIBRARY_LIBRARIES = API_PREFIX + "/library";
+
+    // ROLE
+    public static final String ROLE = API_PREFIX + "/role";
 
     // LOGIN
     public static final String LOGIN = API_PREFIX + "/login";

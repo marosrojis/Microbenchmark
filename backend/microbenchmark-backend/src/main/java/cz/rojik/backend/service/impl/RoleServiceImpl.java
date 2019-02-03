@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -51,15 +52,12 @@ public class RoleServiceImpl implements RoleService {
 	 * @return list of {@link RoleDTO} created
 	 */
 	@Override
-	public List<RoleDTO> findAll() {
-		LOGGER.trace("Find all roles");
-		List<RoleEntity> roles = roleRepository.findAll();
+	public List<RoleDTO> getAll() {
+		LOGGER.trace("Get all roles");
+		List<RoleEntity> entities = roleRepository.findAll();
 
-		List<RoleDTO> output = new ArrayList<>();
-		for (RoleEntity role : roles) {
-			output.add(new RoleDTO(role));
-		}
-		return output;
+		List<RoleDTO> result = entities.stream().map(RoleDTO::new).collect(Collectors.toList());
+		return result;
 	}
 
 }

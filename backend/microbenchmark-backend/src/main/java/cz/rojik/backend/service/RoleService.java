@@ -25,5 +25,5 @@ public interface RoleService {
 	 * Get all roles
 	 * @return list of roles
 	 */
-	List<RoleDTO> findAll();
+	List<RoleDTO> getAll();
 }
