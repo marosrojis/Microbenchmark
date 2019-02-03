@@ -21,7 +21,6 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
 
     @Override
     public void setUp() {
-        super.setUp();
         imports = new ImportsResult();
     }
 

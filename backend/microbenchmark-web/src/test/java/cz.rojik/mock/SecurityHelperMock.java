@@ -22,7 +22,7 @@ public class SecurityHelperMock {
         this.securityHelper = securityHelper;
     }
 
-    public void mockAdmin() {
+    public UserDTO mockAdmin() {
         RoleDTO adminRole = new RoleDTO().setType(RoleTypeEnum.ADMIN.getRoleType());
         adminRole.setId(ROLE_ID_1);
         RoleDTO userRole = new RoleDTO().setType(RoleTypeEnum.USER.getRoleType());
@@ -41,9 +41,10 @@ public class SecurityHelperMock {
         given(securityHelper.getCurrentUserId()).willReturn(user.getId());
         given(securityHelper.getCurrentUserName()).willReturn(user.getUsername());
         given(securityHelper.isLoggedUserAdmin()).willReturn(true);
+        return user;
     }
 
-    public void mockUser() {
+    public UserDTO mockUser() {
         RoleDTO userRole = new RoleDTO().setType(RoleTypeEnum.USER.getRoleType());
         userRole.setId(ROLE_ID_2);
 
@@ -60,9 +61,10 @@ public class SecurityHelperMock {
         given(securityHelper.getCurrentUserId()).willReturn(user.getId());
         given(securityHelper.getCurrentUserName()).willReturn(user.getUsername());
         given(securityHelper.isLoggedUserAdmin()).willReturn(false);
+        return user;
     }
 
-    public void mockDemo() {
+    public UserDTO mockDemo() {
         RoleDTO demoRole = new RoleDTO().setType(RoleTypeEnum.DEMO.getRoleType());
         demoRole.setId(ROLE_ID_3);
 
@@ -79,5 +81,6 @@ public class SecurityHelperMock {
         given(securityHelper.getCurrentUserId()).willReturn(user.getId());
         given(securityHelper.getCurrentUserName()).willReturn(user.getUsername());
         given(securityHelper.isLoggedUserAdmin()).willReturn(false);
+        return user;
     }
 }
