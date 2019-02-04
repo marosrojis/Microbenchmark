@@ -57,6 +57,8 @@ public class BenchmarkStateControllerTest {
 
     @Test
     public void getAllTest() {
+        initMock();
+
         Optional<Boolean> running = Optional.empty();
         ResponseEntity<List<BenchmarkStateDTO>> response = benchmarkStateController.getAll(running);
         List<BenchmarkStateDTO> states = response.getBody();
@@ -73,10 +75,7 @@ public class BenchmarkStateControllerTest {
 
     @Test
     public void getAllRunningTest() {
-        Mockito.when(benchmarkStateService.getAllByState(any())).thenCallRealMethod();
-        Mockito.when(benchmarkStateService.getAll()).thenCallRealMethod();
-        Mockito.when(benchmarkStateService.getBenchmarksState(any())).thenCallRealMethod();
-        Mockito.doNothing().when(benchmarkStateService).synchronizeContainersWithRunningBenchmarks();
+        initMock();
 
         Optional<Boolean> running = Optional.of(true);
         ResponseEntity<List<BenchmarkStateDTO>> response = benchmarkStateController.getAll(running);
@@ -88,12 +87,21 @@ public class BenchmarkStateControllerTest {
 
     @Test
     public void getAllNonRunningTest() {
+        initMock();
+
         Optional<Boolean> running = Optional.of(false);
         ResponseEntity<List<BenchmarkStateDTO>> response = benchmarkStateController.getAll(running);
         List<BenchmarkStateDTO> states = response.getBody();
 
         Assert.assertNotEquals(states.size(), 0);
         Assert.assertTrue(states.stream().allMatch(s -> BenchmarkStateTypeEnum.stopStates().contains(s.getType())));
+    }
+
+    private void initMock() {
+        Mockito.when(benchmarkStateService.getAllByState(any())).thenCallRealMethod();
+        Mockito.when(benchmarkStateService.getAll()).thenCallRealMethod();
+        Mockito.when(benchmarkStateService.getBenchmarksState(any())).thenCallRealMethod();
+        Mockito.doNothing().when(benchmarkStateService).synchronizeContainersWithRunningBenchmarks();
     }
 
     @Configuration
