@@ -14,5 +14,5 @@ public interface MessageLogParserService {
      * @param template code to measure
      * @return object contains code to measure
      */
-    ProcessInfoDTO parseMessage(String message, TemplateDTO template);
+    ProcessInfoDTO parseMessage(String message, TemplateDTO template, String projectId);
 }

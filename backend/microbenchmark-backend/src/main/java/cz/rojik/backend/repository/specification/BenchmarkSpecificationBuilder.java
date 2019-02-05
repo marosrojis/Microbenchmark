@@ -3,7 +3,6 @@ package cz.rojik.backend.repository.specification;
 import cz.rojik.backend.entity.BenchmarkEntity;
 import cz.rojik.backend.entity.UserEntity;
 import cz.rojik.backend.util.SecurityHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.JoinType;

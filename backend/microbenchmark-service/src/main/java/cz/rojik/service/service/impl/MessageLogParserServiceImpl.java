@@ -22,14 +22,14 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
     private static final String MEASUREMENT_REGEX = "Iteration[ \\t]*(\\d+):.*";
     private static final String WARMUP_REGEX = "# Warmup Iteration[ \\t]*(\\d+):.*";
     private static final String RESULT_REGEX = "Result \"cz\\.rojik\\.Microbenchmark\\.benchmarkTest(\\d+)\":[\\s\\S.]*";
-    private static final String EXCEPTION_REGEX = ".*Exception[\\s\\S]*";
+    private static final String EXCEPTION_REGEX = "(<failure>[\\s\\S.]*)?.*Exception[\\s\\S]*";
     private static final String ERROR_REGEX = ".*Error:[\\s\\S]*";
     private static final String COMPLETE_REGEX = "[\\s]?Benchmark result is saved to[\\s\\S.]*";
 
 
     @Override
-    public ProcessInfoDTO parseMessage(String message, TemplateDTO template) {
-        LOGGER.trace("Parse message {} from running docker container", message);
+    public ProcessInfoDTO parseMessage(String message, TemplateDTO template, String projectId) {
+        LOGGER.trace("Parse message {} from running docker container with project {}", message, projectId);
         ProcessInfoDTO info = null;
         final Pattern pMeasurement = Pattern.compile(MEASUREMENT_REGEX);
         final Pattern pWarmup = Pattern.compile(WARMUP_REGEX);
@@ -38,6 +38,7 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
         final Pattern pError = Pattern.compile(ERROR_REGEX);
         final Pattern pComplete = Pattern.compile(COMPLETE_REGEX);
 
+        message = message.trim();
         if (pMeasurement.matcher(message).matches()) {
             info = new ProcessInfoDTO(Operation.MEASUREMENT, getNumberFromRegex(pMeasurement.matcher(message)), template.getMeasurement() + "");
         }
@@ -48,6 +49,7 @@ public class MessageLogParserServiceImpl implements MessageLogParserService {
             info = new ProcessInfoDTO(Operation.RESULT, getNumberFromRegex(pResult.matcher(message)), template.getTestMethods().size() + "");
         }
         else if (pException.matcher(message).matches() || pError.matcher(message).matches()) {
+            message = message.replace("<failure>", "").trim();
             info = new ProcessInfoDTO(Operation.ERROR_BENCHMARK).setNote(message);
         }
         else if (pComplete.matcher(message).matches()) {

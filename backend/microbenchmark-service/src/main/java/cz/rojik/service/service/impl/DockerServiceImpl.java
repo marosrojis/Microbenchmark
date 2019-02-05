@@ -117,7 +117,7 @@ public class DockerServiceImpl implements DockerService {
 
         while (output.hasNext()) {
             final String logMessage = StandardCharsets.UTF_8.decode(output.next().content()).toString();
-            processInfo = messageLogParser.parseMessage(logMessage, template);
+            processInfo = messageLogParser.parseMessage(logMessage, template, projectId);
             if (processInfo != null) {
                 LOGGER.debug("Benchmark process info from docker container {} for project {} (iteration {})", containerId, projectId, currentIteration);
                 if (processInfo.getOperation().equals(Operation.SUCCESS_BENCHMARK)) {

@@ -49,6 +49,8 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Autowired
     private PropertyService propertiesService;
 
+    private static final String SYSTEM_OUT_REGEX = "System.out.[a-z]*\\([^\\)]*\\);";
+
     @Override
     public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
         LOGGER.trace("Generate java class with template {}", template);
@@ -56,6 +58,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         ImportsResult imports = getAllImports(template);
         template.setLibraries(generateImports(imports.getLibraries()));
+        template = commentDangerousMethods(template);
         cz.rojik.service.utils.FileUtils.saveTemplateToJson(template, projectID);
 
         if (imports.getLibrariesToChoose().size() != 0) {
@@ -288,5 +291,32 @@ public class GeneratorServiceImpl implements GeneratorService {
             value = defaultValue;
         }
         return value;
+    }
+
+    /**
+     * Find any usage dangerous methods and comment it.
+     * @param template code from user
+     * @return template with commented dangerous methods
+     */
+    private TemplateDTO commentDangerousMethods(TemplateDTO template) {
+        LOGGER.trace("Find any usage dangerous methods.");
+        template.setInit(commentSystemOutCalls(template.getInit()));
+        template.setDeclare(commentSystemOutCalls(template.getDeclare()));
+
+        for (int i = 0; i < template.getTestMethods().size(); i++) {
+            String commented = commentSystemOutCalls(template.getTestMethods().get(i));
+            template.getTestMethods().set(i, commented);
+        }
+        return template;
+    }
+
+    /**
+     * Comment any possible usage of method 'System.out'
+     * @param content code to analyze
+     * @return commented code
+     */
+    private String commentSystemOutCalls(String content) {
+        LOGGER.trace("Comment any possible usage of method 'System.out'");
+        return content.replaceAll(SYSTEM_OUT_REGEX, "/*$0*/");
     }
 }
