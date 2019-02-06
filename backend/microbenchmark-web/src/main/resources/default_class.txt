@@ -9,6 +9,8 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 // START LIBRARIES
 [config.libraries]
@@ -27,6 +29,7 @@ public class [config.className] {
 
 	@Setup(Level.Trial)
 	public void init() {
+        System.setOut(new PrintStream(new OutputStream(){public void write(int b) {}}));
 // START INIT
 		[microbenchmark.init]
 // END INIT
