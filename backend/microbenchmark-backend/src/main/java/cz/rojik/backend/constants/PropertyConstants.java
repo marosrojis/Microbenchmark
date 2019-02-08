@@ -1,4 +1,4 @@
-package cz.rojik.service.constants;
+package cz.rojik.backend.constants;
 
 /**
  * Created by Marek Rojik (marek.rojik@inventi.cz) on 08. 02. 2019
@@ -24,4 +24,9 @@ public class PropertyConstants {
      * KEY for save/read java version from database
      */
     public static final String JAVA_VERSION = "javaVersion";
+
+    /**
+     * KEY for save/read java version from database
+     */
+    public static final String BLIND_COPY_EMAIL = "blindCopyEmail";
 }

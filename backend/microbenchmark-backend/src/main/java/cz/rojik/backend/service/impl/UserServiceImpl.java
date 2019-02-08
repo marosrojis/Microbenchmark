@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 			boolean isRolesValidate = validateRoles(roles);
 			if (!isRolesValidate) {
 				LOGGER.error("User's roles is not validate: " + roles);
-				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user or set ADMIN.");
+				throw new UserException("User's roles is not validate. You cannot set USER and DEMO roles to one user or set ADMIN role if you are not ADMIN.");
 			}
 
 			entity.setRoles(roles);

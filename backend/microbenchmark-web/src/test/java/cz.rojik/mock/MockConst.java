@@ -2,7 +2,7 @@ package cz.rojik.mock;
 
 import cz.rojik.backend.enums.BenchmarkStateTypeEnum;
 import cz.rojik.backend.enums.RoleTypeEnum;
-import cz.rojik.service.constants.PropertyConstants;
+import cz.rojik.backend.constants.PropertyConstants;
 
 import java.time.LocalDateTime;
 

@@ -1,7 +1,10 @@
 package cz.rojik.backend.service.impl;
 
-import cz.rojik.backend.properties.MailProperties;
+import cz.rojik.backend.constants.PropertyConstants;
+import cz.rojik.backend.dto.PropertyDTO;
+import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.service.EmailService;
+import cz.rojik.backend.service.PropertyService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +28,14 @@ public class EmailServiceImpl implements EmailService {
 
     private static String FOLDER_WITH_EMAILS = "emails/";
     private static String REGISTRATION_TEMPLATE = FOLDER_WITH_EMAILS + "registration.txt";
-    private static String REGISTRATION_NONACTIVE_TEMPLATE = FOLDER_WITH_EMAILS + "registraionNonActive.txt";
+    private static String REGISTRATION_NONACTIVE_TEMPLATE = FOLDER_WITH_EMAILS + "registrationNonActive.txt";
     private static String ACTIVATE_TEMPLATE = FOLDER_WITH_EMAILS + "activate.txt";
 
     @Autowired
     private JavaMailSender emailSender;
 
     @Autowired
-    private MailProperties mailProperties;
+    private PropertyService propertyService;
 
     @Override
     public void sendAfterRegistrationUser(String to, boolean isActive) {
@@ -78,7 +81,12 @@ public class EmailServiceImpl implements EmailService {
         message.setText(text);
 
         if (sendBCC) {
-            message.setBcc(mailProperties.getBlindCopy());
+            try {
+                PropertyDTO property = propertyService.getByKey(PropertyConstants.BLIND_COPY_EMAIL);
+                message.setBcc(property.getValue());
+            } catch (EntityNotFoundException e) {
+                LOGGER.warn("Property {} was not found. Email will not be sent.", PropertyConstants.BLIND_COPY_EMAIL);
+            }
         }
 
         emailSender.send(message);

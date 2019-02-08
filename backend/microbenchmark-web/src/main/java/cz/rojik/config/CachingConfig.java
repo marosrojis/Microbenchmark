@@ -1,6 +1,6 @@
 package cz.rojik.config;
 
-import cz.rojik.service.constants.PropertyConstants;
+import cz.rojik.backend.constants.PropertyConstants;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;

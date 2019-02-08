@@ -7,7 +7,7 @@ import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
-import cz.rojik.service.constants.PropertyConstants;
+import cz.rojik.backend.constants.PropertyConstants;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
 import org.slf4j.Logger;

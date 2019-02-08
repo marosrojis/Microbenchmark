@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
-import cz.rojik.service.constants.PropertyConstants;
+import cz.rojik.backend.constants.PropertyConstants;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
 import cz.rojik.service.utils.pojo.ImportsResult;

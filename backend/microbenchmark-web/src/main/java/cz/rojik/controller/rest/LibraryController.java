@@ -3,7 +3,7 @@ package cz.rojik.controller.rest;
 import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.service.PropertyService;
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.service.constants.PropertyConstants;
+import cz.rojik.backend.constants.PropertyConstants;
 import cz.rojik.service.dto.PathDTO;
 import cz.rojik.service.service.ImporterService;
 import org.springframework.beans.factory.annotation.Autowired;
