@@ -3,7 +3,7 @@ package cz.rojik.controller.rest;
 import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.service.PropertyService;
 import cz.rojik.constants.MappingURLConstants;
-import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.constants.PropertyConstants;
 import cz.rojik.service.dto.PathDTO;
 import cz.rojik.service.service.ImporterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class LibraryController {
      */
     @GetMapping
     public ResponseEntity<PropertyDTO> get() {
-        PropertyDTO property = propertyService.getByKey(OtherConstants.LIBRARIES_CACHE);
+        PropertyDTO property = propertyService.getByKey(PropertyConstants.LIBRARIES_CACHE);
         return new ResponseEntity<>(property, HttpStatus.OK);
     }
 
@@ -61,7 +61,7 @@ public class LibraryController {
      */
     @DeleteMapping
     public ResponseEntity delete() {
-        propertyService.deleteByKey(OtherConstants.LIBRARIES_CACHE);
+        propertyService.deleteByKey(PropertyConstants.LIBRARIES_CACHE);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

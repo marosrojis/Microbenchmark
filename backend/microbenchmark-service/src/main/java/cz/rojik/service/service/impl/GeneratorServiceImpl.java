@@ -3,7 +3,7 @@ package cz.rojik.service.service.impl;
 import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.service.PropertyService;
-import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.constants.PropertyConstants;
 import cz.rojik.service.constants.ProjectContants;
 import cz.rojik.service.constants.TemplateConstants;
 import cz.rojik.service.dto.LibrariesDTO;
@@ -249,8 +249,8 @@ public class GeneratorServiceImpl implements GeneratorService {
      */
     private String replaceVariablesInProjectPOM(String fileContent) {
         LOGGER.trace("Replace variable in project POM.xml file.");
-        String javaVersion = getProperty(OtherConstants.JAVA_VERSION, ProjectContants.DEFAULT_JAVA_VERSION);
-        String jmhVersion = getProperty(OtherConstants.JMH_VERSION, ProjectContants.DEFAULT_JMH_VERSION);
+        String javaVersion = getProperty(PropertyConstants.JAVA_VERSION, ProjectContants.DEFAULT_JAVA_VERSION);
+        String jmhVersion = getProperty(PropertyConstants.JMH_VERSION, ProjectContants.DEFAULT_JMH_VERSION);
 
         fileContent = replaceTemplateMark(fileContent, TemplateConstants.JAVA_VERSION, javaVersion);
         fileContent = replaceTemplateMark(fileContent, TemplateConstants.JMH_VERSION, jmhVersion);

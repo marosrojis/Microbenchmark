@@ -16,16 +16,6 @@ public class OtherConstants {
     public static final String LINUX_FILE_SEPARATOR = "/";
 
     /**
-     * KEY for save libraries to cache or database
-     */
-    public static final String LIBRARIES_CACHE = "libraries";
-
-    /**
-     * KEY for save ignore classes to cache or database
-     */
-    public static final String IGNORE_CLASSES_CACHE = "ignoreClasses";
-
-    /**
      * Package with java classes that don't need to import
      */
     public static final String PACKAGE_IGNORE_CLASSES = "java.lang";
@@ -35,13 +25,4 @@ public class OtherConstants {
      */
     public static final String PACKAGE_IGNORE_CLASSES_SEPARATOR = ";";
 
-    /**
-     * KEY for save/read JMH version from database
-     */
-    public static final String JMH_VERSION = "jmhVersion";
-
-    /**
-     * KEY for save/read java version from database
-     */
-    public static final String JAVA_VERSION = "javaVersion";
 }

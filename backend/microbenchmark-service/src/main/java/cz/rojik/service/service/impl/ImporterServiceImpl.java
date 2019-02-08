@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.constants.PropertyConstants;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
 import cz.rojik.service.utils.pojo.ImportsResult;
@@ -99,13 +100,13 @@ public class ImporterServiceImpl implements ImporterService {
         String result = gson.toJson(classes);
 
         PropertyDTO properties = propertyService.updateProperty(new PropertyDTO()
-                .setKey(OtherConstants.LIBRARIES_CACHE)
+                .setKey(PropertyConstants.LIBRARIES_CACHE)
                 .setValue(result)
         );
 
         String ignoreClasses = getIgnoreClasses(classes);
         propertyService.updateProperty(new PropertyDTO()
-                .setKey(OtherConstants.IGNORE_CLASSES_CACHE)
+                .setKey(PropertyConstants.IGNORE_CLASSES_CACHE)
                 .setValue(ignoreClasses)
         );
 

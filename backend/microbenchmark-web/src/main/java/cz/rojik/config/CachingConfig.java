@@ -1,6 +1,6 @@
 package cz.rojik.config;
 
-import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.constants.PropertyConstants;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -21,8 +21,8 @@ public class CachingConfig {
     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Arrays.asList(
-                new ConcurrentMapCache(OtherConstants.LIBRARIES_CACHE),
-                new ConcurrentMapCache(OtherConstants.IGNORE_CLASSES_CACHE)));
+                new ConcurrentMapCache(PropertyConstants.LIBRARIES_CACHE),
+                new ConcurrentMapCache(PropertyConstants.IGNORE_CLASSES_CACHE)));
         return cacheManager;
     }
 }

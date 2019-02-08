@@ -7,6 +7,7 @@ import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.service.PropertyService;
 import cz.rojik.service.constants.OtherConstants;
+import cz.rojik.service.constants.PropertyConstants;
 import cz.rojik.service.exception.ReadFileException;
 import cz.rojik.service.service.CachingDataService;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class CachingDataServiceImpl implements CachingDataService {
     @Autowired
     private PropertyService propertiesService;
 
-    @Cacheable(OtherConstants.LIBRARIES_CACHE)
+    @Cacheable(PropertyConstants.LIBRARIES_CACHE)
     @Override
     public Map<String, List<String>> getJavaLibraries() {
         LOGGER.trace("Read file with all java classes and packages.");
@@ -55,9 +56,9 @@ public class CachingDataServiceImpl implements CachingDataService {
         PropertyDTO properties;
 
         try {
-            properties = propertiesService.getByKey(OtherConstants.LIBRARIES_CACHE);
+            properties = propertiesService.getByKey(PropertyConstants.LIBRARIES_CACHE);
         } catch (EntityNotFoundException e) {
-            LOGGER.debug("Property '{}' was not found in database", OtherConstants.LIBRARIES_CACHE);
+            LOGGER.debug("Property '{}' was not found in database", PropertyConstants.LIBRARIES_CACHE);
 
             libraries = gson.fromJson(cz.rojik.service.utils.FileUtils.readFileFromResource(LIBRARIES_FILE), type);
             return libraries;
@@ -69,7 +70,7 @@ public class CachingDataServiceImpl implements CachingDataService {
 
     }
 
-    @Cacheable(OtherConstants.IGNORE_CLASSES_CACHE)
+    @Cacheable(PropertyConstants.IGNORE_CLASSES_CACHE)
     @Override
     public Set<String> getIgnoreClasses() {
         LOGGER.trace("Read file with classes to ignore import");
@@ -78,9 +79,9 @@ public class CachingDataServiceImpl implements CachingDataService {
         PropertyDTO properties;
 
         try {
-            properties = propertiesService.getByKey(OtherConstants.IGNORE_CLASSES_CACHE);
+            properties = propertiesService.getByKey(PropertyConstants.IGNORE_CLASSES_CACHE);
         } catch (EntityNotFoundException e) {
-            LOGGER.debug("Property '{}' was not found in database", OtherConstants.IGNORE_CLASSES_CACHE);
+            LOGGER.debug("Property '{}' was not found in database", PropertyConstants.IGNORE_CLASSES_CACHE);
             LOGGER.debug("Get ignore classes from file.");
 
             ignoreClasses = readIgnoreClasses();
@@ -92,16 +93,16 @@ public class CachingDataServiceImpl implements CachingDataService {
         return ignoreClasses;
     }
 
-    @CacheEvict(value = OtherConstants.LIBRARIES_CACHE, allEntries = true)
+    @CacheEvict(value = PropertyConstants.LIBRARIES_CACHE, allEntries = true)
     @Override
     public void evictLibrariesCacheValues() {
-        LOGGER.debug("Clear cache '{}'", OtherConstants.LIBRARIES_CACHE);
+        LOGGER.debug("Clear cache '{}'", PropertyConstants.LIBRARIES_CACHE);
     }
 
-    @CacheEvict(value = OtherConstants.IGNORE_CLASSES_CACHE, allEntries = true)
+    @CacheEvict(value = PropertyConstants.IGNORE_CLASSES_CACHE, allEntries = true)
     @Override
     public void evictIgnoreClassesCacheValues() {
-        LOGGER.debug("Clear cache '{}'", OtherConstants.IGNORE_CLASSES_CACHE);
+        LOGGER.debug("Clear cache '{}'", PropertyConstants.IGNORE_CLASSES_CACHE);
     }
 
     // PRIVATE
