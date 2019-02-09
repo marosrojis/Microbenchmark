@@ -33,8 +33,6 @@ import java.util.Optional;
 @RequestMapping(MappingURLConstants.USERS)
 public class UserController {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
     @Autowired
     private UserService userService;
 
@@ -68,7 +66,7 @@ public class UserController {
      * @return created user
      */
     @PostMapping
-    private ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserRegistrationForm user) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserRegistrationForm user) {
         UserDTO newUser = userService.create(user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
@@ -80,7 +78,7 @@ public class UserController {
      * @return updated user
      */
     @PutMapping(MappingURLConstants.ID_PARAM)
-    private ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
         UserDTO newUser = userService.update(id, user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }

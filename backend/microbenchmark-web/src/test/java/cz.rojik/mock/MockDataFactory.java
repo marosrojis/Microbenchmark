@@ -60,6 +60,8 @@ public class MockDataFactory {
         user2.setId(USER_ID_2);
         UserEntity user3 = new UserEntity(USER_FIRSTNAME_3, USER_LASTNAME_3, USER_EMAIL_3, USER_PASSWORD_3).setEnabled(true);
         user3.setId(USER_ID_3);
+        UserEntity user4 = new UserEntity(USER_FIRSTNAME_4, USER_LASTNAME_4, USER_EMAIL_4, USER_PASSWORD_4).setEnabled(false);
+        user4.setId(USER_ID_4);
 
         // ROLE
         RoleEntity role1 = new RoleEntity(ROLE_TYPE_1);
@@ -77,9 +79,11 @@ public class MockDataFactory {
         user1.getRoles().add(role2);
         user2.getRoles().add(role2);
         user3.getRoles().add(role3);
+        user4.getRoles().add(role2);
         userRepository.saveAndFlush(user1);
         userRepository.saveAndFlush(user2);
         userRepository.saveAndFlush(user3);
+        userRepository.saveAndFlush(user4);
 
         // BENCHMARK
         BenchmarkEntity benchmark1 = new BenchmarkEntity(BENCHMARK_PROJECT_ID_1, BENCHMARK_NAME_1, LocalDateTime.now(),

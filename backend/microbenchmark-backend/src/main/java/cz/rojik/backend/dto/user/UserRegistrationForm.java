@@ -25,7 +25,7 @@ public class UserRegistrationForm {
 
     @NotNull
     @NotEmpty
-    private List<UserDTO> roles;
+    private List<RoleDTO> roles;
 
     @NotNull
     @NotBlank
@@ -35,39 +35,44 @@ public class UserRegistrationForm {
         return password;
     }
 
-    public void setPassword(String password) {
+    public UserRegistrationForm setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getLastname() {
         return lastname;
     }
 
-    public void setLastname(String lastname) {
+    public UserRegistrationForm setLastname(String lastname) {
         this.lastname = lastname;
+        return this;
     }
 
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public UserRegistrationForm setFirstname(String firstname) {
         this.firstname = firstname;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public UserRegistrationForm setEmail(String email) {
         this.email = email;
+        return this;
     }
 
-    public List<UserDTO> getRoles() {
+    public List<RoleDTO> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<UserDTO> roles) {
+    public UserRegistrationForm setRoles(List<RoleDTO> roles) {
         this.roles = roles;
+        return this;
     }
 }

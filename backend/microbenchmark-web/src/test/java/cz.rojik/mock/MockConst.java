@@ -33,6 +33,12 @@ public class MockConst {
     public static final String USER_EMAIL_3 = "email-3@rojik.cz";
     public static final String USER_PASSWORD_3 = "password-3";
 
+    public static final Long USER_ID_4 = 4L;
+    public static final String USER_FIRSTNAME_4 = "firstname-4";
+    public static final String USER_LASTNAME_4 = "lastname-4";
+    public static final String USER_EMAIL_4 = "email-4@rojik.cz";
+    public static final String USER_PASSWORD_4 = "password-4";
+
     // ROLE
     public static final Long ROLE_ID_1 = 1L;
     public static final RoleTypeEnum ROLE_TYPE_1 = RoleTypeEnum.ADMIN;
