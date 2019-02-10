@@ -1,5 +1,8 @@
 package cz.rojik.backend.constants;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Marek Rojik (marek.rojik@inventi.cz) on 08. 02. 2019
  */
@@ -29,4 +32,12 @@ public class PropertyConstants {
      * KEY for save/read java version from database
      */
     public static final String BLIND_COPY_EMAIL = "blindCopyEmail";
+
+    public static List<String> getAllExist() {
+        return Arrays.asList(LIBRARIES_CACHE, IGNORE_CLASSES_CACHE, JMH_VERSION, JAVA_VERSION, BLIND_COPY_EMAIL);
+    }
+
+    public static boolean isPropertyExist(String key) {
+        return getAllExist().contains(key);
+    }
 }

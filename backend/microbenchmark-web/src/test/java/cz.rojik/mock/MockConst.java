@@ -174,15 +174,15 @@ public class MockConst {
 
     // PROPERTY
     public static final Long PROPERTY_ID_1 = 1L;
-    public static final String PROPERTY_KEY_1 = "key-1";
+    public static final String PROPERTY_KEY_1 = PropertyConstants.IGNORE_CLASSES_CACHE;
     public static final String PROPERTY_VALUE_1 = "value-1";
 
     public static final Long PROPERTY_ID_2 = 2L;
-    public static final String PROPERTY_KEY_2 = "key-2";
+    public static final String PROPERTY_KEY_2 = PropertyConstants.BLIND_COPY_EMAIL;
     public static final String PROPERTY_VALUE_2 = "value-2";
 
     public static final Long PROPERTY_ID_3 = 3L;
-    public static final String PROPERTY_KEY_3 = "key-3";
+    public static final String PROPERTY_KEY_3 = PropertyConstants.JAVA_VERSION;
     public static final String PROPERTY_VALUE_3 = "value-3";
 
     public static final Long PROPERTY_ID_4 = 4L;

@@ -2,6 +2,7 @@ package cz.rojik.controller.rest.util;
 
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.exception.InvalidBearerTokenException;
+import cz.rojik.backend.exception.PropertyException;
 import cz.rojik.backend.exception.UserException;
 import cz.rojik.backend.dto.ErrorDetailsDTO;
 import cz.rojik.service.exception.DockerException;
@@ -37,7 +38,7 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class, DockerException.class, KillContainerException.class})
+    @ExceptionHandler(value = { InvalidBearerTokenException.class, UserException.class, DockerException.class, KillContainerException.class, PropertyException.class})
     public ResponseEntity<ErrorDetailsDTO> handleBadRequestException(Exception exception, WebRequest request) {
         return handleExceptionInternal(exception, request, HttpStatus.BAD_REQUEST);
     }

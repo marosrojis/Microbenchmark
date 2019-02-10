@@ -29,7 +29,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <slf4j.version>1.7.5</slf4j.version>
-    </properties>
+		<docker-client.version>8.13.0</docker-client.version>
+	</properties>
 
 	<dependencies>
         <dependency>

@@ -1,6 +1,7 @@
 package cz.rojik.controller;
 
 import cz.rojik.MBMarkApplicationTest;
+import cz.rojik.backend.constants.PropertyConstants;
 import cz.rojik.backend.dto.PropertyDTO;
 import cz.rojik.backend.exception.EntityNotFoundException;
 import cz.rojik.backend.repository.PropertyRepository;
@@ -45,11 +46,12 @@ public class PropertyControllerTest extends MBMarkApplicationTest {
         ResponseEntity<List<PropertyDTO>> response = propertyController.getAll();
         List<PropertyDTO> properties = response.getBody();
 
-        Assert.assertEquals(properties.size(), propertyRepository.count());
+        Assert.assertEquals(properties.size(), propertyRepository.count() + 1);
         Assert.assertTrue(properties.stream().allMatch(p -> p.getKey().equalsIgnoreCase(PROPERTY_KEY_1) ||
             p.getKey().equalsIgnoreCase(PROPERTY_KEY_2) ||
             p.getKey().equalsIgnoreCase(PROPERTY_KEY_3) ||
-            p.getKey().equalsIgnoreCase(PROPERTY_KEY_4)));
+            p.getKey().equalsIgnoreCase(PROPERTY_KEY_4) ||
+            p.getKey().equalsIgnoreCase(PropertyConstants.JMH_VERSION)));
     }
 
     @Test
@@ -65,7 +67,7 @@ public class PropertyControllerTest extends MBMarkApplicationTest {
 
     @Test
     public void updateNewTest() {
-        PropertyDTO property = new PropertyDTO().setKey("new-property-key").setValue("new-property-value");
+        PropertyDTO property = new PropertyDTO().setKey(PropertyConstants.JMH_VERSION).setValue("new-property-value");
         ResponseEntity<PropertyDTO> response = propertyController.update(property);
         PropertyDTO updatedProperty = response.getBody();
 

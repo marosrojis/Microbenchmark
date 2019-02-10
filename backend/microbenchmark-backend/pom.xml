@@ -13,7 +13,6 @@
 
     <properties>
         <jackson.version>2.9.7</jackson.version>
-        <docker-client.version>8.13.0</docker-client.version>
     </properties>
 
     <dependencies>
