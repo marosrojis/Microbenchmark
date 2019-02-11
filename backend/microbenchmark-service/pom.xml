@@ -12,7 +12,6 @@
     <artifactId>microbenchmark-service</artifactId>
 
     <properties>
-        <docker-client.version>8.13.0</docker-client.version>
         <maven-invoker.version>3.0.0</maven-invoker.version>
         <hibernate.version>5.2.9.Final</hibernate.version>
         <microbenchmark-backend.version>1.0.0-SNAPSHOT</microbenchmark-backend.version>

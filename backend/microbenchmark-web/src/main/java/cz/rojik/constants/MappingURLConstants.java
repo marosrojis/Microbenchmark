@@ -37,7 +37,7 @@ public class MappingURLConstants {
     // LOGIN
     public static final String LOGIN = API_PREFIX + "/login";
 
-    // WEBSOCKET //
+    // WEBSOCKET
     public static final String APP_WEBSOCKET = "/app";
     public static final String BENCHMARK_WEBSOCKET = "/benchmark";
 
@@ -47,6 +47,9 @@ public class MappingURLConstants {
 
     public static final String SOCKET = "/socket";
     public static final String SOCKET_EXCEPTION = BENCHMARK_WEBSOCKET + "/errors";
-    public static final String TEST = API_PREFIX + "/test";
+
+    // SWAGGER
+    public static final String SWAGGER_DOC = "/v2/api-docs";
+    public static final String SWAGGER_DOC_HTML = "/swagger-ui.html";
 
 }

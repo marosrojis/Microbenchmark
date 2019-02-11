@@ -103,10 +103,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.mvcMatchers(HttpMethod.PUT, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasAnyRole(RoleTypeEnum.USER.getRoleType(), RoleTypeEnum.DEMO.getRoleType())
 				.mvcMatchers(HttpMethod.DELETE, MappingURLConstants.USERS + "/" + MappingURLConstants.ID_PARAM).hasRole(RoleTypeEnum.ADMIN.getRoleType())
 
+				// SWAGGER
+				.antMatchers(MappingURLConstants.SWAGGER_DOC).permitAll()
+				.antMatchers(MappingURLConstants.SWAGGER_DOC_HTML).permitAll()
+
 				.antMatchers("/**").permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(MappingURLConstants.API_PREFIX + "/**").fullyAuthenticated()
                 .antMatchers(MappingURLConstants.API_PREFIX + "/**").permitAll()
+
                 .and()
 			.exceptionHandling()
 				.accessDeniedHandler(new MBenchmarkAccessDeniedHandler())
