@@ -18,7 +18,7 @@ import javax.xml.bind.DatatypeConverter;
 public class TokenAuthenticationService {
 
 	private static final String AUTH_HEADER_NAME = "Authorization";
-	private static final long TEN_DAYS = 1000 * 60 * 60 * 24 * 10;
+	private static final long TOKEN_EXPIRE = 1000 * 60 * 60;
 
 	private final TokenHandler tokenHandler;
 
@@ -36,7 +36,7 @@ public class TokenAuthenticationService {
 	 * @return user with token
 	 */
 	public LoginDTO createAuthentication(UserDTO user) {
-		long expires = System.currentTimeMillis() + TEN_DAYS;
+		long expires = System.currentTimeMillis() + TOKEN_EXPIRE;
 		user.setExpires(expires);
 		String token = tokenHandler.createTokenForUser(user);
 		return new LoginDTO(token, expires, user);
