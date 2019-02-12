@@ -83,6 +83,7 @@ public class DockerServiceImpl implements DockerService {
                 .attachStdout(true)
                 .attachStdin(true)
                 .tty(true)
+                .networkDisabled(true)
                 .build();
 
         final ContainerCreation creation = client.createContainer(containerConfig);
