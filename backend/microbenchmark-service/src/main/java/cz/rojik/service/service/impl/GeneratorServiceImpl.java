@@ -231,7 +231,9 @@ public class GeneratorServiceImpl implements GeneratorService {
                     .append("\n\t")
                     .append(TemplateConstants.DECLARE_METHOD)
                     .append(i)
-                    .append("() {\n\t\t")
+                    .append("(")
+                    .append(TemplateConstants.BLACKHOLE_PARAMETER)
+                    .append(") {\n\t\t")
                     .append(method)
                     .append("\n\t}\n");
             i++;

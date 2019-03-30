@@ -23,6 +23,8 @@ public class TemplateConstants {
 
     public static final String DECLARE_METHOD           = "public void benchmarkTest";
 
+    public static final String BLACKHOLE_PARAMETER      = "Blackhole blackhole";
+
     public static final String RESULT_JSON_FILE         = "config.resultFile";
 
     public static final String JMH_VERSION              = "config.jmhVersion";
