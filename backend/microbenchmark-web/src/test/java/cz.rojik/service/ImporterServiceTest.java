@@ -1,13 +1,10 @@
 package cz.rojik.service;
 
 import cz.rojik.MBMarkApplicationTest;
-import cz.rojik.backend.repository.UserRepository;
 import cz.rojik.service.service.ImporterService;
 import cz.rojik.service.utils.pojo.ImportsResult;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -248,6 +245,26 @@ public class ImporterServiceTest extends MBMarkApplicationTest {
         assertTrue(imports.getLibraries().contains("java.util.Scanner"));
         assertTrue(imports.getLibraries().contains("java.io.IOException"));
         assertTrue(imports.getLibraries().contains("java.io.File"));
+        assertEquals(imports.getLibraries().size(), 4);
+    }
+
+    @Test
+    public void getLibrariesToImportTest7() {
+        String input = "List<String> collection = new ArrayList<>();\n" +
+                "        collection.forEach(value -> {\n" +
+                "            UUID uuid = UUID.randomUUID();\n" +
+                "            System.out.println(uuid.toString());\n" +
+                "            List<UUID> uuidList = new LinkedList<>();\n" +
+                "            uuidList.add(uuid);\n" +
+                "            Color white = Color.WHITE;\n" +
+                "        });";
+
+        imports = importerService.getLibrariesToImport(imports, input);
+
+        assertTrue(imports.getLibraries().contains("java.util.UUID"));
+        assertTrue(imports.getLibraries().contains("java.util.LinkedList"));
+        assertTrue(imports.getLibraries().contains("java.util.ArrayList"));
+        assertTrue(imports.getLibraries().contains("java.awt.Color"));
         assertEquals(imports.getLibraries().size(), 4);
     }
 }
