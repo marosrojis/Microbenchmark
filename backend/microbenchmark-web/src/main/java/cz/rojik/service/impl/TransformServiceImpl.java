@@ -31,6 +31,7 @@ public class TransformServiceImpl implements TransformService {
         Gson gson = new GsonBuilder().create();
 
         BenchmarkDTO result = benchmarkConverter.templateToResult(template);
+        benchmarkResult = checkNaNValue(benchmarkResult);
 
         result.setProjectId(projectId)
                 .setCreated(benchmarkResult.getTime())
@@ -52,5 +53,20 @@ public class TransformServiceImpl implements TransformService {
                 .setSuccess(false);
 
         return result;
+    }
+
+    /**
+     * Check if the benchmarks have valid error's value
+     * @param results benchmark result
+     * @return valid benchmark result
+     */
+    private cz.rojik.service.dto.ResultDTO checkNaNValue(cz.rojik.service.dto.ResultDTO results) {
+        results.getResults().forEach(result -> {
+            if (Double.isNaN(result.getError())) {
+                // if benchmark error has NaN value, set -1
+                result.setError(-1);
+            }
+        });
+        return results;
     }
 }
