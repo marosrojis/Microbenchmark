@@ -29,12 +29,12 @@ import java.io.IOException;
 public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	private final TokenAuthenticationService tokenAuthenticationService;
-	private final UserDetailService coworkUserDetailService;
+	private final UserDetailService userDetailService;
 
 	public StatelessLoginFilter(String urlMapping, TokenAuthenticationService tokenAuthenticationService,
-								UserDetailService coworkUserDetailService, AuthenticationManager authManager) {
+								UserDetailService userDetailService, AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(urlMapping));
-		this.coworkUserDetailService = coworkUserDetailService;
+		this.userDetailService = userDetailService;
 		this.tokenAuthenticationService = tokenAuthenticationService;
 		setAuthenticationManager(authManager);
 	}
@@ -59,7 +59,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 											FilterChain chain, Authentication authentication) throws IOException, ServletException {
 
-		final UserDTO authenticatedUser = coworkUserDetailService.loadUserByUsername(authentication.getName());
+		final UserDTO authenticatedUser = userDetailService.loadUserByUsername(authentication.getName());
 		final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
 
 		LoginDTO loginDTO = tokenAuthenticationService.createAuthentication(authenticatedUser);

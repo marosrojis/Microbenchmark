@@ -2,8 +2,13 @@ body {
   background-color: #f5f5f5;
 }
 
+.winner-benchmark {
+  border: 3px solid greenyellow;
+  padding: 3px;
+}
+
 #main-content {
-  max-width: 940px;
+  /* max-width: 1300px; */
   padding: 2em 3em;
   margin: 0 auto 20px;
   background-color: #fff;
