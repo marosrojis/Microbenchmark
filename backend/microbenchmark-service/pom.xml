@@ -50,6 +50,13 @@
             <version>${maven-invoker.version}</version>
         </dependency>
 
+        <!-- SWAGGER -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.io.version}</version>
+        </dependency>
+
         <!-- OTHER -->
         <dependency>
             <groupId>commons-io</groupId>

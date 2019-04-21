@@ -15,7 +15,6 @@
         <hibernate.version>5.2.9.Final</hibernate.version>
         <jackson.version>2.9.7</jackson.version>
         <swagger.version>2.9.2</swagger.version>
-        <swagger.io.version>1.5.21</swagger.io.version>
     </properties>
 
     <dependencies>

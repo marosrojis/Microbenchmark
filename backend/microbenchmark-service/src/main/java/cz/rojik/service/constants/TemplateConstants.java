@@ -7,6 +7,8 @@ public class TemplateConstants {
 
     public static final String LIBRARIES                = "config.libraries";
 
+    public static final String TIME_UNIT                = "config.timeUnit";
+
     public static final String WARMUP                   = "config.warmup";
 
     public static final String MEASUREMENT              = "config.measurement";

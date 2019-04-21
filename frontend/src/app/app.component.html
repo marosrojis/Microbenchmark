@@ -5,10 +5,24 @@
     <div class="col-sm-12">
       <form (ngSubmit)="submitForm(f)" #f="ngForm" novalidate>
         <div class="row">
-          <div class="col-sm-12 form-group">
+          <div class="col-sm-9 form-group">
             <div class="form-group">
               <label for="name">Name</label>
               <input type="text" id="name" class="form-control" name="name" ngModel required>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="unit">Time unit</label>
+              <select class="form-control" id="unit" name="unit" ngModel>
+                <option value="ns">nanosecond</option>
+                <option value="us">microsecond</option>
+                <option value="ms">millisecond</option>
+                <option value="s">second</option>
+                <option value="m">minute</option>
+                <option value="h">hour</option>
+                <option value="d">day</option>
+              </select>
             </div>
           </div>
           <div class="col-sm-6 form-group">

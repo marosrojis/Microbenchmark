@@ -25,12 +25,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.BadRequestException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -106,6 +108,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private String generateContent(TemplateDTO template, String content) {
         LOGGER.trace("Generate content of file from template {}", template);
         content = replaceTemplateMark(content, TemplateConstants.LIBRARIES, template.getLibraries());
+        content = replaceTemplateMark(content, TemplateConstants.TIME_UNIT, getTimeUnit(template.getUnit()));
         content = replaceTemplateMark(content, TemplateConstants.WARMUP, template.getWarmup() + "");
         content = replaceTemplateMark(content, TemplateConstants.MEASUREMENT, template.getMeasurement() + "");
         content = replaceTemplateMark(content, TemplateConstants.CLASS_NAME, ProjectContants.JAVA_CLASS);
@@ -290,5 +293,40 @@ public class GeneratorServiceImpl implements GeneratorService {
             value = defaultValue;
         }
         return value;
+    }
+
+    /**
+     * Get {@code TimeUtil} enum value by shortcut
+     * @param timeUnit shortcut value of time unit
+     * @return String value from {@code TimeUtil} enum value
+     */
+    private String getTimeUnit(String timeUnit) {
+        TimeUnit result;
+        switch (timeUnit.toLowerCase()) {
+            case "ns":
+                result = TimeUnit.NANOSECONDS;
+                break;
+            case "us":
+                result = TimeUnit.MICROSECONDS;
+                break;
+            case "ms":
+                result = TimeUnit.MILLISECONDS;
+                break;
+            case "s":
+                result = TimeUnit.SECONDS;
+                break;
+            case "m":
+                result = TimeUnit.MINUTES;
+                break;
+            case "h":
+                result = TimeUnit.HOURS;
+                break;
+            case "d":
+                result = TimeUnit.DAYS;
+                break;
+            default:
+                throw new BadRequestException("The time unit has incorrect value: " + timeUnit);
+        }
+        return result.name();
     }
 }

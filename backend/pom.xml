@@ -30,6 +30,7 @@
 		<java.version>1.8</java.version>
         <slf4j.version>1.7.5</slf4j.version>
 		<docker-client.version>8.13.0</docker-client.version>
+		<swagger.io.version>1.5.21</swagger.io.version>
 	</properties>
 
 	<dependencies>

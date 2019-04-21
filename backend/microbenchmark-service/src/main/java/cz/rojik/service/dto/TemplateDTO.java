@@ -1,10 +1,12 @@
 package cz.rojik.service.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -24,6 +26,8 @@ public class TemplateDTO {
     private String declare;
     private String init;
 
+    private String unit;
+
     @NotNull
     @NotEmpty
     private List<String> testMethods;
@@ -33,6 +37,7 @@ public class TemplateDTO {
         this.libraries = "";
         this.declare = "";
         this.init = "";
+        this.unit = "ms";
     }
 
     public int getWarmup() {
@@ -95,5 +100,15 @@ public class TemplateDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @ApiModelProperty(value = "Output time unit. Default value is milliseconds [ms].", allowableValues = "ns,us,ms,s,m,h,d")
+    public String getUnit() {
+        return unit;
+    }
+
+    public TemplateDTO setUnit(String unit) {
+        this.unit = unit;
+        return this;
     }
 }

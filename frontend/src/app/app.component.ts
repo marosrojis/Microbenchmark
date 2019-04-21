@@ -10,6 +10,7 @@ import { Result } from './model/result.model';
 
 const templateDefault = new Template(
   '',
+  'ms',
   2,
   3,
   'java.util.List<Integer> arrayList;\nint[] array;Random random;\njava.util.List<String> temp;',
@@ -34,7 +35,6 @@ export class AppComponent implements OnInit {
 
   isNeedChooseImports = false;
   libraries: LibrariesToChoose;
-
   winnerFragment = -1;
   results = [];
 
@@ -46,6 +46,7 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.slForm.setValue({
         name: '',
+        unit: 'ms',
         warmup: templateDefault.warmup,
         measurement: templateDefault.measurement,
         declare: templateDefault.declare,
@@ -132,10 +133,15 @@ export class AppComponent implements OnInit {
       this.messages = [];
       this.showMessage('Operation: ' + Operation.START_CREATE_PROJECT);
 
-      const template = new Template(value.name, value.warmup, value.measurement, value.declare, value.init, [
-        value.testMethod1,
-        value.testMethod2
-      ]);
+      const template = new Template(
+        value.name,
+        value.unit,
+        value.warmup,
+        value.measurement,
+        value.declare,
+        value.init,
+        [value.testMethod1, value.testMethod2]
+      );
 
       this.dataStorage.createBenchmark(template);
     }
