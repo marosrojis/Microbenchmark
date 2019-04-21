@@ -2,7 +2,7 @@
   <app-login></app-login>
   <hr />
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-sm-12">
       <form (ngSubmit)="submitForm(f)" #f="ngForm" novalidate>
         <div class="row">
           <div class="col-sm-12 form-group">
@@ -32,12 +32,22 @@
             <input type="number" id="measurement" class="form-control" name="measurement" ngModel required>
           </div>
           <div class="col-sm-6 form-group">
+            <div class="alert" role="alert" *ngIf="winnerFragment !== -1" [ngClass]="{
+              'alert-success':winnerFragment === 0,
+              'alert-dark':winnerFragment !== 0
+            }" [innerHTML]="results[0]">
+            </div>
             <div class="form-group">
               <label for="testMethod1">Test method 1</label>
               <textarea class="form-control" id="testMethod1" name="testMethod1" rows="5" ngModel required></textarea>
             </div>
           </div>
           <div class="col-sm-6 form-group">
+              <div class="alert" role="alert" *ngIf="winnerFragment !== -1" [ngClass]="{
+                'alert-success':winnerFragment === 1,
+                'alert-dark':winnerFragment !== 1
+              }" [innerHTML]="results[1]">
+              </div>
             <div class="form-group">
               <label for="testMethod2">Test method 2</label>
               <textarea class="form-control" id="testMethod2" name="testMethod2" rows="5" ngModel required></textarea>
@@ -77,7 +87,7 @@
         </thead>
         <tbody *ngFor="let message of messages">
           <tr>
-            <td> {{message}}</td>
+            <td [innerHTML]="message"></td>
           </tr>
         </tbody>
       </table>

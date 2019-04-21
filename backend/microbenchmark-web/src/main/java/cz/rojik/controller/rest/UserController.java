@@ -112,7 +112,7 @@ public class UserController {
     })
     @PutMapping(MappingURLConstants.ID_PARAM)
     public ResponseEntity<UserDTO> updateUser(@ApiParam(value = "user ID to update", required = true) @PathVariable Long id,
-                                              @ApiParam(value = "ew user's data to update", required = true) @Valid @RequestBody UserDTO user) {
+                                              @ApiParam(value = "New user's data to update", required = true) @Valid @RequestBody UserDTO user) {
         UserDTO newUser = userService.update(id, user);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }

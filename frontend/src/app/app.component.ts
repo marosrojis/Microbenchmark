@@ -6,6 +6,7 @@ import { ProcessInfo } from './model/processInfo.model';
 import { NgForm } from '@angular/forms';
 import { Template } from './model/template.model';
 import { LibrariesToChoose } from './model/libraries-to-choose.model';
+import { Result } from './model/result.model';
 
 const templateDefault = new Template(
   '',
@@ -34,6 +35,9 @@ export class AppComponent implements OnInit {
   isNeedChooseImports = false;
   libraries: LibrariesToChoose;
 
+  winnerFragment = -1;
+  results = [];
+
   objectKeys = Object.keys;
 
   constructor(private dataStorage: DataStorageService) {}
@@ -57,11 +61,54 @@ export class AppComponent implements OnInit {
     });
     this.dataStorage.showMessageProcessInfo.subscribe((data: ProcessInfo) => {
       this.showMessage(
-        'Time: ' + data.time + ', operation: ' + data.operation + ', number: ' + data.number + ', note: ' + data.note
+        'Time: ' +
+          data.time +
+          ', estimated time: ' +
+          data.estimatedEndTime +
+          ', operation: ' +
+          data.operation +
+          ', iteration: ' +
+          data.number +
+          '/' +
+          data.note
       );
     });
-    this.dataStorage.showMessage.subscribe((data: string) => {
-      this.showMessage(data);
+    this.dataStorage.showMessageResult.subscribe((data: Result) => {
+      this.winnerFragment = data.bestScoreIndex;
+      let result =
+        '<strong>Time:</strong> ' +
+        data.time +
+        '<br><strong>Number of connection:</strong> ' +
+        data.numberOfConnections;
+      let i = 1;
+      data.results.forEach(res => {
+        this.results.push(
+          '<strong>Time: ' +
+            res.score +
+            ' [' +
+            res.unit +
+            ']</strong><br>Error: &plusmn;' +
+            res.error +
+            '<br>Values: [' +
+            res.measureValues.join(', ') +
+            ']'
+        );
+
+        result +=
+          '<br><strong>Benchmark ' +
+          i +
+          ':</strong> ' +
+          res.score +
+          ' [' +
+          res.unit +
+          '], error: ' +
+          res.error +
+          ', values: [' +
+          res.measureValues.join(', ') +
+          ']';
+        i++;
+      });
+      this.showMessage(result);
     });
 
     this.dataStorage.librariesToChoose.subscribe((data: LibrariesToChoose) => {
