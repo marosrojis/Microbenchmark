@@ -46,12 +46,13 @@ public class PropertyControllerTest extends MBMarkApplicationTest {
         ResponseEntity<List<PropertyDTO>> response = propertyController.getAll();
         List<PropertyDTO> properties = response.getBody();
 
-        Assert.assertEquals(properties.size(), propertyRepository.count() + 1);
+        Assert.assertEquals(properties.size(), propertyRepository.count() + 2);
         Assert.assertTrue(properties.stream().allMatch(p -> p.getKey().equalsIgnoreCase(PROPERTY_KEY_1) ||
             p.getKey().equalsIgnoreCase(PROPERTY_KEY_2) ||
             p.getKey().equalsIgnoreCase(PROPERTY_KEY_3) ||
             p.getKey().equalsIgnoreCase(PROPERTY_KEY_4) ||
-            p.getKey().equalsIgnoreCase(PropertyConstants.JMH_VERSION)));
+            p.getKey().equalsIgnoreCase(PropertyConstants.JMH_VERSION) ||
+            p.getKey().equalsIgnoreCase(PropertyConstants.MAX_MEMORY)));
     }
 
     @Test
