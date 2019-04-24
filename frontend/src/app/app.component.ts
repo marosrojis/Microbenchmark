@@ -74,41 +74,46 @@ export class AppComponent implements OnInit {
           data.note
       );
     });
-    this.dataStorage.showMessageResult.subscribe((data: Result) => {
-      this.winnerFragment = data.bestScoreIndex;
-      let result =
-        '<strong>Time:</strong> ' +
-        data.time +
-        '<br><strong>Number of connection:</strong> ' +
-        data.numberOfConnections;
-      let i = 1;
-      data.results.forEach(res => {
-        this.results.push(
-          '<strong>Time: ' +
+    this.dataStorage.showMessageResult.subscribe((data: any) => {
+      let result = '';
+      if (data.exception !== undefined) {
+        result = '<strong>Exception:</strong> ' + data.exception + '<br><strong>Class:</strong>' + data.sourceCode;
+      } else {
+        this.winnerFragment = data.bestScoreIndex;
+        result =
+          '<strong>Time:</strong> ' +
+          data.time +
+          '<br><strong>Number of connection:</strong> ' +
+          data.numberOfConnections;
+        let i = 1;
+        data.results.forEach(res => {
+          this.results.push(
+            '<strong>Time: ' +
+              res.score +
+              ' [' +
+              res.unit +
+              ']</strong><br>Error: &plusmn;' +
+              res.error +
+              '<br>Values: [' +
+              res.measureValues.join(', ') +
+              ']'
+          );
+
+          result +=
+            '<br><strong>Benchmark ' +
+            i +
+            ':</strong> ' +
             res.score +
             ' [' +
             res.unit +
-            ']</strong><br>Error: &plusmn;' +
+            '], error: ' +
             res.error +
-            '<br>Values: [' +
+            ', values: [' +
             res.measureValues.join(', ') +
-            ']'
-        );
-
-        result +=
-          '<br><strong>Benchmark ' +
-          i +
-          ':</strong> ' +
-          res.score +
-          ' [' +
-          res.unit +
-          '], error: ' +
-          res.error +
-          ', values: [' +
-          res.measureValues.join(', ') +
-          ']';
-        i++;
-      });
+            ']';
+          i++;
+        });
+      }
       this.showMessage(result);
     });
 

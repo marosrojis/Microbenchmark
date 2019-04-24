@@ -220,7 +220,7 @@ public class UserControllerTest extends MBMarkApplicationTest {
                 .setRoles(Arrays.asList(roleDemo, roleUser));
         userController.createUser(form);
     }
-//
+
     @Test(expected = UserException.class)
     public void createUserValidateException2() {
         String encodedPassword = "encoded-password";

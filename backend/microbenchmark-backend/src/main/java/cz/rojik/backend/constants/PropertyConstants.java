@@ -33,8 +33,13 @@ public class PropertyConstants {
      */
     public static final String BLIND_COPY_EMAIL = "blindCopyEmail";
 
+    /**
+     * KEY for save/read max allow memory for benchmark
+     */
+    public static final String MAX_MEMORY = "maxMemory";
+
     public static List<String> getAllExist() {
-        return Arrays.asList(LIBRARIES_CACHE, IGNORE_CLASSES_CACHE, JMH_VERSION, JAVA_VERSION, BLIND_COPY_EMAIL);
+        return Arrays.asList(LIBRARIES_CACHE, IGNORE_CLASSES_CACHE, JMH_VERSION, JAVA_VERSION, BLIND_COPY_EMAIL, MAX_MEMORY);
     }
 
     public static boolean isPropertyExist(String key) {

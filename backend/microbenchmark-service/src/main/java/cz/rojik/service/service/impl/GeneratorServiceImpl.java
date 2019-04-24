@@ -115,6 +115,8 @@ public class GeneratorServiceImpl implements GeneratorService {
         content = replaceTemplateMark(content, TemplateConstants.DECLARE, template.getDeclare());
         content = replaceTemplateMark(content, TemplateConstants.INIT, template.getInit());
         content = replaceTemplateMark(content, TemplateConstants.RESULT_JSON_FILE, ProjectContants.RESULT_JSON_FILE);
+        content = replaceTemplateMark(content, TemplateConstants.MAX_MEMORY,
+                getProperty(PropertyConstants.MAX_MEMORY, ProjectContants.DEFAULT_MAX_MEMORY));
         content = replaceTestMethods(content, template.getTestMethods());
 
         LOGGER.trace("Generated file {}", content);

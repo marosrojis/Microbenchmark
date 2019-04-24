@@ -47,7 +47,7 @@ public class [config.className] {
 				.forks(1).shouldFailOnError(true).shouldDoGC(true)
 				.result("[config.resultFile]")
 				.resultFormat(ResultFormatType.JSON)
-				.jvmArgs("-server").build();
+				.jvmArgs("-server", "-Xmx[config.maxMemory]").build();
 		new Runner(options).run();
 
 	}

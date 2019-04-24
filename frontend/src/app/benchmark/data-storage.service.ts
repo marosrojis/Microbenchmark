@@ -11,7 +11,6 @@ import { LibrariesToChoose } from '../model/libraries-to-choose.model';
 import { User } from '../model/user.model';
 import { LoggedUser } from '../model/loggedUser.model';
 import { AuthService } from '../auth/auth.service';
-import { Result } from '../model/result.model';
 
 const REST_URL = 'http://147.228.63.36:8080/api';
 const WEBSOCKET_URL = 'ws://147.228.63.36:8080/socket/websocket';
@@ -20,7 +19,7 @@ const WEBSOCKET_URL = 'ws://147.228.63.36:8080/socket/websocket';
 export class DataStorageService implements OnInit {
   showMessageProject = new Subject<Project>();
   showMessageProcessInfo = new Subject<ProcessInfo>();
-  showMessageResult = new Subject<Result>();
+  showMessageResult = new Subject<any>();
   showMessage = new Subject<string>();
   librariesToChoose = new Subject<LibrariesToChoose>();
 
@@ -110,7 +109,7 @@ export class DataStorageService implements OnInit {
           that.showMessageProcessInfo.next(object);
         });
         that.ws.subscribe('/user/benchmark/result', info => {
-          const object: Result = JSON.parse(info.body);
+          const object = JSON.parse(info.body);
           that.showMessageResult.next(object);
         });
       },

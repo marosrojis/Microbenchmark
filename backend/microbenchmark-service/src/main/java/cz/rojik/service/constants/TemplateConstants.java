@@ -33,4 +33,6 @@ public class TemplateConstants {
 
     public static final String JAVA_VERSION             = "config.javaVersion";
 
+    public static final String MAX_MEMORY               = "config.maxMemory";
+
 }
