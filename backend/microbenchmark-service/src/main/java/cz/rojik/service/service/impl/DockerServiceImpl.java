@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -51,7 +50,7 @@ public class DockerServiceImpl implements DockerService {
     private static Logger LOGGER = LoggerFactory.getLogger(DockerServiceImpl.class);
 
     private static final String DOCKER_IMAGE = "docker-microbenchmark";
-    private static final int TOTAL_PART = 4;
+    private static final int ITERATIONS_OF_PART = 4;
 
     @Autowired
     private MessageLogParserServiceImpl messageLogParser;
@@ -71,7 +70,7 @@ public class DockerServiceImpl implements DockerService {
         LOGGER.trace("Starting configuration of docker container for project {}", projectId);
         ProcessInfoDTO processInfo;
         BenchmarkStateDTO benchmarkState;
-        String error = "Problem with docker container.";
+        String error = "Problem with running benchmark.";
         int currentIteration = 0;
         int totalIterations = template.getTestMethods().size() * (template.getMeasurement() + template.getWarmup());
 
@@ -239,8 +238,7 @@ public class DockerServiceImpl implements DockerService {
      * @return updated {@link BenchmarkStateDTO}
      */
     private BenchmarkStateDTO updateRunningState(int totalIterations, int currentIteration, BenchmarkStateDTO state) {
-        int part = (int)Math.ceil((double)totalIterations / TOTAL_PART);
-        if (currentIteration % part != 0 || currentIteration == 0) {
+        if (currentIteration % ITERATIONS_OF_PART != 0 || currentIteration == 0) {
             return state;
         }
         LOGGER.trace("Update benchmark state {} for project {} and container ID", BenchmarkStateTypeEnum.BENCHMARK_RUNNING, state.getProjectId(), state.getContainerId());
@@ -249,7 +247,7 @@ public class DockerServiceImpl implements DockerService {
 
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(state.getUpdated(), now);
-        long timeOfOneIteration = duration.getSeconds() / part;
+        long timeOfOneIteration = duration.getSeconds() / ITERATIONS_OF_PART;
         long restOfTime = timeOfOneIteration * (totalIterations - currentIteration);
 
         LocalDateTime estimatedEndTime = now.plusSeconds(restOfTime);
