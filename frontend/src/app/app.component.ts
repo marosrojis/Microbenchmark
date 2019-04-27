@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.slForm.setValue({
         name: '',
-        unit: 'ms',
+        unit: 'us',
         warmup: templateDefault.warmup,
         measurement: templateDefault.measurement,
         declare: templateDefault.declare,

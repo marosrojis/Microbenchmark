@@ -37,7 +37,7 @@ public class TemplateDTO {
         this.libraries = "";
         this.declare = "";
         this.init = "";
-        this.unit = "ms";
+        this.unit = "us";
     }
 
     public int getWarmup() {
@@ -102,7 +102,7 @@ public class TemplateDTO {
         this.name = name;
     }
 
-    @ApiModelProperty(value = "Output time unit. Default value is milliseconds [ms].", allowableValues = "ns,us,ms,s,m,h,d")
+    @ApiModelProperty(value = "Output time unit. Default value is microseconds [us].", allowableValues = "ns,us,ms,s,m,h,d")
     public String getUnit() {
         return unit;
     }
