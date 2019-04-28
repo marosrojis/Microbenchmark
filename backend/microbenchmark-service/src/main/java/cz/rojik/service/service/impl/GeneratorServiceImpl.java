@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author Marek Rojik (marek@rojik.cz) on 05. 01. 2019
@@ -55,6 +56,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     public String generateJavaClass(TemplateDTO template) throws ImportsToChooseException {
         LOGGER.trace("Generate java class with template {}", template);
         String projectID = copyProjectFolder();
+        template.setTestMethods(validateTestMethods(projectID, template.getTestMethods()));
 
         ImportsResult imports = getAllImports(template);
         template.setLibraries(generateImports(imports.getLibraries()));
@@ -295,6 +297,22 @@ public class GeneratorServiceImpl implements GeneratorService {
             value = defaultValue;
         }
         return value;
+    }
+
+    /**
+     * Validate test methods for benchmarking. Check if methods have the content.
+     * If project doesn't contain any valid test method, throw {@code BadRequestException}
+     * @param projectId project ID
+     * @param methods test methods for benchmarking
+     * @return list of valid test methods.
+     */
+    private List<String> validateTestMethods(String projectId, List<String> methods) {
+        methods = methods.stream().filter(org.apache.commons.lang.StringUtils::isNotBlank).collect(Collectors.toList());
+        if (methods.size() == 0) {
+            LOGGER.error("Template doesn't contain any test methods for project {}", projectId);
+            throw new BadRequestException("Template doesn't contain any test methods for project " + projectId);
+        }
+        return methods;
     }
 
     /**
