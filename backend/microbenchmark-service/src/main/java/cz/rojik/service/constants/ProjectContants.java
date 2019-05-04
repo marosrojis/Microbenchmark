@@ -35,7 +35,7 @@ public class ProjectContants {
 
     public static final String DEFAULT_JAVA_VERSION     = "1.8";
 
-    public static final String DEFAULT_JMH_VERSION      = "1.20";
+    public static final String DEFAULT_JMH_VERSION      = "1.21";
 
     public static final String DEFAULT_MAX_MEMORY       = "512m";
 

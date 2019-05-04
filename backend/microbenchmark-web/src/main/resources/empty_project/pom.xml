@@ -14,7 +14,7 @@
         <javac.target>[config.javaVersion]</javac.target>
         <uberjar.name>Microbenchmark</uberjar.name>
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
-        <buildDirectory>${project.basedir}/targetqweqw</buildDirectory>
+        <buildDirectory>${project.basedir}/target</buildDirectory>
         <maven.install.skip>true</maven.install.skip>
     </properties>
 
