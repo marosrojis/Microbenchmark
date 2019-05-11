@@ -18,7 +18,7 @@ import javax.xml.bind.DatatypeConverter;
 public class TokenAuthenticationService {
 
 	private static final String AUTH_HEADER_NAME = "Authorization";
-	private static final long TOKEN_EXPIRE = 1000 * 60 * 60;
+	private static final long TOKEN_EXPIRE = 1000 * 60 * 60 * 2;
 
 	private final TokenHandler tokenHandler;
 
