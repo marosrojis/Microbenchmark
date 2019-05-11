@@ -14,8 +14,8 @@
       <column name="archived" valueBoolean="false" />
       <column name="firstname" value="Marek" />
       <column name="lastname" value="Rojik" />
-      <column name="email" value="marek@rojik.cz" />
-      <column name="password" value="$2a$10$pGyHiB1fW1pwz93h0PuHlOsxW8ewFqka4yJJLWr7WpA93zNYe3Toq" />
+      <column name="email" value="admin@rojik.cz" />
+      <column name="password" value="$2a$10$7i9mGQX/KuN0T2xX6txhReBbohqOQsv19jbS62wZAbTzmaODyqnl6" />
       <column name="created" valueDate="${now}" />
       <column name="enabled" valueBoolean="true" />
     </insert>
