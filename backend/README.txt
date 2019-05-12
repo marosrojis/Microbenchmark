@@ -15,6 +15,20 @@ Kompilace aplikace:
 
 - Pro zkompilování aplikace je potřeba ve složce 'backend' otevřít příkazovou řádku a provést příkaz 'mvn clean install'. V průběhu kompilace jsou provedeny všechny JUnit testy. Pokud doběhne kompilace úspěšně, ve složce 'microbenchmark-web/target' je vygenerován soubor 'microbenchmark.jar'.
 
+Databáze:
+
+- PostgreSQL databáze musí běžet na stejném počítači jako aplikace.
+- Před spuštěním aplikace je potřeba vytvořit v PostgreSQL databázi s názvem 'mbmark'.
+- Dále vytvořit uživatele 'mbmark' s heslem 'mbmark'.
+- Nakonec je nutné nastavit vytvořenému uživateli 'mbmark' práva na vytvořenou databázi 'mbmark'.
+- Připojení k databázi lze změnit v souboru microbenchmark-web/src/main/resources/application.properties. Po změně hodnot v tomto souboru je nutné znovu zkompilovat aplikaci.
+
+Docker:
+
+- Docker musí běžet na stejném počítači jako aplikace.
+- Před spuštěním aplikace je potřeba vytvořit Docker image s názvem 'docker-microbenchmark'
+- Příkaz pro build image: 'docker build -f Dockerfile -t docker-microbenchmark .'
+
 Spuštění:
 
 - Aplikaci lze spustit pouze pokud jsou v operačním systému nainstalovány všechny důležité nástroje a je systém správně nastaven. Správné nastavení operačního systému Linux Debian 4.9.110-3+deb9u2 je popsáno níže.

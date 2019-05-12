@@ -191,9 +191,12 @@ public class DockerServiceImpl implements DockerService {
 
         LOGGER.debug("Start copying result file from docker container {} to disk for project {}", containerId, projectId);
         try (final TarArchiveInputStream tarStream = new TarArchiveInputStream(client.archiveContainer(containerId, ProjectContants.DOCKER_RESULT_FILE))) {
-            TarArchiveEntry entry = tarStream.getNextTarEntry();
+            TarArchiveEntry entry;
             File newFile = new File(pathProperties.getResults() + projectId + ProjectContants.JSON_FILE_FORMAT);
-            IOUtils.copy(tarStream, new FileOutputStream(newFile));
+            FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+            while ((entry = tarStream.getNextTarEntry()) != null) {
+                IOUtils.copy(tarStream, fileOutputStream);
+            }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             updateState(projectId, containerId, BenchmarkStateTypeEnum.BENCHMARK_ERROR);

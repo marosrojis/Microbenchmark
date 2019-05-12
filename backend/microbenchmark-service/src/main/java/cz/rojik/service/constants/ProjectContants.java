@@ -21,7 +21,7 @@ public class ProjectContants {
 
     public static final String DEFAULT_JAVA_FILE        = "default_class.txt";
 
-    public static final String RESULT_JSON_FILE         = "result/results.json";
+    public static final String RESULT_JSON_FILE         = "result.json";
 
     public static final String JSON_FILE_FORMAT         = ".json";
 
@@ -31,7 +31,7 @@ public class ProjectContants {
 
     public static final String DOCKER_BENCHMARK_FOLDER  = "benchmark/";
 
-    public static final String DOCKER_RESULT_FILE       = DOCKER_BENCHMARK_FOLDER + RESULT_JSON_FILE;
+    public static final String DOCKER_RESULT_FILE       = OtherConstants.LINUX_FILE_SEPARATOR + DOCKER_BENCHMARK_FOLDER + RESULT_JSON_FILE;
 
     public static final String DEFAULT_JAVA_VERSION     = "1.8";
 

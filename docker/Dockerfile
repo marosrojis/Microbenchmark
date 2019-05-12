@@ -8,7 +8,7 @@ RUN \
   apk add --update bash && \
   apk add openjdk8 && \
   rm -rf /var/cache/apk/* && \
-  mkdir -p /benchmark/result
+  mkdir /benchmark
 
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 
