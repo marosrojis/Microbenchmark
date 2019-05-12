@@ -46,7 +46,7 @@ V aplikaci jsou vytvořené 3 testovací účty:
 ### Admin uživatel
 - Po prvním spuštění je automaticky vytvořen uživatel s rolí *ADMIN*. Uživatel má nastavený email **`admin@rojik.cz`** a heslo `78X2Dup4O9nuoCEg`.
 - Uživatel je vytvořen pomocí Liquibase skriptu v adresáři *microbenchmark-web/src/main/resources/db/changelog/insert_data.xml*.
-- Pokud chcete změnit výchozího uživatele, stačí editovat tento soubor a zkompilovat aplikaci.
+- Pokud chcete změnit výchozího uživatele, stačí editovat tento soubor a zkompilovat aplikaci. Heslo musí být zahashováno funkcí BCrypt.
 
 ## REST API
 - REST API je zdokumentováno pomocí nástroje Swagger.
@@ -68,7 +68,7 @@ V aplikaci jsou vytvořené 3 testovací účty:
 - Průběžné informace o aktuální prováděné fázi benchmarku lze získávat odposloucháváním adresy `/user/benchmark/result/step`.
 - Po úspěšném či neúspěšném provedení benchmarku jsou výsledky dostupné na adrese `/user/benchmark/result`.
 
-## Frontend aplikacey
+## Frontend aplikace
 - Pro otestování a pohodlnější provádění testovacích benchmarků je vytvořena jednoduchá frontend aplikace ve frameworku Angular 5. Aplikace je přiložena v adresáři `frontend`. 
 - V implementaci aplikaci lze případně najít, jaké všechny HTTP požadavky nebo websocketové zprávy je nutné poslat pro správné provedení benchmarku.
 
@@ -99,9 +99,11 @@ V aplikaci jsou vytvořené 3 testovací účty:
 ### Java 1.8
 - Níže jsou napsány příkazy pro nainstalování Java 1.8.
 
-	1. apt-get install openjdk-8-jdk
-	2. export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/
-	3. export PATH=$PATH:$JAVA_HOME/bin
+	1. add-apt-repository ppa:openjdk-r/ppa
+	2. apt-get update
+	3. apt-get install openjdk-8-jdk
+	4. export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/
+	5. export PATH=$PATH:$JAVA_HOME/bin
 
 ### Databáze:
 - Níže jsou napsány příkazy pro nainstalování PostgreSQL databáze.
@@ -110,7 +112,7 @@ V aplikaci jsou vytvořené 3 testovací účty:
 	2. sudo -u postgres psql
 	3. DB dotazy pro vytvoření databáze a uživatele
 	(a) CREATE DATABASE mbmark;
-	(b) CREATE USER mbmark WITH ENCRYPTED PASSWORD ’mbmark’;
+	(b) CREATE USER mbmark WITH ENCRYPTED PASSWORD 'mbmark';
 	\(c\) GRANT ALL PRIVILEGES ON DATABASE mbmark TO mbmark;
 
 ### Docker
@@ -134,7 +136,7 @@ V aplikaci jsou vytvořené 3 testovací účty:
 
 	1. cd /tmp
 	2. apt-get install wget
-	3. wget https://bit.ly/2VDHsKZ
+	3. wget https://bit.ly/2VDHsKZ -O apache-maven-3.6.0-bin.tar.gz
 	4. tar xzvf apache-maven-3.6.0-bin.tar.gz
 	5. mv apache-maven-3.6.0 /opt/apache-maven-3.6.0
 	6. export PATH=/opt/apache-maven-3.6.0/bin:$PATH
@@ -149,27 +151,27 @@ V aplikaci jsou vytvořené 3 testovací účty:
 	3. nano /etc/apache2/sites-available/000-default.conf
 		(a) <VirtualHost *:80>
 	4. /etc/init.d/apache2 restart
-	5. mkdir /var/mbmark/projects
+	5. mkdir -p /var/mbmark/projects
 	6. ln -s /var/mbmark/projects /var/www/html/projects
 	7. chmod 755 /var/mbmark/projects/
-	
+
 ### Firewall
 - Níže jsou napsány příkazy pro povolení portů ve firewallu. Jedná se o port 80 (Apache) a 8080 (backend aplikace).
 
 	1. /sbin/iptables-save > /etc/network/iptables
 	2. nano /etc/network/iptables
-		(a) přidat následující pravidla
-		(b) -A INPUT -s 147.228.0.0/16 -p tcp -m tcp –dport 80 -j ACCEPT
-		\(c\) -A INPUT -p tcp -m tcp –dport 80 -j DROP
-		(d) -A INPUT -s 147.228.0.0/16 -p tcp -m tcp –dport 8080 -j ACCEPT
-		(e) -A INPUT -p tcp -m tcp –dport 8080 -j DROP
+		- přidat následující pravidla
+		- -A INPUT -m tcp -p tcp --dport 80 -s 147.228.0.0/16 -j ACCEPT
+		- -A INPUT -m tcp -p tcp --dport 80 -j DROP
+		- -A INPUT -m tcp -p tcp --dport 8080 -s 147.228.0.0/16 -j ACCEPT
+		- -A INPUT -m tcp -p tcp --dport 8080 -j DROP
 	3. /sbin/iptables-restore < /etc/network/iptables
 
 ### Vytvoření adresářů
 - Aby měla aplikace kam ukládat logy a získané výsledky, je nezbytné vytvořit složky na disku.
 
-	1. mkdir /var/mbmark/logs
-	2. mkdir /var/mbmark/results
+	1. mkdir -p /var/mbmark/logs
+	2. mkdir -p /var/mbmark/results
 		
 ## Konfigurace aplikace
 - V jednotlivých kapitolách je popsáno, jakým způsobem lze konfigurovat aplikaci.

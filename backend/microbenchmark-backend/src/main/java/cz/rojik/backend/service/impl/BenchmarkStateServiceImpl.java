@@ -184,7 +184,7 @@ public class BenchmarkStateServiceImpl implements BenchmarkStateService {
             containers = docker.listContainers();
             LOGGER.debug("Running docker containers: {}", containers);
         } catch (InterruptedException | DockerException | DockerCertificateException e) {
-            LOGGER.error("Docker is not running", e); // TODO: throw exception
+            LOGGER.error("Docker is not running", e);
             return;
         }
 
