@@ -1,27 +1,13 @@
-# AngularWebsocket
+# Frontend aplikace
+Aplikace slouží pro jednoduché provedení mikrobenchmarku. Aplikace je implementovaná v Angularu 5.
+Aplikace je dostupná na školním serveru [http://147.228.63.36/mbmark](http://147.228.63.36/mbmark).
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.6.
+## Účel aplikace
+Aplikace vznikla jako ukázka, jak komunikovat s backend aplikací za účelem provedení mikrobenchmarku.
+Pro provedení mikrobenchmarku je nutné provést 2 - 3 HTTP requesty, navázat websocketové spojení a zaslat zprávu skrze websocketové spojení. Backend aplikace posílá skrze websocketové spojení informační zprávy o aktuálně zpracovávané fázi mikrobenchmarku.
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Spuštění
+- Pro spuštění aplikace je nutné mít nainstalovaný NodeJS - [https://nodejs.org/en/download/](https://nodejs.org/en/download/).
+- Aby bylo možné aplikaci spustit, musí se nejprve provést příkaz `npm install`, který stáhne všechny potřebné závislosti Angular aplikace.
+- Aplikace se spustí příkazem `npm run start`
+- Po úspěšném spuštění je aplikace dostupná na adrese [http://localhost:4200](http://localhost:4200)

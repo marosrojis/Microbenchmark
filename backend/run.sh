@@ -8,5 +8,6 @@ elif ! [ -x "$(command -v psql)" ]; then
 
 else
     echo "Run MBMark application on port 8080."
-    java -jar -Dserver.port=8080 -Dspring.profiles.active=prod -Djava.security.egd=file:/dev/urandom microbenchmark-web/target/microbenchmark.jar &
+    cp microbenchmark-web/target/MBMark_application.jar MBMark_application.jar
+    java -jar -Dserver.port=8080 -Dspring.profiles.active=prod -Djava.security.egd=file:/dev/urandom MBMark_application.jar &
 fi

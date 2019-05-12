@@ -155,7 +155,7 @@
                             <mainClass>
                                 cz.rojik.main.MBMarkApplication
                             </mainClass>
-                            <finalName>microbenchmark</finalName>
+                            <finalName>MBMark_application</finalName>
                         </configuration>
                     </execution>
                 </executions>
