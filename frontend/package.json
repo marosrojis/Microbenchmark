@@ -1,6 +1,6 @@
 {
-  "name": "angular-websocket",
-  "version": "0.0.0",
+  "name": "MBMark application",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
