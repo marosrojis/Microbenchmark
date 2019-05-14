@@ -5,7 +5,7 @@
     <parent>
         <artifactId>microbenchmark</artifactId>
         <groupId>cz.rojik</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>microbenchmark-web</artifactId>
@@ -15,19 +15,21 @@
         <hibernate.version>5.2.9.Final</hibernate.version>
         <jackson.version>2.9.7</jackson.version>
         <swagger.version>2.9.2</swagger.version>
+        <microbenchmark-backend.version>1.0.0</microbenchmark-backend.version>
+        <microbenchmark-service.version>1.0.0</microbenchmark-service.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>cz.rojik</groupId>
             <artifactId>microbenchmark-backend</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${microbenchmark-backend.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cz.rojik</groupId>
             <artifactId>microbenchmark-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${microbenchmark-service.version}</version>
         </dependency>
 
         <dependency>

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>microbenchmark</artifactId>
         <groupId>cz.rojik</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
     <properties>
         <maven-invoker.version>3.0.0</maven-invoker.version>
         <hibernate.version>5.2.9.Final</hibernate.version>
-        <microbenchmark-backend.version>1.0.0-SNAPSHOT</microbenchmark-backend.version>
+        <microbenchmark-backend.version>1.0.0</microbenchmark-backend.version>
     </properties>
 
     <dependencies>
