@@ -40,7 +40,8 @@ V aplikaci jsou vytvořené 3 testovací účty:
 ### Skript pro spuštění
 - Pro spuštění aplikace slouží bashový skript run.sh ve složce backend. Skript lze spustit pouze v operačním systému Linux.
 - Ve skriptu se nachází příkaz java s parametry pro správné spuštění aplikace.
-- Příkaz obsahuje parametr pro nastavení portu a maven profilu definující např. cestu pro ukládání vygenerovaných projektů. Dále se zde nachází parametr pro zabezpečení aplikace. Jako předposlední parametr je uvedena cesta k JAR souboru. Jako poslední je znak & pomocí kterého je zajištěno, aby aplikace běžela i po ukončení terminálu. Před provedením příkazu java je provedena kontrola, jestli je v systému nainstalován Docker a PostgreSQL databáze a následné zkopírování JAR souboru z *target* složky.
+- Pro spuštění lze využít dva různé maven profily. Profil se nastaví pomocí příkazu `-Dspring.profiles.active=`. Pokud chce uživatel spustit aplikaci s výchozí konfigurací pro vývoj, použije profil *dev*. Pokud ale chce spustit aplikaci s konfigurací pro produkci, musí použít parametr *prod*. Maven profily definují například cestu pro ukládání vygenerovaných projektů. Konfigurační soubory se nachází v adresáři `backend/microbenchmark-web/src/main/resources`.
+- Příkaz obsahuje parametr pro nastavení portu. a maven profilu. Dále se zde nachází parametr pro zabezpečení aplikace. Jako předposlední parametr je uvedena cesta k JAR souboru. Jako poslední je znak & pomocí kterého je zajištěno, aby aplikace běžela i po ukončení terminálu. Před provedením příkazu java je provedena kontrola, jestli je v systému nainstalován Docker a PostgreSQL databáze a následné zkopírování JAR souboru z *target* složky.
 - Pokud aplikace úspěšně naběhne, je dostupná na portu **8080**.
 
 ### Admin uživatel
