@@ -56,6 +56,10 @@ export class AppComponent implements OnInit {
       });
     }, 1000);
 
+    this.dataStorage.showMessage.subscribe((data: string) => {
+      this.showMessage(data);
+    });
+
     this.dataStorage.showMessageProject.subscribe((data: Project) => {
       this.showMessage('Operation: ' + data.operation + ', project id: ' + data.id);
       this.disabled = true;
